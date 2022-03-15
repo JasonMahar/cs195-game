@@ -11,7 +11,10 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+
+# not sure why this was being ignored. But need it for admin_tool JFX JARs
+#*.jar
+
 *.war
 *.nar
 *.ear
