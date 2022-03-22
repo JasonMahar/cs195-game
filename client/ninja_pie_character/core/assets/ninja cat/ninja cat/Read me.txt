@@ -1,0 +1,16 @@
+Ninja Cats Demo Package only includes ninja character with 5 animations
+
+Get the full package with a set of 4 characters and a total of 29 animations, editable source files
+and more here
+
+Graphicsriver:
+	https://graphicriver.net/item/ninja-cats-game-character-set/24022954
+
+GameDevMarket:
+	https://www.gamedevmarket.net/asset/ninja-cats/
+
+Scirra Store:
+	https://www.scirra.com/store/2d-game-sprites/ninja-cats-4972
+
+Itch.io:
+	https://overcrafted.itch.io/ninja-cats

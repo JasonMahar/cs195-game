@@ -1,2 +1,0 @@
-me/project/ninja_pie/MainMenuScreen.java
- me.project.ninja_pie.MainMenuScreen
