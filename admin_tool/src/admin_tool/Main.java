@@ -3,6 +3,7 @@
  */
 package admin_tool;
 
+import admin_tool.transport.GameSession;
 import javafx.application.*;
 import javafx.stage.Stage;
 
@@ -104,6 +105,11 @@ public class Main extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+// TODO: create the GameSession in a better place - just using this for TESTING
+		GameSession session = new GameSession();
+		session.getGameData();
+		
         launch(args);
 	}
 

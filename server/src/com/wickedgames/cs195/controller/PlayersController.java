@@ -3,7 +3,7 @@ package com.wickedgames.cs195.controller;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.wickedgames.cs195.model.GameInstance;
+
 import com.wickedgames.cs195.model.PlayerSprite;
 
 /*  Class PlayersController
@@ -38,8 +38,11 @@ public class PlayersController {
 		return key;
 	}
 
-	public static PlayerSprite getPlayer(Integer ID) {
+	
+	public PlayerSprite getPlayer(Integer ID) {
 
+		System.out.println("PlayersController.getPlayer() called. id = " + ID);
+		
 		return players.get(ID);
 	}
 

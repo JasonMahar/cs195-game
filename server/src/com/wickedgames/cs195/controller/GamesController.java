@@ -1,5 +1,6 @@
 package com.wickedgames.cs195.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -36,7 +37,12 @@ public class GamesController {
 		return key;
 	}
 
-	public static GameInstance getGame(Integer ID) {
+	public Collection<GameInstance> getAllGames() {
+
+		return games.values();
+	}
+
+	public GameInstance getGame(Integer ID) {
 
 		return games.get(ID);
 	}
