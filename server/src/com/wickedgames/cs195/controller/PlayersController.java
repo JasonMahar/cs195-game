@@ -1,5 +1,6 @@
 package com.wickedgames.cs195.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -66,6 +67,11 @@ public class PlayersController {
 	public boolean removePlayer(Integer playerPublicID ) {
 
 		return players.remove(playerPublicID) != null;
+	}
+
+	public Collection<PlayerSprite> getAllPlayers() {
+		
+		return players.values();
 	}
 
 	

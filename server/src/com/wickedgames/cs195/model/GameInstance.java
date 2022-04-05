@@ -65,6 +65,10 @@ public class GameInstance {
 		return players.remove(playerPublicID) != null;
 	}
 
+
+	public boolean isEmpty() {
+		return players.isEmpty();
+	}
 	
 	
 	// Game State changes:
@@ -133,6 +137,7 @@ public class GameInstance {
 		return players.values();
 	}
 	
+
 
 
 

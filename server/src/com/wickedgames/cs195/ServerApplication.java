@@ -39,6 +39,13 @@ STUB_createSampleGame();
 
 	}
 
+	
+
+	/////////////////////////////////////////////
+	//
+	// Game calls
+	
+	
 	// if no gameID is supplied then return all games
 	@GetMapping("/game")
 	public Collection<GameInstance> game(@RequestParam(value = "id", defaultValue = "0") String id) {
@@ -75,7 +82,7 @@ STUB_createSampleGame();
 	}
 
 	
-	// I
+	// 
 	@GetMapping("/game/{id}")
 	public GameInstance getGame(@PathVariable String id) {
 
@@ -91,10 +98,85 @@ STUB_createSampleGame();
 		
 		return gamesController.getGame(gameID);
 	}
-	
 
+	
+	/* createGame
+	 * 
+	 * creates and returns a GameInstance
+	 * receives the Player's data, which is automatically added to the GameInstance
+	 */
+	@PostMapping("/game")
+	public GameInstance createGame(@RequestBody PlayerSprite newPlayer) {
+		System.out.println("ServerApplication.createGame() called with newPlayer id: " + newPlayer.getPublicID());
+
+		Integer ID = GamesController.createGame();
+		GameInstance newGame = gamesController.getGame(ID);
+		newGame.addPlayer(newPlayer);
+		
+		return newGame;
+	}
+
+	
+	/* joinGame
+	 * 
+	 * remove a player with playerID from a GameInstance with gameID.
+	 * if the GameInstance doesn't have any players remaining, destroy the GameInstance
+	 * 
+	 * if successful return all games 
+	 * (since leaving a game returns the user to the Multiplayer Menu that lists games)
+	 */
+	@DeleteMapping("/game/{gameID}/{playerID}")
+	public Collection<GameInstance> joinGame(@PathVariable Integer gameID, @PathVariable Integer playerID) {
+		System.out.println("ServerApplication.leaveGame() called with gameID: " +
+				gameID + ", playerID: " + playerID);
+		
+		GameInstance game = gamesController.getGame(gameID);
+		
+		game.removePlayer(playerID);
+		if( game.isEmpty()) {
+			gamesController.removeGame(gameID);
+		}
+		
+		return gamesController.getAllGames();
+	}
+
+	
+	/* leaveGame
+	 * 
+	 * remove a player with playerID from a GameInstance with gameID.
+	 * if the GameInstance doesn't have any players remaining, destroy the GameInstance
+	 * 
+	 * if successful return all games (since leaving a game returns to the Multiplayer Menu that lists games)
+	 */
+	@DeleteMapping("/game/{gameID}/{playerID}")
+	public Collection<GameInstance> leaveGame(@PathVariable Integer gameID, @PathVariable Integer playerID) {
+		System.out.println("ServerApplication.leaveGame() called with gameID: " +
+				gameID + ", playerID: " + playerID);
+		
+		GameInstance game = gamesController.getGame(gameID);
+		
+		game.removePlayer(playerID);
+		if( game.isEmpty()) {
+			gamesController.removeGame(gameID);
+		}
+		
+		return gamesController.getAllGames();
+	}
+
+
+	
+	/////////////////////////////////////////////
+	//
+	// Player calls
+	
+	
+	/* 
+	 * gets all players
+	 * This really only exists for admin/debugging purposes
+	 * normally the URI looks like "/player/{id}" in which getPlayer is called
+	 */
 	@GetMapping("/player")
-	public PlayerSprite player(@RequestParam(value = "id", defaultValue = "0") String id) {
+	public Collection<PlayerSprite> player(@RequestParam(value = "id", defaultValue = "0") String id) {
 
 		System.out.println("ServerApplication.player() called. id = " + id);
 		
@@ -107,13 +189,22 @@ STUB_createSampleGame();
         }
 		
 		if( playerID == null || playerID == 0 ) {
-			System.out.println("bad playerID = " + playerID);
-		
+			System.out.println("no playerID = " + playerID + ". getting all players.");
+
 			// TODO:
 			// 	should normally return an error code for invalid param or data not found
 			
 			// STUB!
-			playerID = STUB_playerID;
+//			playerID = STUB_playerID;
+		}
+		else {
+			System.out.println("getPlayer playerID = " + playerID);
+
+			Collection<PlayerSprite> playerList = new ArrayList<PlayerSprite>();
+			PlayerSprite player = playersController.getPlayer(playerID);
+			playerList.add(player);
+			return playerList;	
+			
 		}
 
 //PlayerSprite ps = playersController.getPlayer(playerID);
@@ -121,9 +212,65 @@ STUB_createSampleGame();
 //System.out.println("ServerApplication.player() returning PlayerSprite: " + ps);
 //		return ps;
 
-		return playersController.getPlayer(playerID);	
+		return playersController.getAllPlayers();	
 	}
 
+	
+	/* getPlayer
+	 * 
+	 * gets player identified by id passed in 
+	 */
+	@GetMapping("/player/{id}")
+	public PlayerSprite getPlayer(@PathVariable String id) {
+
+		System.out.println("ServerApplication.getPlayer() called with id: " + id);
+
+		Integer playerID = 0;
+		try {
+			playerID = Integer.valueOf(id);
+		}
+        catch (NumberFormatException ex){
+            ex.printStackTrace();
+        }
+
+		if( playerID == null || playerID == 0 ) {
+			System.out.println("bad playerID = " + playerID + ". returning 1st player.");
+
+			// TODO:
+			// 	should normally return an error code for invalid param or data not found
+			
+			// STUB!
+			playerID = STUB_playerID;
+		}
+		
+		return playersController.getPlayer(playerID);	
+	}
+	
+	
+
+	/* updatePlayer
+	 * 
+	 * updates a player's data for the game with gameID.
+	 * 
+	 * if successful return all games (since leaving a game returns to the Multiplayer Menu that lists games)
+	 */
+	@PutMapping("/player/{gameID}")
+	public GameInstance updatePlayer(@PathVariable Integer gameID, @RequestBody PlayerSprite player) {
+		System.out.println("ServerApplication.leaveGame() called with gameID: " +
+				gameID + ", playerID: " + player.getPublicID());
+		
+		GameInstance game = gamesController.getGame(gameID);
+		game.updatePlayer(player);
+		
+		playersController.updatePlayer(player);
+		
+		if( game.isEmpty()) {
+			gamesController.removeGame(gameID);
+		}
+		
+		return game;
+	}
+	
 
 	// STUB Methods for Testing!
 	//
@@ -133,7 +280,7 @@ STUB_createSampleGame();
 
 		// STUBS!
 		// TODO: Creating just a single game instance for early testing purposes 
-		STUB_gameID = gamesController.createGame();
+		STUB_gameID = GamesController.createGame();
 		//GameInstance game = gamesController.getGame(STUB_gameID);
 		System.out.println("ServerApplication.STUB_createSampleGame() created demo game. id = " + STUB_gameID);
 		

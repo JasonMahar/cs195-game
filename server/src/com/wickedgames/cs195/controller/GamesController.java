@@ -47,7 +47,10 @@ public class GamesController {
 		return games.get(ID);
 	}
 
+	public GameInstance removeGame(Integer ID) {
 
+		return games.remove(ID);
+	}
 	
 	// Add/Update/Remove Players:
 	
