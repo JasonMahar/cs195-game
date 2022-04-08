@@ -19,7 +19,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "ninja_pie"
+        appName = "Turtle_pie"
         gdxVersion = '1.9.14'
         roboVMVersion = '2.3.12'
         box2DLightsVersion = '1.5'

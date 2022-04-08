@@ -14,9 +14,7 @@ import static com.game.BaseActor.getWorldBounds;
  */
 public class SceneActions extends Actions {
 
-    public static Action setText(String s) {
-        return new SetTextAction(s);
-    }
+
 
     public static Action pause() {
         return Actions.forever(Actions.delay(1));

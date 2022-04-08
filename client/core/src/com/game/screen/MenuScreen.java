@@ -11,6 +11,7 @@ import com.game.BaseGame;
 import com.game.BaseScreen;
 import com.game.NinjaPie;
 
+
 import static com.badlogic.gdx.scenes.scene2d.InputEvent.Type.touchDown;
 
 public class MenuScreen extends BaseScreen {
@@ -18,18 +19,18 @@ public class MenuScreen extends BaseScreen {
     public void initialize() {
 
         BaseActor ocean = new BaseActor(0, 0, mainStage);
-        ocean.loadTexture("water.jpg");
+        ocean.loadTexture("dojo.jpg");
         ocean.setSize(800, 600);
 
         BaseActor title = new BaseActor(0, 0, mainStage);
-        title.loadTexture("starfish-collector.png");
+        title.loadTexture("title.png");
 
         TextButton startButton = new TextButton("Start", BaseGame.textButtonStyle);
         startButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
-                NinjaPie.setActiveScreen(new StoryScreen());
+                NinjaPie.setActiveScreen(new LevelScreen());
                 return false;
             }
         });
@@ -56,7 +57,7 @@ public class MenuScreen extends BaseScreen {
 
     public boolean keyDown(int keyCode) {
         if (Gdx.input.isKeyPressed(Keys.ENTER))
-           NinjaPie.setActiveScreen(new StoryScreen());
+            NinjaPie.setActiveScreen(new LevelScreen());
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
             Gdx.app.exit();

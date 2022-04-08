@@ -16,29 +16,23 @@ com/game/entities/Starfish.java
  com.game.entities.Starfish
 com/game/entities/Ninja.java
  com.game.entities.Ninja
-com/game/screen/MenuScreen.java
- com.game.screen.MenuScreen
- com.game.screen.MenuScreen$1
- com.game.screen.MenuScreen$2
+com/game/scene/Scene.java
+ com.game.scene.Scene
 com/game/NinjaPie.java
  com.game.NinjaPie
 com/game/scene/SceneSegment.java
  com.game.scene.SceneSegment
 com/game/entities/Sign.java
  com.game.entities.Sign
+com/game/BaseGame.java
+ com.game.BaseGame
 com/game/screen/LevelScreen.java
  com.game.screen.LevelScreen
  com.game.screen.LevelScreen$1
  com.game.screen.LevelScreen$2
-com/game/scene/SetTextAction.java
- com.game.scene.SetTextAction
-com/game/entities/Turtle.java
- com.game.entities.Turtle
-com/game/screen/StoryScreen.java
- com.game.screen.StoryScreen
-com/game/scene/Scene.java
- com.game.scene.Scene
-com/game/BaseGame.java
- com.game.BaseGame
+com/game/screen/MenuScreen.java
+ com.game.screen.MenuScreen
+ com.game.screen.MenuScreen$1
+ com.game.screen.MenuScreen$2
 com/game/scene/SceneActions.java
  com.game.scene.SceneActions
