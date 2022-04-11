@@ -125,7 +125,7 @@ STUB_createSampleGame();
 	 * if successful return all games 
 	 * (since leaving a game returns the user to the Multiplayer Menu that lists games)
 	 */
-	@DeleteMapping("/game/{gameID}/{playerID}")
+	@PutMapping("/game/{gameID}/{playerID}")
 	public Collection<GameInstance> joinGame(@PathVariable Integer gameID, @PathVariable Integer playerID) {
 		System.out.println("ServerApplication.leaveGame() called with gameID: " +
 				gameID + ", playerID: " + playerID);

@@ -3,17 +3,35 @@
  */
 package admin_tool;
 
-import admin_tool.transport.GameSession;
-import javafx.application.*;
-import javafx.stage.Stage;
 
-import javafx.scene.*;
-import javafx.scene.image.*;
-import javafx.scene.layout.*;
+// TODO: need to separate PlayerData from PlayerSprite
+//import com.wickedgames.cs195.model.PlayerSprite;
+
+import admin_tool.transport.GameSession;
+
+import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
+import javafx.stage.Stage;
 
 //import javafx.fxml.FXMLLoader;
 //import javafx.geometry.Pos;
@@ -27,9 +45,27 @@ import javafx.scene.text.*;
 public class Main extends Application {
 
 
+    private static final String SERVER_COMMAND_STRINGS[] = { 
+    		"Create Game", 
+    		"List Games", 
+    		"Get Game Info", 
+    		"Leave Game",
+    		"List All Players", 
+    		"Get Player Info", 
+    		"Update Player"};
+    
+    
 	private static final String TEXT_MAIN_INSTRUCTIONS = "Use keys W, A, S,D to move.";
 
-
+	
+	
+	
+	private Scene scene;
+	private GridPane controlsPane;
+	private Pane gamePlayPane;
+	private GameSession currentlySelectedGame;
+	private Integer currentlySelectedPlayer;
+	private PlayerController controller;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -43,10 +79,85 @@ public class Main extends Application {
 
 //    	Pane pane = new FlowPane();
 //    	pane.setStyle("-fx-background-color: null");
-		Group pane = new Group();
+
+
+        SplitPane mainScreen = new SplitPane();
+        initializeControlsPane();
+        initializeGamePlayPanee();
+        mainScreen.getItems().addAll(controlsPane, gamePlayPane);
+        
+//		Scene scene = new Scene(gamePlayPane, 600, 700, Color.LIGHTGREEN);
+		scene = new Scene(mainScreen, 900, 700);
+		stage.setScene(scene);
+		stage.setTitle("Game Admin Tool");
+		stage.show();
+
+		controller.initializeInputs(scene);
+
+	}
+
+	private void initializeControlsPane() {
+
+        controlsPane = new GridPane();
+        controlsPane.setStyle("-fx-background-color: null");
+        controlsPane.setMinSize(300, 700); 
+        controlsPane.setPadding(new Insets(100, 10, 100, 20)); 
+        controlsPane.setVgap(25); 
+        controlsPane.setHgap(10);       
+
+		Text commandsText = new Text("Server Commands:");     
+		ChoiceBox commandsChoices = new ChoiceBox( FXCollections.observableArrayList(SERVER_COMMAND_STRINGS) );
+
+		Text commandsParametersText = new Text("Command Parameters:");   
+	      //Creating Text Filed for email        
+	      TextField commandsParametersField = new TextField();  
+        
+		Text gamesText = new Text("Game IDs:");     
+		ChoiceBox gamesChoices = new ChoiceBox();
 		
-		Scene scene = new Scene(pane, 600, 700, Color.LIGHTGREEN);
-	    
+        // add a listener. when Game is changed, list of Players is set to that game
+		gamesChoices.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+  
+            // if game in the list is changed
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number value, Number newValue) {
+				
+				// TODO: get list of Players and 
+				//		replace playersChoices with that list
+				
+			}
+        });
+
+        
+		Text playersText = new Text("Player IDs:");     
+		ChoiceBox playersChoices = new ChoiceBox();
+	    Button submitButton = new Button("Submit"); 
+
+		Text resultsText = new Text();     
+
+		//Arranging all the nodes in the grid 
+		controlsPane.add(commandsText, 0, 0); 
+		controlsPane.add(commandsChoices, 1, 0); 
+		controlsPane.add(commandsParametersText, 0, 1);       
+		controlsPane.add(commandsParametersField, 1, 1); 
+		controlsPane.add(gamesText, 0, 3);       
+		controlsPane.add(gamesChoices, 1, 3); 
+		controlsPane.add(playersText, 0, 4);    
+		controlsPane.add(playersChoices, 1, 4); 
+		controlsPane.add(submitButton, 0, 5); 
+		controlsPane.setColumnSpan(resultsText, 16); 
+		
+	}
+		
+	
+	
+	private void initializeGamePlayPanee() {
+
+        gamePlayPane = new Pane();
+        
+        gamePlayPane.setMinSize(600, 700); 
+        gamePlayPane.setStyle("-fx-background-color: LIGHTGREEN;");
+		
 		Text instructions = new Text();
 		instructions.setText(TEXT_MAIN_INSTRUCTIONS);
 //    	instructions.setTextAlignment(TextAlignment.CENTER);
@@ -87,28 +198,25 @@ public class Main extends Application {
 //		myCharacter.setX(100.0);
 //		myCharacter.setY(500.0);
 
-//		pane.getChildren().addAll(instructions, myCharacter);
 		
-		pane.getChildren().addAll(instructions, line, myCharacter, otherCharacter);
-		stage.setScene(scene);
-		stage.show();
-		
+		gamePlayPane.getChildren().addAll(instructions, line, myCharacter, otherCharacter);
 
-		PlayerController controller = new PlayerController(myCharacter);
-		controller.initializeInputs(scene);
+		
+		// Set keyboard inputs to control the myCharacter Sprite
+		controller = new PlayerController(myCharacter);
 		
 	}
-
-	
     
+	
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
 // TODO: create the GameSession in a better place - just using this for TESTING
-		GameSession session = new GameSession();
-		session.getGameData();
+//		GameSession session = new GameSession();
+//		session.getGameData();
 		
         launch(args);
 	}

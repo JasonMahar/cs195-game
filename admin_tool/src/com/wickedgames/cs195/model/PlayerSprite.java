@@ -43,15 +43,6 @@ public class PlayerSprite extends Sprite {
 		this.setName(name);
 	}
 
-//	public PlayerSprite(AssetType assetType) {
-//		super(assetType);
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	public PlayerSprite(AssetType assetType, String name, int layer) {
-//		super(assetType, name, layer);
-//		// TODO Auto-generated constructor stub
-//	}
 	
 	public Integer getPublicID() {
 		return publicID;
