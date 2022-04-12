@@ -4,11 +4,7 @@
 package admin_tool;
 
 
-// TODO: need to separate PlayerData from PlayerSprite
-//import com.wickedgames.cs195.model.PlayerSprite;
-
-import admin_tool.transport.GameSession;
-
+import admin_tool.transport.GameSessionInterface;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -55,7 +51,7 @@ public class Main extends Application {
     		"Update Player"};
     
     
-	private static final String TEXT_MAIN_INSTRUCTIONS = "Use keys W, A, S,D to move.";
+	private static final String TEXT_MAIN_INSTRUCTIONS = "Use keys W, A, S, and D to move.\nCurrently controlling player: ";
 
 	
 	
@@ -63,9 +59,11 @@ public class Main extends Application {
 	private Scene scene;
 	private GridPane controlsPane;
 	private Pane gamePlayPane;
-	private GameSession currentlySelectedGame;
-	private Integer currentlySelectedPlayer;
 	private PlayerController controller;
+	
+	private GameSessionInterface[] allGames;
+	private GameSessionInterface currentlySelectedGame;
+	private Integer currentlySelectedPlayer;
 
 	@Override
 	public void start(Stage stage) throws Exception {

@@ -1,27 +1,25 @@
 package com.wickedgames.cs195.model;
 
-/**
- * 
- */
+
+import java.text.DecimalFormat;
 
 /**
- *
+ * @author Jason Mahar
+ * @
  */
-public class PlayerSprite extends Sprite {
+public class PlayerSprite extends Sprite implements PlayerData {
 
-
-	// Not sure if facing should actually be 360 degrees and should actually provide Float constants for the cardinal directions instead?
-	//	 { UP = 0, RIGHT = 90.0, DOWN = 180.0, LEFT = 270.0 };
-	public enum Facing { UP, RIGHT, DOWN, LEFT };
 
 	// values for speed:
 	public static Float MAX_SPEED = 1.0f;
 	public static Float STOPPED = 0.0f;
 
-
+	private String name;
 	private Integer publicID, privateID;
-	private Facing facing;
+	private State state;
+	private Facing facing;		// 360 degrees, with ordinal values 
 	private Float speed;
+	private Projectile[] projectiles;
 	
 	/**
 	 * 
@@ -29,8 +27,13 @@ public class PlayerSprite extends Sprite {
 	public PlayerSprite() {
 		super(AssetType.PLAYER);
 		System.out.println("PlayerSprite() constructor. ");
+		
 		facing = Facing.UP;
 		speed = STOPPED;
+		
+
+		System.out.println(this.toString());
+		
 	}
 
 	
@@ -44,10 +47,12 @@ public class PlayerSprite extends Sprite {
 	}
 
 	
+	@Override
 	public Integer getPublicID() {
 		return publicID;
 	}
 
+	@Override
 	public void setPublicID(Integer publicID) {
 		this.publicID = publicID;
 	}
@@ -60,29 +65,71 @@ public class PlayerSprite extends Sprite {
 		this.privateID = privateID;
 	}
 
+
+	@Override
+	public State getState() {
+		return state;
+	}
+
+
+	@Override
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	@Override
 	public Facing getFacing() {
 		return facing;
 	}
 
+	@Override
 	public void setFacing(Facing facing) {
 		this.facing = facing;
 	}
 
+	@Override
 	public Float getSpeed() {
 		return speed;
 	}
 
+	@Override
 	public void setSpeed(Float speed) {
 		this.speed = speed;
 	}
 
+
 	@Override
-	public String toString() {
-		return "{ "
-				+ "publicID=" + publicID + ", facing=" + facing + ", speed=" + speed + ", xPosition="
-				+ xPosition + ", yPosition=" + yPosition + "}";
+	public String getName() {
+		return name;
 	}
-	
+
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+
+	@Override
+	public Projectile[] getProjectiles() {
+		return projectiles;
+	}
+
+
+	@Override
+	public void setProjectiles(Projectile[] projectiles) {
+		this.projectiles = projectiles;
+	}
+
+//	
+//	@Override
+//	public String toString() {
+//		return "{ "
+//				+ "publicID=" + publicID + ", facing=" + facing + ", speed=" + speed + ", xPosition="
+//				+ xPosition + ", yPosition=" + yPosition + "}";
+//	}
+//	
 
 
 }

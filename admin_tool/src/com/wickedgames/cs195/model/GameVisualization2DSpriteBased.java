@@ -59,7 +59,7 @@ public class GameVisualization2DSpriteBased extends GameVisualization {
 	private ArrayList<Sprite> foregroundSprites = new ArrayList<Sprite>();
 
 	// New way of handling Sprites
-	PlayerSprite player;
+	PlayerData player;
 	private ArrayList<Sprite> dyanmicSprites;		// This should be replaced by an Enemies Handler Class
 	
 	GameLevelLoader levelLoader;
@@ -285,14 +285,14 @@ public class GameVisualization2DSpriteBased extends GameVisualization {
 	/**
 	 * @return the player
 	 */
-	private PlayerSprite getPlayer() {
+	private PlayerData getPlayer() {
 		return player;
 	}
 
 	/**
 	 * @param player the player to set
 	 */
-	private void setPlayer(PlayerSprite player) {
+	private void setPlayer(PlayerData player) {
 		this.player = player;
 	}
 

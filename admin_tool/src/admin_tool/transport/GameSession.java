@@ -18,42 +18,48 @@ import java.util.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.wickedgames.cs195.model.GameInstance;
+import com.wickedgames.cs195.model.PlayerData;
 import com.wickedgames.cs195.model.PlayerSprite;
 
 
 
-public class GameSession {
+public class GameSession implements GameSessionInterface {
 
 	private static final String SERVER_BASE_URI = "http://localhost:8080/";
 	private static final String SERVER_GAME_URI = SERVER_BASE_URI + "game/";
 	private static final String SERVER_PLAYER_URI = SERVER_BASE_URI + "player/";
 	
 //	private static PlayerSprite userPlayer;
-	private static GameInstance currentGameInstance = null;
 	private static Collection<GameInstance> availableGameInstances;
 
 	
-	public GameInstance createNewGame(PlayerSprite userPlayer) {
+	@Override
+	public GameInstance createNewGame(PlayerData userPlayer) {
 		System.out.println("GameSession.createNewGame() called.");
 
-
-		if(currentGameInstance != null) {
-			quitGame();
-		}
 
 		if(userPlayer == null) {
 			userPlayer = createNewPlayer();
 		}
-		
+
 		JSONObject json;
-		JSONArray jsonAry;
+		JSONObject returnedJson;
 		try {
 			json = new JSONObject(userPlayer);
 		    System.out.println("sending userPlayer json: " + json.toString());
-			jsonAry = postJsonToUrl(json, SERVER_GAME_URI);
-		    System.out.println("received game json: " + jsonAry.toString());
+		    returnedJson = postJsonToUrl(json, SERVER_GAME_URI);
+		    System.out.println("received game json: " + returnedJson.toString());
+		    
+
+			if( returnedJson != null && !returnedJson.isEmpty() ) {
+
+			    return new GameInstance(returnedJson);
+			}
+		    
 
 		} catch (IOException e) {
 			System.out.println("GameSession.getGameData() caught IOException = " + e);
@@ -63,13 +69,13 @@ public class GameSession {
 			System.out.println("GameSession.getGameData() caught JSONException = " + e);
 			e.printStackTrace();
 		}
-		    
-		return currentGameInstance;
+		return null;
 	}
 	
 
-	public GameInstance getGameData() {
-		System.out.println("GameSession.getGameData() called.");
+	@Override
+	public GameInstance getAllGames() {
+		System.out.println("GameSession.getAllGames() called.");
 		
 		JSONArray json;
 		try {
@@ -89,16 +95,49 @@ public class GameSession {
 		
 		return currentGameInstance;
 	}
-	public boolean joinGame(PlayerSprite userPlayer) {
+
+	@Override
+	public GameInstance getGameData(Integer gameID) {
+		System.out.println("GameSession.getGameData() called with gameID: " + gameID);
+		
+		JSONObject json;
+		try {
+			json = readJsonFromUrl(SERVER_GAME_URI + "/" + gameID);
+		    System.out.println(json.toString());
+//		    System.out.println(json.get("id"));
+
+		} catch (IOException e) {
+			System.out.println("GameSession.getGameData() caught IOException = " + e);
+			System.out.println("Check if server is running and that SERVER_BASE_URI is set correct." );
+			e.printStackTrace();
+		} catch (JSONException e) {
+			System.out.println("GameSession.getGameData() caught JSONException = " + e);
+			e.printStackTrace();
+		}
+		    
+		
+		return currentGameInstance;
+	}
+	
+
+	//TODO: implement!
+	@Override
+	public boolean joinGame(Integer gameID, Integer playerID) {
 
 		if(userPlayer == null) {
 			userPlayer = createNewPlayer();
 		}
 		
+
+		//PutMapping("/game/{gameID}/{playerID}")
+		
 		return false;
 	}
 	
-	public boolean quitGame() {
+
+	//TODO: implement!
+	@Override
+	public boolean quitGame(PlayerData userPlayer) {
 
 		currentGameInstance = null;
 		return false;
@@ -109,15 +148,15 @@ public class GameSession {
 	// To register the user(PlayerSprite) with the server, we need to call 
 	// 		createGame() or joinGame() (and pass the PlayerSprite to the Game) 
 	// 		
-	private PlayerSprite createNewPlayer() {
+	PlayerData createNewPlayer() {
 
 		// TODO: should give more details to the player
-		PlayerSprite userPlayer = new PlayerSprite();
+		PlayerData userPlayer = new PlayerSprite();
 		userPlayer.setName("Player" + userPlayer.getPublicID());
 		return userPlayer;
 	}
 
-	private PlayerSprite createNewPlayer(String playerName) {
+	private PlayerData createNewPlayer(String playerName) {
 
 		// TODO: should give more details to the player
 		return new PlayerSprite(playerName);
@@ -126,13 +165,15 @@ public class GameSession {
 	
 	
 	//TODO: implement!
-	public boolean updatePlayerData(PlayerSprite userPlayer) {
+	@Override
+	public boolean updatePlayerData(PlayerData userPlayer) {
 
 		
 		return true;
 	}
 
 
+	@Override
 	public boolean getPlayerData(int ID) {
 		System.out.println("GameSession.getPlayerData() called.");
 
@@ -161,10 +202,11 @@ public class GameSession {
 	
 	
 	
+	
+	
 	//////////////////////////////////////////////////
 	// REST Calls: GET, POST, PUT, and DELETE
 
-	
 	
 	
 	// these next 2 methods were originally copied from a Stack Overflow answer:
@@ -228,7 +270,7 @@ public class GameSession {
 
 	
 	// REST POST a JSONObject to the urlString and return results in a JSONArray
-	public static JSONArray postJsonToUrl(JSONObject json, String urlString) 
+	public static JSONObject postJsonToUrl(JSONObject json, String urlString) 
 			throws IOException, JSONException, MalformedURLException {
 		
 
@@ -247,9 +289,12 @@ public class GameSession {
 		
 	    InputStream is = httpcon.getInputStream();
 	    try {
-	      String jsonText = readAll(is);
-	      JSONArray jsonAry = new JSONArray(jsonText);
-	      return jsonAry;
+//		      String jsonText = readAll(is);
+//		      JSONArray jsonAry = new JSONArray(jsonText);
+//		      return jsonAry;
+		      String jsonText = readAll(is);
+		      JSONObject returnedJson = new JSONObject(jsonText);
+		      return returnedJson;
 	    }
 //	    catch( Exception ex) {
 //
@@ -259,7 +304,7 @@ public class GameSession {
 	    finally {
 	      is.close();
 	    }
-	    
+
 	  }
 	
 }

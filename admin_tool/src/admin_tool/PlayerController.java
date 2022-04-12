@@ -10,11 +10,17 @@ public class PlayerController{
 	Node myCharacter;
 	double speed = 5.0;
 	
+	
 	public PlayerController(Node character) {
 		myCharacter = character;
 	}
 
-
+	
+	public void setNodeToControl(Node character) {
+		myCharacter = character;
+	}
+	
+	
 	public void initializeInputs(Scene scene) {
 
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {

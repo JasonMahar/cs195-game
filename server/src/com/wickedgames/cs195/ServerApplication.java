@@ -119,14 +119,12 @@ STUB_createSampleGame();
 	
 	/* joinGame
 	 * 
-	 * remove a player with playerID from a GameInstance with gameID.
-	 * if the GameInstance doesn't have any players remaining, destroy the GameInstance
+	 * add a Player's data in RequestBody to the GameInstance with gameID.
 	 * 
-	 * if successful return all games 
-	 * (since leaving a game returns the user to the Multiplayer Menu that lists games)
+	 * if successful return the current GameInstance
 	 */
-	@PutMapping("/game/{gameID}/{playerID}")
-	public Collection<GameInstance> joinGame(@PathVariable Integer gameID, @PathVariable Integer playerID) {
+	@PostMapping("/game/{gameID}")
+	public GameInstance joinGame(@PathVariable Integer gameID, @RequestBody PlayerSprite newPlayer) {
 		System.out.println("ServerApplication.leaveGame() called with gameID: " +
 				gameID + ", playerID: " + playerID);
 		
