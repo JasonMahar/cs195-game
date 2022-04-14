@@ -3,8 +3,10 @@
  */
 package admin_tool.transport;
 
+import java.util.Collection;
+
 import com.wickedgames.cs195.model.GameInstance;
-import com.wickedgames.cs195.model.PlayerSprite;
+import com.wickedgames.cs195.model.PlayerData;
 
 /**
  * @author Jason
@@ -12,46 +14,46 @@ import com.wickedgames.cs195.model.PlayerSprite;
  */
 public enum ServerCommands {
 
-
+/*
 	TEMPLATE{
 
 		@Override
 		public String toString() {	return "TEMPLATE";	}
 
 		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
+		public GameInstance send(GameSession session, String params, PlayerData player, Integer gameID) {
 
 			return session.getGameData();
 		}
 	},
-
+*/
 	CREATE_GAME{
 
 		@Override
 		public String toString() {	return "Create Game";	}
 
 		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
+		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
 
 			if(player == null && params != null && !params.isBlank()) {
-				player = session.createNewPlayer();
+				player = session.createNewPlayer(params);
 			}
 			return session.createNewGame(player);
 		}
 	},
 
-	LIST_GAMES{
-
-		@Override
-		public String toString() {	return "List Games";	}
-
-		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
-
-// TODO: 
-			return session.getGameData();
-		}
-	},
+	// returns Collection<GameInstance>, so doesn't fit the model for here
+//	LIST_GAMES{
+//
+//		@Override
+//		public String toString() {	return "List Games";	}
+//
+//		@Override
+//		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
+//
+//			return session.getAllGames();
+//		}
+//	},
 
 	GET_GAME_INFO{
 
@@ -59,72 +61,82 @@ public enum ServerCommands {
 		public String toString() {	return "Get Game Info";	}
 
 		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
+		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
 
-			return session.getGameData();
+			return session.getGameData(gameID);
 		}
 	},
 
-/*
-    private static final String SERVER_COMMAND_STRINGS[] = { 
-    		"List Games", 
-    		"Get Game Info", 
-    		"Leave Game",
-    		"List All Players", 
-    		"Get Player Info", 
-    		"Update Player"};
-    
+	JOIN_GAME{
+
+		@Override
+		public String toString() {	return "Join Game";	}
+
+		@Override
+		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
+
+			return session.joinGame(player);
+		}
+	},
+
+	LEAVE_GAME{
+
+		@Override
+		public String toString() {	return "Leave Game";	}
+
+		@Override
+		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
+
+			session.quitGame(player);
+			return null;
+		}
+	},
+
+
+	// returns a Collection of PlayerData, so doesn't fit the model for here
+//	GET_ALL_PLAYERS_DATA{
+//
+//		@Override
+//		public String toString() {	return "List All Players";	}
+//
+//		@Override
+//		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
+//
+//			return session.getAllPlayersData();
+//		}
+//	},
 	
-	GameInstance getGameData();
-
-	boolean joinGame(PlayerSprite userPlayer);
-
-	boolean quitGame();
-
-	//TODO: implement!
-	boolean updatePlayerData(PlayerSprite userPlayer);
-
-	boolean getPlayerData(int ID);
-	*/
 	
-	TEMPLATE{
+	// returns only a PlayerData, so doesn't fit the model for here
+	
+//	GET_PLAYER_DATA{
+//
+//		@Override
+//		public String toString() {	return "Get Player Info";	}
+//
+//		@Override
+//		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
+//
+//			session.getPlayerData(player.getPublicID());
+//			
+//			return session.getPlayerData(player.getPublicID());
+//		}
+//	},
+
+	UPDATE_PLAYER_DATA{
 
 		@Override
-		public String toString() {	return "TEMPLATE";	}
+		public String toString() {	return "Update Player";	}
 
 		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
+		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
 
-			return session.getGameData();
-		}
-	},
-
-	TEMPLATE{
-
-		@Override
-		public String toString() {	return "TEMPLATE";	}
-
-		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
-
-			return session.getGameData();
-		}
-	},
-
-	TEMPLATE{
-
-		@Override
-		public String toString() {	return "TEMPLATE";	}
-
-		@Override
-		public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID) {
-
-			return session.getGameData();
+			return session.updatePlayerData(player);
 		}
 	};
 
 	
-	public String toString();
-	public GameInstance send(GameSession session, String params, PlayerSprite player, Integer gameID);
+	public abstract String toString();
+	public abstract GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID);
 
 }

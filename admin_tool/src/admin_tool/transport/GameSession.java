@@ -18,32 +18,38 @@ import java.util.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import com.wickedgames.cs195.model.GameInstance;
 import com.wickedgames.cs195.model.PlayerData;
-import com.wickedgames.cs195.model.PlayerSprite;
+import com.wickedgames.cs195.model.CS195PlayerData;
+import com.wickedgames.cs195.model.Projectile;
+import com.wickedgames.cs195.model.PlayerData.Facing;
+import com.wickedgames.cs195.model.PlayerData.State;
+import com.wickedgames.cs195.model.CS195Projectile;
+import com.wickedgames.cs195.model.GameInstance;
 
 
-
+/*  GameSession
+ * 
+ *  GameSession is stateless besides storing a GameID.
+ *  	Every call requires all data necessary to make the request to be
+ *  	passed in via args, and returns all info received to be 
+ *  	stored elsewhere
+ */
 public class GameSession implements GameSessionInterface {
 
 	private static final String SERVER_BASE_URI = "http://localhost:8080/";
 	private static final String SERVER_GAME_URI = SERVER_BASE_URI + "game/";
 	private static final String SERVER_PLAYER_URI = SERVER_BASE_URI + "player/";
-	
-//	private static PlayerSprite userPlayer;
-	private static Collection<GameInstance> availableGameInstances;
 
-	
+
 	@Override
 	public GameInstance createNewGame(PlayerData userPlayer) {
 		System.out.println("GameSession.createNewGame() called.");
 
 
 		if(userPlayer == null) {
-			userPlayer = createNewPlayer();
+			return null;		// client needs to create a PlayerData, even if it's empty. 
+								// 		Server will fill in most of data besides name.
 		}
 
 		JSONObject json;
@@ -57,7 +63,7 @@ public class GameSession implements GameSessionInterface {
 
 			if( returnedJson != null && !returnedJson.isEmpty() ) {
 
-			    return new GameInstance(returnedJson);
+			    return createGameInstanceFromJSON( returnedJson );
 			}
 		    
 
@@ -69,12 +75,14 @@ public class GameSession implements GameSessionInterface {
 			System.out.println("GameSession.getGameData() caught JSONException = " + e);
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 	
 
+	
 	@Override
-	public GameInstance getAllGames() {
+	public Collection<GameInstance> getAllGames() {
 		System.out.println("GameSession.getAllGames() called.");
 		
 		JSONArray json;
@@ -93,14 +101,15 @@ public class GameSession implements GameSessionInterface {
 		}
 		    
 		
-		return currentGameInstance;
+		return null;
 	}
 
+	
 	@Override
 	public GameInstance getGameData(Integer gameID) {
 		System.out.println("GameSession.getGameData() called with gameID: " + gameID);
 		
-		JSONObject json;
+		JSONObject json = null;
 		try {
 			json = readJsonFromUrl(SERVER_GAME_URI + "/" + gameID);
 		    System.out.println(json.toString());
@@ -116,68 +125,63 @@ public class GameSession implements GameSessionInterface {
 		}
 		    
 		
-		return currentGameInstance;
+		return createGameInstanceFromJSON( json );
 	}
-	
+
+
 
 	//TODO: implement!
+	
 	@Override
-	public boolean joinGame(Integer gameID, Integer playerID) {
+	public GameInstance joinGame(PlayerData userPlayer) {
 
+		
 		if(userPlayer == null) {
-			userPlayer = createNewPlayer();
+			return null;		// client needs to create a PlayerData, even if it's empty. 
+								// 		Server will fill in most of data besides name.
 		}
 		
 
 		//PutMapping("/game/{gameID}/{playerID}")
 		
-		return false;
+		return null;
 	}
 	
 
 	//TODO: implement!
+	
 	@Override
 	public boolean quitGame(PlayerData userPlayer) {
 
-		currentGameInstance = null;
 		return false;
 	}
 
 	
-	// This only instantiates a PlayerSprite
-	// To register the user(PlayerSprite) with the server, we need to call 
-	// 		createGame() or joinGame() (and pass the PlayerSprite to the Game) 
-	// 		
-	PlayerData createNewPlayer() {
 
-		// TODO: should give more details to the player
-		PlayerData userPlayer = new PlayerSprite();
-		userPlayer.setName("Player" + userPlayer.getPublicID());
-		return userPlayer;
-	}
-
-	private PlayerData createNewPlayer(String playerName) {
-
-		// TODO: should give more details to the player
-		return new PlayerSprite(playerName);
-	}
-	
-	
-	
 	//TODO: implement!
+	
 	@Override
-	public boolean updatePlayerData(PlayerData userPlayer) {
+	public GameInstance updatePlayerData(PlayerData userPlayer) {
 
 		
-		return true;
+		return null;
 	}
 
 
+
+	//TODO: implement!
 	@Override
-	public boolean getPlayerData(int ID) {
+	public Collection<PlayerData> getAllPlayersData() {
+
+		return null;
+	}
+	
+	
+	@Override
+	public PlayerData getPlayerData(int ID) {
 		System.out.println("GameSession.getPlayerData() called.");
 
-		JSONObject json;
+		JSONObject json = null;
 		JSONArray jsonAry;
 		try {
 			// if ID = 0, leave the value blank in order to return all players' data
@@ -197,11 +201,67 @@ public class GameSession implements GameSessionInterface {
 		}
 		    
 		
-		return false;
+		return createCS195PlayerDataFromJSON( json );
+	}
+	
+
+	// Creating new PlayerData
+	//
+	// This is a convenience method for creating a basic PlayerData object 
+	// 		with only the playerName, so that it can be passed into 
+	//		createNewGame() or joinGame()
+	public PlayerData createNewPlayer(String playerName) {
+
+		if( playerName == null || playerName.isBlank() ) {
+			return null;
+		}
+		// TODO: should give more details to the player
+		return new CS195PlayerData(playerName);
 	}
 	
 	
 	
+	
+	//////////////////////////////////////////////////
+	// Conversion from JSON to Objects
+	
+
+	// TODO: GSON or jackson may give easier ways to do this, but since there's
+	// 		only 3 classes and not that many attributes, it's quicker to just
+	//		do this manually.
+
+	private static GameInstance createGameInstanceFromJSON( JSONObject json ) {
+		return null;
+	}
+	
+
+	private static PlayerData createCS195PlayerDataFromJSON( JSONObject json ) {
+		PlayerData player = new CS195PlayerData(
+				json.getInt("publicID"), 
+				json.getInt("privateID"), 
+				json.getString("name"), 
+				(State)json.get("state"), 
+				json.getFloat("xPosition"),
+				json.getFloat("yPosition"),
+				(Facing)json.get("facing"), 
+				json.getFloat("speed"),
+				(Projectile[])json.get("projectiles")
+			);
+		return player;
+	}
+	
+
+	private static Projectile createCS195ProjectileFromJSON( JSONObject json ) {
+
+		Projectile projectile = new CS195Projectile(
+				json.getInt("ID"), 
+				json.getFloat("xPosition"),
+				json.getFloat("yPosition"),
+				(Facing)json.get("facing"), 
+				json.getFloat("speed")
+			);
+		return projectile;
+	}
 	
 	
 	//////////////////////////////////////////////////
@@ -306,5 +366,7 @@ public class GameSession implements GameSessionInterface {
 	    }
 
 	  }
-	
+
+
+
 }

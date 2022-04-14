@@ -2,25 +2,41 @@ package com.wickedgames.cs195.model;
 
 import java.text.DecimalFormat;
 
-import com.wickedgames.cs195.model.PlayerSprite.Facing;
-import com.wickedgames.cs195.model.PlayerSprite.State;
+import com.wickedgames.cs195.model.PlayerData.Facing;
+import com.wickedgames.cs195.model.PlayerData.State;
+
 
 public interface PlayerData {
 
 
 	// Facing is the direction the Sprite is angled at
-	// Not sure if facing should actually be 360 degrees and should actually provide Float constants for the cardinal directions instead?
-	//	 { UP = 0, RIGHT = 90.0, DOWN = 180.0, LEFT = 270.0 };
+	// Not sure if facing should actually be 360 degrees and 
+	// 		should actually provide Float constants for the cardinal directions instead?
+	//
 	public enum Facing { 
-		UP(0.0f), 
-		RIGHT(90.0f), 
-		DOWN(180.0f), 
-		LEFT(270.0f);
+		
+		// this is for a 360 degree direction starting with 0  for UP and increasing clockwise
+//		UP(0.0f), 
+//		RIGHT(90.0f), 
+//		DOWN(180.0f), 
+//		LEFT(270.0f);
+		
+		// matching directional system client is currently using:
+		// RIGHT = 0.0, and then values increase counter-clockwise
+		RIGHT(0.0f), 
+		UP(90.0f), 
+		LEFT(180.0f), 
+		DOWN(270.0f);
 		
 		
 		private static final DecimalFormat DF = new DecimalFormat("0.00");
 		
 		private Float direction;
+
+		// defaults to direction = 0.0f
+		Facing() {
+			this.direction = 0.0f;
+		}
 		
 		Facing(Float direction) {
 			this.direction = direction;
@@ -42,15 +58,23 @@ public interface PlayerData {
 		}
 	};
 
-	public enum State { RUNNING, CROUCHING, DEAD }; 
+	public enum State { IN_LOBBY, RUNNING, CROUCHING, DEAD }; 
 	
+
+	// value range for speed:
+	public static final Float MAX_SPEED = GameDesignVars.MAX_PLAYER_SPEED;
+	public static final Float STOPPED = 0.0f;
 	
-	
-	public static final int MAX_PROJECTILES = 1;		// this should work for any value
+	public static final int MAX_PROJECTILES = GameDesignVars.MAX_AMMO;		
 	
 	
 	Integer getPublicID();
 	void setPublicID(Integer publicID);
+
+	void setPrivateID(Integer privateID);
+
+	String getName();
+	void setName(String name);
 
 	State getState();
 	void setState(State state);
@@ -61,10 +85,10 @@ public interface PlayerData {
 	Float getSpeed();
 	void setSpeed(Float speed);
 
-	String getName();
-	void setName(String name);
+	Projectile[] getAllProjectiles();
+	Projectile getProjectile(int index);
+	void setProjectile(int index, Projectile projectile);
 
-	Projectile[] getProjectiles();
-	void setProjectiles(Projectile[] projectiles);
+	String toString();
 
 }

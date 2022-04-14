@@ -57,11 +57,12 @@ public class PlayerSprite extends Sprite implements PlayerData {
 		this.publicID = publicID;
 	}
 
-	protected Integer getPrivateID() {
+	// getPrivateID() is not public 
+	public Integer getPrivateID() {
 		return privateID;
 	}
-
-	protected void setPrivateID(Integer privateID) {
+	
+	public void setPrivateID(Integer privateID) {
 		this.privateID = privateID;
 	}
 
@@ -110,17 +111,27 @@ public class PlayerSprite extends Sprite implements PlayerData {
 	}
 
 
-
 	@Override
-	public Projectile[] getProjectiles() {
-		return projectiles;
+	public Projectile[] getAllProjectiles() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
+	// TODO: Implement
 	@Override
-	public void setProjectiles(Projectile[] projectiles) {
-		this.projectiles = projectiles;
+	public Projectile getProjectile(int index) {
+		return null;
 	}
+
+
+	// TODO: Implement
+	@Override
+	public void setProjectile(int index, Projectile projectile) {
+		
+	}
+
+
 
 //	
 //	@Override

@@ -3,6 +3,8 @@ package com.wickedgames.cs195.model;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.json.JSONObject;
+
 /*  Class GameInstance
  * 
  *  
@@ -15,33 +17,23 @@ public class GameInstance {
 
 	/*
 	 *  State diagram of the game generally goes in order:
-	 *  PLAYER_JOIN --> GAME_STARTING --> ENTERING_GAME --> IN_GAME --> CLOSING
+	 *  GAME_LOBBY --> GAME_STARTING --> ENTERING_GAME --> IN_GAME --> CLOSING
 	 *       ^                                                |
 	 *       +-----------<-------------<-------------<--------+
 	 */
-	private enum GameState { PLAYER_JOIN, GAME_STARTING, ENTERING_GAME, IN_GAME, CLOSING }; 
+	public enum GameState { GAME_LOBBY, GAME_STARTING, ENTERING_GAME, IN_GAME, CLOSING }; 
 	
 	// current Game State
 	private GameState gameState;
 	
 	private Integer ID;
-	private HashMap<Integer,PlayerSprite> players = new HashMap<Integer,PlayerSprite>();
+	private HashMap<Integer,PlayerData> players = new HashMap<Integer,PlayerData>();
 	
-	/**
-	 * 
-	 */
-	public GameInstance( Integer ID ) {
-		System.out.println("GameInstance() constructor. ID = " + ID);
-		
-		this.ID = ID;
-		setGameState( GameState.PLAYER_JOIN );
-	}
-
 
 	
-	// Add/Update/Remove Players:
+	// Get/Add/Update/Remove Players:
 	
-	public boolean addPlayer(PlayerSprite player) {
+	public boolean addPlayer(PlayerData player) {
 		
 		if( player == null || players.containsKey(player.getPublicID()) ) 
 			return false;
@@ -49,7 +41,7 @@ public class GameInstance {
 		return players.put(player.getPublicID(), player) == null;
 	}
 	
-	public boolean updatePlayer(PlayerSprite player) {
+	public boolean updatePlayer(PlayerData player) {
 
 		if( player == null || ! players.containsKey(player.getPublicID()) ) 
 			return false;
@@ -76,7 +68,7 @@ public class GameInstance {
 	
 	public boolean join() {
 		System.out.println("\nGameInstance.join() called ");
-		setGameState( GameState.PLAYER_JOIN );
+		setGameState( GameState.GAME_LOBBY );
 		return true;
 	}
 
@@ -134,10 +126,13 @@ public class GameInstance {
 	}
 	
 
-	public Collection<PlayerSprite> getPlayers() {
+	public Collection<PlayerData> getAllPlayers() {
 		return players.values();
 	}
-	
+
+	public PlayerData getPlayer(Integer playerID) {
+		return players.get(playerID);
+	}
 
 
 
@@ -145,7 +140,7 @@ public class GameInstance {
 	public String toString() {
 		return "{ "
 				+ "gameState=" + gameState + ","
-				+ getPlayers()
+				+ getAllPlayers()
 				+ " }";
 	}
 	

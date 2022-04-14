@@ -22,9 +22,9 @@ public class ServerApplication {
 
 
 // STUBS!
-	private static Integer STUB_gameID = 3;
-	private static Integer STUB_playerID = 1;
-	private static Integer STUB_playerID2 = 2;
+	private static Integer STUB_gameID = 1;
+	private static Integer STUB_playerID = 1001;
+	private static Integer STUB_playerID2 = 1002;
 	
 	
 	private static GamesController gamesController = new GamesController();
@@ -125,17 +125,30 @@ STUB_createSampleGame();
 	 */
 	@PostMapping("/game/{gameID}")
 	public GameInstance joinGame(@PathVariable Integer gameID, @RequestBody PlayerSprite newPlayer) {
+		
+
+		if( newPlayer == null) {
+			// TODO: Create an Error response 
+			//		see examples: https://www.amitph.com/spring-rest-api-custom-error-messages/
+			return null;
+		}
 		System.out.println("ServerApplication.leaveGame() called with gameID: " +
-				gameID + ", playerID: " + playerID);
+				gameID + ", playerID: " + newPlayer.getPublicID());
 		
 		GameInstance game = gamesController.getGame(gameID);
-		
-		game.removePlayer(playerID);
 		if( game.isEmpty()) {
-			gamesController.removeGame(gameID);
+			// TODO: Create an Error response 
+			//		see examples: https://www.amitph.com/spring-rest-api-custom-error-messages/
+			return null;
 		}
 		
-		return gamesController.getAllGames();
+		if( !game.addPlayer(newPlayer) ) {
+			// TODO: Create an Error response 
+			//		see examples: https://www.amitph.com/spring-rest-api-custom-error-messages/
+			return null;
+		}
+		
+		return game;
 	}
 
 	
@@ -282,6 +295,7 @@ STUB_createSampleGame();
 		//GameInstance game = gamesController.getGame(STUB_gameID);
 		System.out.println("ServerApplication.STUB_createSampleGame() created demo game. id = " + STUB_gameID);
 		
+		/*
 //		STUB_playerID = playersController.createPlayer();
 		PlayerSprite player1 = new PlayerSprite("Player1");
 		player1.setPublicID(STUB_playerID);
@@ -295,7 +309,7 @@ STUB_createSampleGame();
 		
 		gamesController.addPlayer(STUB_gameID, player1);
 		gamesController.addPlayer(STUB_gameID, player2);
-
+*/
 	}
 	
 	
