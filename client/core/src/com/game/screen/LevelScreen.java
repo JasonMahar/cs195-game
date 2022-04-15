@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -19,10 +20,12 @@ import com.game.*;
 import com.game.entities.*;
 import com.game.entities.ui.DialogBox;
 
+import java.util.ArrayList;
+
 public class LevelScreen extends BaseScreen {
     private Ninja ninja;
     private boolean win;
-
+    ArrayList<Pie> pies;
     private float audioVolume;
     private Sound waterDrop;
     private Music instrumental;
@@ -31,7 +34,7 @@ public class LevelScreen extends BaseScreen {
     public void initialize() {
 
         TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
-
+        pies = new ArrayList<Pie>();
 
         for (MapObject obj : tilemapActor.getTileList("Rock")) {
             MapProperties props = obj.getProperties();
@@ -132,7 +135,18 @@ public class LevelScreen extends BaseScreen {
                 whirl.setOpacity(0.25f);
             }
         }
+/*
+        for(Pie pie: pies){
 
 
+        }
+
+        private void updatePie(float delta) {
+
+
+        }
+ */
     }
+
+
 }

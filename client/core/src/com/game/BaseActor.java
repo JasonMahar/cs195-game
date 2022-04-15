@@ -13,10 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.game.entities.Pie;
 
 import java.util.ArrayList;
 
 public class BaseActor extends Group {
+
+
+    ArrayList<Pie> pies;
 
     private Animation<TextureRegion> animation;
     private float elapsedTime;
@@ -25,7 +29,7 @@ public class BaseActor extends Group {
     private Vector2 velocityVec;
     private Vector2 accelerationVec;
     private float acceleration;
-    private float maxSpeed;
+    private float max;
     private float deceleration;
 
     private Polygon boundaryPolygon;
@@ -36,6 +40,9 @@ public class BaseActor extends Group {
     public BaseActor(float x, float y, Stage s) {
         // call constructor from Actor class
         super();
+
+        //shooting
+        pies = new ArrayList<Pie>();
 
         // perform additional initialization tasks
         setPosition(x, y);
@@ -50,7 +57,7 @@ public class BaseActor extends Group {
         velocityVec = new Vector2(0, 0);
         accelerationVec = new Vector2(0, 0);
         acceleration = 0;
-        maxSpeed = 1000;
+        max = 1000;
         deceleration = 0;
 
         boundaryPolygon = null;
@@ -246,49 +253,43 @@ public class BaseActor extends Group {
     }
 
     /**
-     * Set maximum speed of this object.
+     * Set maximum  of this object.
      *
-     * @param maxSpeed Maximum speed of this object in (pixels/second).
+     * @param max Maximum  of this object in (pixels/second).
      */
-    public void setMaxSpeed(float maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public void setMax(float max) {
+        this.max = max;
     }
 
     /**
-     * Set the speed of movement (in pixels/second) in current direction.
-     * If current speed is zero (direction is undefined), direction will be set to 0 degrees.
+     * Set the  of movement (in pixels/second) in current direction.
+     * If current  is zero (direction is undefined), direction will be set to 0 degrees.
      *
-     * @param speed of movement (pixels/second)
+     * @param  of movement (pixels/second)
      */
-    public void setSpeed(float speed) {
-        // if length is zero, then assume motion angle is zero degrees
-        if (velocityVec.len() == 0)
-            velocityVec.set(speed, 0);
-        else
-            velocityVec.setLength(speed);
-    }
+
 
     /**
-     * Calculates the speed of movement (in pixels/second).
+     * Calculates the  of movement (in pixels/second).
      *
-     * @return speed of movement (pixels/second)
+     * @return  of movement (pixels/second)
      */
-    public float getSpeed() {
+    public float get() {
         return velocityVec.len();
     }
 
     /**
-     * Determines if this object is moving (if speed is greater than zero).
+     * Determines if this object is moving (if  is greater than zero).
      *
-     * @return false when speed is zero, true otherwise
+     * @return false when  is zero, true otherwise
      */
     public boolean isMoving() {
-        return (getSpeed() > 0);
+        return (get() > 0);
     }
 
     /**
      * Sets the angle of motion (in degrees).
-     * If current speed is zero, this will have no effect.
+     * If current  is zero, this will have no effect.
      *
      * @param angle of motion (degrees)
      */
@@ -335,29 +336,29 @@ public class BaseActor extends Group {
      * Adjust velocity vector based on acceleration vector,
      * then adjust position based on velocity vector. <br>
      * If not accelerating, deceleration value is applied. <br>
-     * Speed is limited by maxSpeed value. <br>
+     *  is limited by max value. <br>
      * Acceleration vector reset to (0,0) at end of method. <br>
      *
      * @param deltaTime Time elapsed since previous frame (delta time); typically obtained from <code>act</code> method.
      * @see #acceleration
      * @see #deceleration
-     * @see #maxSpeed
+     * @see #max
      */
     public void applyPhysics(float deltaTime) {
         // apply acceleration
         velocityVec.add(accelerationVec.x * deltaTime, accelerationVec.y * deltaTime);
 
-        float speed = getSpeed();
+        float  = get();
 
-        // decrease speed (decelerate) when not accelerating
+        // decrease  (decelerate) when not accelerating
         if (accelerationVec.len() == 0)
-            speed -= deceleration * deltaTime;
+             -= deceleration * deltaTime;
 
-        // keep speed within set bounds
-        speed = MathUtils.clamp(speed, 0, maxSpeed);
+        // keep  within set bounds
+         = MathUtils.clamp(, 0, max);
 
         // update velocity
-        setSpeed(speed);
+        set();
 
         // update position according to value stored in velocity vector
         moveBy(velocityVec.x * deltaTime, velocityVec.y * deltaTime);
