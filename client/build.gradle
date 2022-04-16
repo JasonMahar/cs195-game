@@ -9,9 +9,6 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'org.wisepersist:gwt-gradle-plugin:1.0.13'
-        classpath 'org.gretty:gretty:3.0.2'
-        classpath 'com.android.tools.build:gradle:3.5.4'
         
 
     }
@@ -22,11 +19,11 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "CS195Game"
-        gdxVersion = '1.10.0'
+        appName = "Turtle_pie"
+        gdxVersion = '1.9.14'
         roboVMVersion = '2.3.12'
         box2DLightsVersion = '1.5'
-//        ashleyVersion = '1.7.3'
+        ashleyVersion = '1.7.3'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.1.0'
     }
@@ -50,64 +47,10 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
-        
-    }
-}
-
-project(":android") {
-    apply plugin: "com.android.application"
-
-    configurations { natives }
-
-    dependencies {
-        implementation project(":core")
-        api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
-        api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-//        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
-        api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
-        natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"
-        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        
-    }
-}
-
-project(":html") {
-    apply plugin: "java-library"
-    apply plugin: "gwt"
-    apply plugin: "war"
-    apply plugin: "org.gretty"
-
-
-    dependencies {
-        implementation project(":core")
-        api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
-        api "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
-//        api "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
-        api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"
+        api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
         
     }
 }
@@ -119,11 +62,11 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
-//        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        api "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         
     }
 }
