@@ -1,7 +1,7 @@
 /**
  * 
  */
-package admin_tool.transport;
+package com.wickedgames.cs195.transport;
 
 import java.util.Collection;
 
