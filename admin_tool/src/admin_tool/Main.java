@@ -4,7 +4,7 @@
 package admin_tool;
 
 
-import admin_tool.transport.GameSessionInterface;
+import com.wickedgames.cs195.transport.GameSessionInterface;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
