@@ -134,7 +134,7 @@ public class GameSession implements GameSessionInterface {
 	//TODO: implement!
 	
 	@Override
-	public GameInstance joinGame(PlayerData userPlayer) {
+	public GameInstance joinGame(Integer gameId, PlayerData userPlayer) {
 
 		
 		if(userPlayer == null) {
@@ -143,7 +143,7 @@ public class GameSession implements GameSessionInterface {
 		}
 		
 
-		//PutMapping("/game/{gameID}/{playerID}")
+		//PutMapping("/game/{gameID}/")  and pass in playerData
 		
 		return null;
 	}
@@ -372,6 +372,7 @@ public class GameSession implements GameSessionInterface {
 	    }
 
 	  }
+
 
 
 

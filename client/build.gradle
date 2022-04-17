@@ -68,5 +68,9 @@ project(":core") {
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         
+		// https://mvnrepository.com/artifact/org.json/json
+		implementation group: 'org.json', name: 'json', version: '20220320'
+
+        
     }
 }

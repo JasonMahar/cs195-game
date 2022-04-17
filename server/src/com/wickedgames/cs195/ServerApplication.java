@@ -25,6 +25,7 @@ public class ServerApplication {
 	private static Integer STUB_gameID = 1;
 	private static Integer STUB_playerID = 1001;
 	private static Integer STUB_playerID2 = 1002;
+	private static Integer STUB_playerID3 = 1003;
 	
 	
 	private static GamesController gamesController = new GamesController();

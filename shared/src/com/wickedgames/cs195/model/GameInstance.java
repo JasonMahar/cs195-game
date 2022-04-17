@@ -33,6 +33,13 @@ public class GameInstance {
 	
 	// Get/Add/Update/Remove Players:
 	
+	public GameInstance(GameState gameState, Integer ID, HashMap<Integer, PlayerData> players) {
+		super();
+		this.gameState = gameState;
+		this.ID = ID;
+		this.players = players;
+	}
+
 	public boolean addPlayer(PlayerData player) {
 		
 		if( player == null || players.containsKey(player.getPublicID()) ) 

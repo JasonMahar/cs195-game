@@ -16,11 +16,19 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+
 import com.game.*;
 import com.game.entities.*;
 import com.game.entities.ui.DialogBox;
 
+import com.wickedgames.cs195.model.GameInstance;
+import com.wickedgames.cs195.model.PlayerData;
+import com.wickedgames.cs195.model.Projectile;
+import com.wickedgames.cs195.transport.GameSessionInterface;
+
 import java.util.ArrayList;
+
+
 
 public class LevelScreen extends BaseScreen {
     private Ninja ninja;
@@ -31,7 +39,20 @@ public class LevelScreen extends BaseScreen {
     private Music instrumental;
     private Music oceanSurf;
 
-    public void initialize() {
+    private GameSessionInterface serverSession;
+	private GameInstance gameData;
+	private PlayerData	player;
+	
+    
+    public LevelScreen(GameSessionInterface serverSession, Integer gameID, Integer userID) {
+    	
+    	
+		this.serverSession = serverSession;
+		gameData = serverSession.getGameData(gameID);
+		player = gameData.getPlayer(userID);
+	}
+
+	public void initialize() {
 
         TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
         pies = new ArrayList<Pie>();
@@ -68,7 +89,11 @@ public class LevelScreen extends BaseScreen {
                 instrumental.dispose();
                 oceanSurf.dispose();
 
-                NinjaPie.setActiveScreen(new LevelScreen());
+                // TODO: there's probably more cleaning up that needs to be done, 
+                //		like resetting the player's data
+                
+                NinjaPie.setActiveScreen( new LobbyScreen(player.getName()) );
+                
                 return true;
             }
         });
@@ -135,17 +160,31 @@ public class LevelScreen extends BaseScreen {
                 whirl.setOpacity(0.25f);
             }
         }
+        
+        
 /*
+ *		// Player's pies
         for(Pie pie: pies){
 
-
-        }
-
-        private void updatePie(float delta) {
-
-
+			pie.update(deltaTime);
         }
  */
+        
+     // Update Opponents' 
+        for(PlayerData opponent: gameData.getAllPlayers()){
+        	
+        	if( opponent == player ) {	continue;	}
+//        	
+//        	opponent.update(deltaTime);
+
+// TODO: this should actually be inside the PlayerData's update()        
+        	
+//	     // Opponents' pies
+//	        for(Projectile pie: opponent.getAllProjectiles()){
+//	
+//				pie.update(deltaTime);
+//	        }
+        }
     }
 
 
