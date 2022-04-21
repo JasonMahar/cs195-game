@@ -119,12 +119,4 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
     }
-
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
 }

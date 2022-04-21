@@ -30,7 +30,17 @@ public class MenuScreen extends BaseScreen {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
-                NinjaPie.setActiveScreen(new LevelScreen());
+                NinjaPie.setActiveScreen(new LevelScreen() {
+                    @Override
+                    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean touchDragged(int screenX, int screenY, int pointer) {
+                        return false;
+                    }
+                });
                 return false;
             }
         });
@@ -62,6 +72,16 @@ public class MenuScreen extends BaseScreen {
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
             Gdx.app.exit();
 
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
 

@@ -9,7 +9,7 @@ import com.game.*;
 import com.game.entities.*;
 
 
-public class LevelScreen extends BaseScreen {
+public  class LevelScreen extends BaseScreen {
 
     private Ninja ninja;
 
