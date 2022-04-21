@@ -8,27 +8,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
-import static com.badlogic.gdx.graphics.Color.BLACK;
-import static com.badlogic.gdx.graphics.Color.GRAY;
-import static com.badlogic.gdx.graphics.Color.WHITE;
+import static com.badlogic.gdx.graphics.Color.*;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.Linear;
 
-/**
- * Created when program is launched;
- * manages the screens that appear during the game.
- */
 public abstract class BaseGame extends Game {
     /**
      * Stores reference to game; used when calling setActiveScreen method.
      */
     private static BaseGame game;
-    public static LabelStyle labelStyle; // BitmapFont + Color
-    public static TextButtonStyle textButtonStyle;
+    public static Label.LabelStyle labelStyle; // BitmapFont + Color
+    public static TextButton.TextButtonStyle textButtonStyle;
 
     /**
      * Called when game is initialized; stores global reference to game object.
@@ -47,7 +40,7 @@ public abstract class BaseGame extends Game {
         Gdx.input.setInputProcessor(im);
 
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans.ttf"));
-        FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
+        FreeTypeFontGenerator.FreeTypeFontParameter fontParameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameters.size = 48;
         fontParameters.color = WHITE;
         fontParameters.borderWidth = 2;
@@ -57,10 +50,10 @@ public abstract class BaseGame extends Game {
         fontParameters.magFilter = Linear;
 
         BitmapFont customFont = fontGenerator.generateFont(fontParameters);
-        labelStyle = new LabelStyle();
+        labelStyle = new Label.LabelStyle();
         labelStyle.font = customFont;
 
-        textButtonStyle = new TextButtonStyle();
+        textButtonStyle = new TextButton.TextButtonStyle();
         Texture buttonTex = new Texture(Gdx.files.internal("button.png"));
         NinePatch buttonPatch = new NinePatch(buttonTex, 24, 24, 24, 24);
         textButtonStyle.up = new NinePatchDrawable(buttonPatch);

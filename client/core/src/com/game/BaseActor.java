@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
@@ -33,13 +32,13 @@ public class BaseActor extends Group {
     // stores size of game world for all actors
     private static Rectangle worldBounds;
 
-    public BaseActor(float x, float y, Stage s) {
+    public BaseActor(float x, float y, Stage stage) {
         // call constructor from Actor class
         super();
 
         // perform additional initialization tasks
         setPosition(x, y);
-        s.addActor(this);
+        stage.addActor(this);
 
         // initialize animation data
         animation = null;
@@ -55,6 +54,10 @@ public class BaseActor extends Group {
 
         boundaryPolygon = null;
     }
+
+    // ----------------------------------------------
+    // Limiting & Positioning methods
+    // ----------------------------------------------
 
     /**
      * If this object moves completely past the world bounds,
@@ -127,8 +130,7 @@ public class BaseActor extends Group {
         int fileCount = fileNames.length;
         Array<TextureRegion> textureArray = new Array<>();
 
-        for (int n = 0; n < fileCount; n++) {
-            String fileName = fileNames[n];
+        for (String fileName : fileNames) {
             Texture texture = new Texture(Gdx.files.internal(fileName));
             texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             textureArray.add(new TextureRegion(texture));
@@ -191,7 +193,7 @@ public class BaseActor extends Group {
     public Animation<TextureRegion> loadTexture(String fileName) {
         String[] fileNames = new String[1];
         fileNames[0] = fileName;
-        return loadAnimationFromFiles(fileNames, 1, true);
+        return loadAnimationFromFiles(fileNames, 1, false);
     }
 
     /**
@@ -207,19 +209,10 @@ public class BaseActor extends Group {
      * Checks if animation is complete: if play mode is normal (not looping)
      * and elapsed time is greater than time corresponding to last frame.
      *
-     * @return
+     * @return boolean
      */
     public boolean isAnimationFinished() {
         return animation.isAnimationFinished(elapsedTime);
-    }
-
-    /**
-     * Sets the opacity of this actor.
-     *
-     * @param opacity value from 0 (transparent) to 1 (opaque)
-     */
-    public void setOpacity(float opacity) {
-        this.getColor().a = opacity;
     }
 
     // ----------------------------------------------
@@ -338,20 +331,20 @@ public class BaseActor extends Group {
      * Speed is limited by maxSpeed value. <br>
      * Acceleration vector reset to (0,0) at end of method. <br>
      *
-     * @param deltaTime Time elapsed since previous frame (delta time); typically obtained from <code>act</code> method.
+     * @param delta Time elapsed since previous frame (delta time); typically obtained from <code>act</code> method.
      * @see #acceleration
      * @see #deceleration
      * @see #maxSpeed
      */
-    public void applyPhysics(float deltaTime) {
+    public void applyPhysics(float delta) {
         // apply acceleration
-        velocityVec.add(accelerationVec.x * deltaTime, accelerationVec.y * deltaTime);
+        velocityVec.add(accelerationVec.x * delta, accelerationVec.y * delta);
 
         float speed = getSpeed();
 
         // decrease speed (decelerate) when not accelerating
         if (accelerationVec.len() == 0)
-            speed -= deceleration * deltaTime;
+            speed -= deceleration * delta;
 
         // keep speed within set bounds
         speed = MathUtils.clamp(speed, 0, maxSpeed);
@@ -360,7 +353,7 @@ public class BaseActor extends Group {
         setSpeed(speed);
 
         // update position according to value stored in velocity vector
-        moveBy(velocityVec.x * deltaTime, velocityVec.y * deltaTime);
+        moveBy(velocityVec.x * delta, velocityVec.y * delta);
 
         // reset acceleration
         accelerationVec.set(0, 0);
@@ -540,7 +533,6 @@ public class BaseActor extends Group {
      */
     public void alignCamera() {
         Camera cam = this.getStage().getCamera();
-        Viewport v = this.getStage().getViewport();
 
         // center camera on actor
         cam.position.set(this.getX() + this.getOriginX(), this.getY() + this.getOriginY(), 0);
@@ -596,7 +588,7 @@ public class BaseActor extends Group {
     }
 
     // ----------------------------------------------
-    // Actor methods: act and draw
+    // Actor methods: act, draw and etc.
     // ----------------------------------------------
 
     /**
@@ -634,5 +626,14 @@ public class BaseActor extends Group {
                     getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 
         super.draw(batch, parentAlpha);
+    }
+
+    /**
+     * Sets the opacity of this actor.
+     *
+     * @param opacity value from 0 (transparent) to 1 (opaque)
+     */
+    public void setOpacity(float opacity) {
+        this.getColor().a = opacity;
     }
 }
