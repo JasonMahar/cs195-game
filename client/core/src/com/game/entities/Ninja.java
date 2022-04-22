@@ -36,7 +36,7 @@ public class Ninja extends BaseActor {
     }
 
 
-    public void act(float deltaTime) {
+   public void act(float deltaTime) {
         super.act(deltaTime);
 
         float degreesPerSecond = 120; // degrees per second

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
+
 import java.util.ArrayList;
 
 public class BaseActor extends Group {
@@ -336,7 +337,7 @@ public class BaseActor extends Group {
      * @see #deceleration
      * @see #maxSpeed
      */
-    public void applyPhysics(float delta) {
+   public void applyPhysics(float delta) {
         // apply acceleration
         velocityVec.add(accelerationVec.x * delta, accelerationVec.y * delta);
 
