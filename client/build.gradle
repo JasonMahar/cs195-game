@@ -68,9 +68,17 @@ project(":core") {
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         
-		// https://mvnrepository.com/artifact/org.json/json
-		//implementation group: 'org.json', name: 'json', version: '20220320'
 
-        implementation fileTree(dir: 'libs', include: '*.jar')
+		// supposedly any of these are how to include a local jar, 
+		//		but I'm still getting: "error: package org.json does not exist"
+        //implementation fileTree(dir: 'libs', include: '*.jar')
+    	//implementation files('libs/json-20220320.jar')
+    	
+    	//compile files('libs/shared.jar')
+    	//compile files('libs/json-20220320.jar')
+    	
+    	// including json remote jar
+		// from: https://mvnrepository.com/artifact/org.json/json
+		implementation group: 'org.json', name: 'json', version: '20220320'
     }
 }
