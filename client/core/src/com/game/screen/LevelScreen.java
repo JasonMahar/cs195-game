@@ -138,7 +138,7 @@ public class LevelScreen extends BaseScreen {
                 audioVolume = 1 - audioVolume;
                 instrumental.setVolume(audioVolume);
                 oceanSurf.setVolume(audioVolume);
-                muteButton.setChecked( !muteButton.isChecked() );
+//                muteButton.setChecked( !muteButton.isChecked() );
                 
                 return true;
             }
