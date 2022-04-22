@@ -13,26 +13,29 @@ import com.wickedgames.cs195.model.PlayerData.State;
 
 public class STUB_GameSession implements GameSessionInterface {
 
-	private GameInstance game;
+	public static final int DEFAULT_GAME_ID = 1;	
+	public static final int STUB_DEFAULT_PLAYER_ID = 1;
 	
 	
-	public STUB_GameSession() {
+	// This is a singleton to take the place of the server preserving the
+	//		GameInstance even though a GameSession is supposed to be stateless
+	private static GameInstance game = null;
+	
+	
+	// this should be all 4 locations - the player and 3 opponents
+	private float[][] startingLocations = { 
+			{64.0f, 896.0f}, 
+			{536.0f, 64.0f}, 
+			{64.0f, 64.0f}, 
+			{536.0f, 896.0f} 
+		};
+	
+	
+	public STUB_GameSession() {}
 
-		 game = new GameInstance(GameInstance.GameState.GAME_LOBBY, 
-				 GameDesignVars.DEFAULT_GAME_ID, null);
-		 STUB_add3DummyPlayers();
-	}
 
 	
 	public void STUB_add3DummyPlayers() { 
-
-		// this should be all 4 locations - the player and 3 opponents
-		float[][] startingLocations = { 
-				{64.0f, 896.0f}, 
-				{536.0f, 64.0f}, 
-				{64.0f, 64.0f}, 
-				{536.0f, 896.0f} 
-			};
 		
 		// I'm going to assume startingLocations[0] is for the player, 
 		// so looping through playerIDs 2 to 4 and giving them startingLocations 1 to 3
@@ -86,14 +89,29 @@ public class STUB_GameSession implements GameSessionInterface {
 
 	@Override
 	public GameInstance getGameData(Integer gameID) {
-		// TODO Auto-generated method stub
+
 		return game;
 	}
 
 	@Override
 	public GameInstance createNewGame(PlayerData userPlayer) {
-		// TODO Auto-generated method stub
-		return null;
+
+		// only construct the singleton once
+		if( game == null) {
+			 game = new GameInstance(GameInstance.GameState.GAME_LOBBY, 
+					 DEFAULT_GAME_ID, null);
+		}
+		
+		// update player with data that would normally come from  server
+		userPlayer.setPublicID(STUB_DEFAULT_PLAYER_ID);
+		userPlayer.setPrivateID(STUB_DEFAULT_PLAYER_ID);
+		userPlayer.setX(startingLocations[0][0]);
+		userPlayer.setY(startingLocations[0][1]);
+		game.addPlayer(userPlayer);
+
+		STUB_add3DummyPlayers();
+		 
+		return game;
 	}
 
 	@Override

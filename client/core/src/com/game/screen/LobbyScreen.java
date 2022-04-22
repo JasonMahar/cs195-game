@@ -2,16 +2,31 @@ package com.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.game.BaseActor;
 import com.game.BaseGame;
 import com.game.BaseScreen;
 import com.game.NinjaPie;
-
-
+import com.game.entities.Ninja;
 import com.wickedgames.cs195.model.GameDesignVars;
 import com.wickedgames.cs195.model.GameInstance;
 import com.wickedgames.cs195.model.PlayerData;
@@ -26,17 +41,27 @@ import java.util.Collection;
 
 public class LobbyScreen extends BaseScreen {
 
-	private String userName;
-	private Integer userID;
+	
+	private static final String TITLE_TEXT = "GAME LOBBY";
+
+
+	private static final CharSequence PLAYERS_HEADING_TEXT = "Players:";
+	
+	
 	private GameSessionInterface serverSession;
 	private GameInstance gameData;
 	
-	
-    public LobbyScreen(String userName) {
-    	System.out.println("Creating LobbyScreen ");
 
-    	this.userName = userName;
-    	
+    
+    public LobbyScreen() {
+    	super();
+    	System.out.println("Creating LobbyScreen ");
+	}
+
+	public void initializeGameData() {
+    	System.out.println("Running LobbyScreen.initializeGameData()");
+		
+
     	// this try shouldn't be here. 
     	// TODO: figure out which method is not catching its JSONException
     	try { // JSONException
@@ -44,12 +69,11 @@ public class LobbyScreen extends BaseScreen {
 // STUB:       	//        	serverSession = new GameSession();
 			serverSession = new STUB_GameSession();
 
-    		PlayerData userPlayer = serverSession.createNewPlayer(userName);
-	    	userID = userPlayer.getPublicID();
+//    		PlayerData userPlayer = serverSession.createNewPlayer(Ninja.getPlayerName());
 	    	
 // TODO: gameID shouldn't be hardcoded. Normally would do a createGame first and get the ID from there
-	    	gameData = serverSession.joinGame(GameDesignVars.DEFAULT_GAME_ID, userPlayer);
-
+//	    	gameData = serverSession.joinGame(STUB_GameSession.DEFAULT_GAME_ID, userPlayer);
+			gameData = serverSession.getGameData(STUB_GameSession.DEFAULT_GAME_ID);
 
 	    	System.out.println("Running LobbyScreen.initialize() 2");
 	    	
@@ -72,20 +96,95 @@ public class LobbyScreen extends BaseScreen {
     	System.out.println("Running LobbyScreen.initialize()");
 
     	
+    	initializeGameData();
+
+    	// create Font for text
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(
+        		Gdx.files.internal("OpenSans.ttf") );
+        FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
+        fontParameters.size = 40;
+        BitmapFont font = fontGenerator.generateFont(fontParameters);
     	
-        BaseActor ocean = new BaseActor(0, 0, mainStage);
-        ocean.loadTexture("dojo.jpg");
-        ocean.setSize(800, 600);
+        // background image
+        BaseActor background = new BaseActor(0, 0, mainStage);
+        background.loadTexture("dojo.jpg");
+        background.setSize(800, 600);
+        background.setOpacity(0.75f); 		// darken background
+        
 
-        BaseActor title = new BaseActor(0, 0, mainStage);
-        title.loadTexture("title.png");
+        
 
+//        Texture titleBackground = new Texture(Gdx.files.internal("dialog.png")); 
+//        TextureRegion titleRegion = new TextureRegion(titleBackground);;
+//        Drawable titleDrawable = new TextureRegionDrawable(titleRegion);
+        
+        // Screen Title
+        LabelStyle titleStyle = new LabelStyle(font, Color.YELLOW);
+//        titleStyle.background = titleDrawable;
+        Label titleLabel = new Label(TITLE_TEXT, titleStyle);
+        
+        
+//        // Players List grouping
+//        WidgetGroup playersListGroup = new WidgetGroup();
+//        playersListGroup.setColor(Color.FOREST);
+//        playersListGroup.setSize(500, 300);
+
+        BaseActor playersListBackground = new BaseActor(0, 0, mainStage);
+//        playersListBackground.loadTexture("dialog.png");
+//        playersListBackground.setSize(500, 300);
+        playersListBackground.setColor(Color.RED);
+        
+        LabelStyle playersHeadingStyle = new LabelStyle(font, Color.CYAN);
+        Label playersHeading = new Label(PLAYERS_HEADING_TEXT, playersHeadingStyle);
+        
+
+        Texture listBackground = new Texture(Gdx.files.internal("dialog.png")); // or button.png 
+        TextureRegion listRegion = new TextureRegion(listBackground);
+//        listRegion.setRegionWidth(600);
+//        listRegion.setRegionHeight(400);
+//        listRegion.setTexture( new Texture(Gdx.files.internal("button.png")) );
+        Drawable listBackgroundDrawable = new TextureRegionDrawable(listRegion);
+        
+//        Drawable region = new BaseDrawable();
+
+        ListStyle listStyle = new ListStyle(
+        		font, 
+        		Color.YELLOW, Color.WHITE, listBackgroundDrawable
+    		);
+//        listStyle.background = 
+        
+        List<String> list = new List<String>(listStyle);
+        list.clearItems();
+//        list.setColor(Color.CYAN);
+        list.setColor(Color.LIGHT_GRAY);
+        
+        Collection<PlayerData> playersList = gameData.getAllPlayers();
+        
+        if( playersList.isEmpty() ) {
+
+        	System.out.println("LobbyScreen.initialize(). No players found. ");
+        }
+        else {
+        	
+            String[] nameStrings = new String[playersList.size()];
+        	int i=0;
+            for( PlayerData player : playersList) {
+            	nameStrings[i++] = player.getName();
+            	System.out.println("LobbyScreen.initialize adding player to list: " + player.getName());
+            }
+            list.setItems( nameStrings );
+        }
+
+//        playersListGroup.addActor(playersListBackground);
+//        playersListGroup.addActor(playersHeading);
+//        playersListGroup.addActor(list);
+        
         TextButton startButton = new TextButton("Start Game", BaseGame.textButtonStyle);
         startButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
-                NinjaPie.setActiveScreen( new LevelScreen(serverSession, gameData.getID(), userID) );
+                NinjaPie.setActiveScreen( new LevelScreen() );
                 return true;
             }
         });
@@ -95,15 +194,23 @@ public class LobbyScreen extends BaseScreen {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
-                NinjaPie.setActiveScreen(new MenuScreen(userName));
+                NinjaPie.setActiveScreen(new MenuScreen());
                 return true;
             }
         });
-
-        uiTable.add(title).colspan(2).padBottom(50);
+        
+        uiTable.add(titleLabel).colspan(2).padBottom(50);
+        uiTable.row();
+        
+//      uiTable.add(playersListBackground);
+      uiTable.add(playersHeading).colspan(2).row();
+      uiTable.add(list).colspan(2).padBottom(50);
+//        uiTable.add(playersListGroup).colspan(2).padBottom(50);
+        
         uiTable.row();
         uiTable.add(startButton);
         uiTable.add(quitButton);
+        uiTable.top();
     }
 
     @Override
@@ -112,10 +219,10 @@ public class LobbyScreen extends BaseScreen {
 
     public boolean keyDown(int keyCode) {
         if (Gdx.input.isKeyPressed(Keys.ENTER))
-        	NinjaPie.setActiveScreen( new LevelScreen(serverSession, gameData.getID(), userID) );
+        	NinjaPie.setActiveScreen( new LevelScreen() );
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
-        	NinjaPie.setActiveScreen( new MenuScreen(userName) );
+        	NinjaPie.setActiveScreen( new MenuScreen() );
 
         return false;
     }

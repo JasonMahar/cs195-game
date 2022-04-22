@@ -3,9 +3,6 @@ package com.wickedgames.cs195.model;
 
 import java.util.Arrays;
 
-//import com.wickedgames.cs195.model.PlayerData.Facing;
-//import com.wickedgames.cs195.model.PlayerData.State;
-
 
 /**
  * @author Jason Mahar
@@ -14,16 +11,16 @@ import java.util.Arrays;
 public class CS195PlayerData implements PlayerData {
 
 	// IDs are set by the server so that they'll be unique
-	private Integer publicID;		// public ID is how a player is referred to by other players
-	private Integer privateID;		// private ID is how it identifies itself to the server
+	private int publicID;		// public ID is how a player is referred to by other players
+	private int privateID;		// private ID is how it identifies itself to the server
 
 	private String name;
 	private State state;
 
-	protected float xPosition;
-	protected float yPosition;
+	protected float x;
+	protected float y;
 	private Facing facing;		// 360 degrees, with ordinal values 
-	private Float speed;
+	private float speed;
 	
 	private Projectile[] projectiles;
 	
@@ -47,15 +44,15 @@ public class CS195PlayerData implements PlayerData {
 	}
 
 	
-	public CS195PlayerData(Integer publicID, Integer privateID, String name, State state, float xPosition,
-			float yPosition, Facing facing, Float speed, Projectile[] projectiles) {
+	public CS195PlayerData(int publicID, int privateID, String name, State state, float x,
+			float y, Facing facing, float speed, Projectile[] projectiles) {
 		super();
 		this.publicID = publicID;
 		this.privateID = privateID;
 		this.name = name;
 		this.state = state;
-		this.xPosition = xPosition;
-		this.yPosition = yPosition;
+		this.x = x;
+		this.y = y;
 		this.facing = facing;
 		this.speed = speed;
 		this.projectiles = projectiles;
@@ -74,22 +71,22 @@ public class CS195PlayerData implements PlayerData {
 	
 	
 	@Override
-	public Integer getPublicID() {
+	public int getPublicID() {
 		return publicID;
 	}
 	
 	@Override
-	public void setPublicID(Integer publicID) {
+	public void setPublicID(int publicID) {
 		this.publicID = publicID;
 	}
 
 	// getPrivateID() is not public 
-	Integer getPrivateID() {
+	int getPrivateID() {
 		return privateID;
 	}
 	
 	@Override
-	public void setPrivateID(Integer privateID) {
+	public void setPrivateID(int privateID) {
 		this.privateID = privateID;
 	}
 	
@@ -115,6 +112,28 @@ public class CS195PlayerData implements PlayerData {
 	}
 
 	@Override
+	public float getX() {
+		return x;
+	}
+
+	@Override
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	@Override
+	public float getY() {
+		return y;
+	}
+
+
+	@Override
+	public void setY(float y) {
+		this.y = y;
+	}
+
+
+	@Override
 	public Facing getFacing() {
 		return facing;
 	}
@@ -125,12 +144,12 @@ public class CS195PlayerData implements PlayerData {
 	}
 
 	@Override
-	public Float getSpeed() {
+	public float getSpeed() {
 		return speed;
 	}
 
 	@Override
-	public void setSpeed(Float speed) {
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
 	
@@ -152,8 +171,10 @@ public class CS195PlayerData implements PlayerData {
 	
 	@Override
 	public String toString() {
-		return "{ publicID=" + publicID + ", name=" + name + ", state=" + state + ", xPosition="
-				+ xPosition + ", yPosition=" + yPosition + ", facing=" + facing + ", speed=" + speed + ", projectiles="
+		
+		return /* super.toString() + */
+				"{ publicID=" + publicID + ", name=" + name + ", state=" + state + ", x="
+				+ x + ", y=" + y + ", facing=" + facing + ", speed=" + speed + ", projectiles="
 				+ Arrays.toString(projectiles) + "}";
 	}
 

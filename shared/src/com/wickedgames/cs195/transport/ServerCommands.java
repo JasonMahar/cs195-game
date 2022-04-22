@@ -75,7 +75,7 @@ public enum ServerCommands {
 		@Override
 		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
 
-			return session.joinGame(player);
+			return session.joinGame(gameID, player);
 		}
 	},
 

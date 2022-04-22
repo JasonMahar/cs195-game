@@ -6,32 +6,22 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.game.BaseActor;
-import com.game.BaseGame;
-import com.game.BaseScreen;
-import com.game.NinjaPie;
+import com.game.*;
+import com.game.entities.*;
+import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.transport.*;
 
 import static com.badlogic.gdx.scenes.scene2d.InputEvent.Type.touchDown;
 
 
 public class MenuScreen extends BaseScreen {
 
-	private String userName;
-	
+// STUB		private String userName = "";
+	private String userName = "Default Player Name";	// STUB
+
 	
     public MenuScreen() {
     	super();
-    	
-//TODO: There should be a text entry field for user to enter their name
-    	
-//    	userName = "";
-    	userName = "Default Player Name";	// STUB
-    	
-	}
-    public MenuScreen(String userName) {
-    	super();
-    	
-		this.userName = userName;
 	}
 
 	public void initialize() {
@@ -55,7 +45,16 @@ public class MenuScreen extends BaseScreen {
                 	return false;
                 }
                 
-                NinjaPie.setActiveScreen(new LobbyScreen(userName));
+// STUB:       	//        	GameSessionInterface serverSession = new GameSession();
+                GameSessionInterface serverSession = new STUB_GameSession();
+                PlayerData userPlayer = serverSession.createNewPlayer(userName);
+        		GameInstance gameData = serverSession.createNewGame(userPlayer);
+
+        		Ninja.setPlayerID(userPlayer.getPublicID());
+        		Ninja.setPlayerName(userName);
+        		Ninja.setPlayerID(userPlayer.getPublicID());
+        		
+                NinjaPie.setActiveScreen(new LobbyScreen());
                 return true;
             }
         });
@@ -89,7 +88,7 @@ public class MenuScreen extends BaseScreen {
             	return false;
             }
             
-            NinjaPie.setActiveScreen(new LobbyScreen(userName));
+            NinjaPie.setActiveScreen(new LobbyScreen());
         }
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))

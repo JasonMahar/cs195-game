@@ -3,7 +3,6 @@ package com.wickedgames.cs195.model;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.json.JSONObject;
 
 /*  Class GameInstance
  * 
@@ -30,16 +29,20 @@ public class GameInstance {
 	private HashMap<Integer,PlayerData> players = new HashMap<Integer,PlayerData>();
 	
 
-	
-	// Get/Add/Update/Remove Players:
-	
 	public GameInstance(GameState gameState, Integer ID, HashMap<Integer, PlayerData> players) {
 		super();
+		
 		this.gameState = gameState;
 		this.ID = ID;
+		if( players == null ) {
+			players = new HashMap<Integer, PlayerData>();
+		}
 		this.players = players;
 	}
 
+	
+	// Get/Add/Update/Remove Players:
+	
 	public boolean addPlayer(PlayerData player) {
 		
 		if( player == null || players.containsKey(player.getPublicID()) ) 

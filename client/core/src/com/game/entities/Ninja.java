@@ -2,15 +2,50 @@ package com.game.entities;
 
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.game.BaseActor;
-
+import com.game.*;
+import com.wickedgames.cs195.transport.*;
 
 import static com.badlogic.gdx.Gdx.input;
 import static com.badlogic.gdx.Input.Keys;
 
 public class Ninja extends BaseActor {
 
-    public Ninja(float x, float y, Stage s) {
+
+	public static String playerName;
+//	public static Integer playerID;
+// STUB:
+	public static Integer playerID = STUB_GameSession.STUB_DEFAULT_PLAYER_ID;
+	
+	
+    /**
+	 * @return the playerName
+	 */
+	public static String getPlayerName() {
+		return playerName;
+	}
+
+	/**
+	 * @param playerName the playerName to set
+	 */
+	public static void setPlayerName(String playerName) {
+		Ninja.playerName = playerName;
+	}
+
+	/**
+	 * @return the playerID
+	 */
+	public static Integer getPlayerID() {
+		return playerID;
+	}
+
+	/**
+	 * @param playerID the playerID to set
+	 */
+	public static void setPlayerID(Integer playerID) {
+		Ninja.playerID = playerID;
+	}
+
+	public Ninja(float x, float y, Stage s) {
 
         super(x, y, s);
 

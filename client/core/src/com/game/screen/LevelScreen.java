@@ -2,6 +2,7 @@ package com.game.screen;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -9,31 +10,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-
 import com.game.*;
 import com.game.entities.*;
-import com.game.entities.ui.DialogBox;
-
-import com.wickedgames.cs195.model.GameInstance;
-import com.wickedgames.cs195.model.PlayerData;
-import com.wickedgames.cs195.model.Projectile;
-import com.wickedgames.cs195.transport.GameSessionInterface;
+import com.game.entities.ui.*;
+import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.transport.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
 
 
 
 public class LevelScreen extends BaseScreen {
     private Ninja ninja;
+    private Hashtable<Integer,Opponent> opponents;
     private boolean win;
-    ArrayList<Pie> pies;
+//    ArrayList<Pie> pies;
     private float audioVolume;
     private Sound waterDrop;
     private Music instrumental;
@@ -41,21 +40,48 @@ public class LevelScreen extends BaseScreen {
 
     private GameSessionInterface serverSession;
 	private GameInstance gameData;
-	private PlayerData	player;
+	private PlayerData	playerData = null;
+	
+	// when timeSinceLastServerUpdate > GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES, 
+	//		get update from server
+	private float timeSinceLastServerUpdate = GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES + 1.0f;	
 	
     
-    public LevelScreen(GameSessionInterface serverSession, Integer gameID, Integer userID) {
-    	
-    	
-		this.serverSession = serverSession;
-		gameData = serverSession.getGameData(gameID);
-		player = gameData.getPlayer(userID);
+    public LevelScreen() {
+    	super();
 	}
 
+	public void initializeDataFromServer() {
+
+		opponents = new Hashtable<Integer, Opponent>();
+		
+// STUB:       	//        	serverSession = new GameSession();
+		serverSession = new STUB_GameSession();
+		gameData = serverSession.getGameData(STUB_GameSession.DEFAULT_GAME_ID);
+				
+	    // Create Ninja's and Opponents' data 
+	    for(PlayerData player: gameData.getAllPlayers()){
+	    	
+	    	// Create Ninja's data 
+	    	if( player.getPublicID() == Ninja.getPlayerID() ) {	
+	    		playerData = player;	
+	    		continue;
+	    	}
+
+		    // Create an Opponent's data 
+	    	opponents.put( player.getPublicID(), new Opponent(0, 0, mainStage, player) );
+	    }
+	    
+		sendAndReceiveServerUpdate();
+	    
+	}
+	
 	public void initialize() {
 
+		initializeDataFromServer();
+		
         TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
-        pies = new ArrayList<Pie>();
+//        pies = new ArrayList<Pie>();
 
         for (MapObject obj : tilemapActor.getTileList("Rock")) {
             MapProperties props = obj.getProperties();
@@ -89,11 +115,7 @@ public class LevelScreen extends BaseScreen {
                 instrumental.dispose();
                 oceanSurf.dispose();
 
-                // TODO: there's probably more cleaning up that needs to be done, 
-                //		like resetting the player's data
-                
-                NinjaPie.setActiveScreen( new LobbyScreen(player.getName()) );
-                
+                NinjaPie.setActiveScreen(new LevelScreen());
                 return true;
             }
         });
@@ -106,6 +128,7 @@ public class LevelScreen extends BaseScreen {
 
         Button muteButton = new Button(buttonStyle2);
         muteButton.setColor(Color.CYAN);
+        muteButton.setChecked( GameDesignVars.START_WITH_SOUND_ENABLED );
 
         muteButton.addListener(new EventListener() {
             @Override
@@ -123,8 +146,9 @@ public class LevelScreen extends BaseScreen {
         uiTable.pad(10);
 
         uiTable.add().expandX().expandY();
-        uiTable.add(muteButton).top();
         uiTable.add(restartButton).top();
+        uiTable.row();
+        uiTable.add(muteButton).top();
 
 
 
@@ -132,20 +156,52 @@ public class LevelScreen extends BaseScreen {
         instrumental = Gdx.audio.newMusic(Gdx.files.internal("Master_of_the_Feast.ogg"));
         oceanSurf = Gdx.audio.newMusic(Gdx.files.internal("Ocean_Waves.ogg"));
 
-        audioVolume = 1.00f;
-        instrumental.setLooping(true);
+        audioVolume = GameDesignVars.START_WITH_SOUND_ENABLED ? 1.00f : 0.0f;
         instrumental.setVolume(audioVolume);
+        instrumental.setLooping(true);
         instrumental.play();
         oceanSurf.setLooping(true);
         oceanSurf.setVolume(audioVolume);
         oceanSurf.play();
     }
 
+	
     public void update(float deltaTime) {
 
+    	// update player before sending its data to the server. 
+    	// there probably should be this call:
+    	// player.update();
+    	// but player.act(); is doing double duty and updating before this method is called.
+        
+
+        // TODO: pie.update() should actually be done inside player.update() or at least player.act();
+    	//		but currently Ninja does not have a pies attribute.
+    	//		So potentially every player's and opponent's pies are owned by the LevelScreen.
+    	//			Note if this remains true, then the pie data needs to be sent and received by server
+    	//			somewhere other than PlayerData. Maybe GameData?
+        /*
+         *		// Player's pies
+                for(Pie pie: pies){
+
+        			pie.update(deltaTime);
+                }
+         */
+    	
+    	timeSinceLastServerUpdate += deltaTime;
+    	
+// TODO: server updates almost certainly need to be moved into their own asynchronous thread
+//	 this is just quick & dirty try 
+    	if( timeSinceLastServerUpdate > GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES) {
+    		
+    		sendAndReceiveServerUpdate();
+    		timeSinceLastServerUpdate = 0.0f;
+    	}
+    	
+    	
         for (BaseActor rockActor : BaseActor.getList(mainStage, "com.game.entities.Rock"))
             ninja.preventOverlap(rockActor);
 
+        /*
         for (BaseActor starfishActor : BaseActor.getList(mainStage, "com.game.entities.Starfish")) {
             Starfish starfish = (Starfish) starfishActor;
             if (ninja.overlaps(starfish) && !starfish.collected) {
@@ -159,32 +215,60 @@ public class LevelScreen extends BaseScreen {
                 whirl.centerAtActor(starfish);
                 whirl.setOpacity(0.25f);
             }
+            
         }
-        
-        
-/*
- *		// Player's pies
-        for(Pie pie: pies){
-
-			pie.update(deltaTime);
-        }
- */
-        
-     // Update Opponents' 
+        */
+            
+                    
+        // Update Opponents' data, positions & actions
         for(PlayerData opponent: gameData.getAllPlayers()){
         	
-        	if( opponent == player ) {	continue;	}
-//        	
-//        	opponent.update(deltaTime);
+        	if( opponent == playerData ) {	continue;	}
+//                    	
+//                    	opponent.update(deltaTime);
 
 // TODO: this should actually be inside the PlayerData's update()        
         	
-//	     // Opponents' pies
-//	        for(Projectile pie: opponent.getAllProjectiles()){
+//            	     // Opponents' pies
+//            	        for(Projectile pie: opponent.getAllProjectiles()){
 //	
-//				pie.update(deltaTime);
-//	        }
+//            				pie.update(deltaTime);
+//            	        }
         }
+        
+    
+    
+    } // END update()
+
+	// updating the server with the players recent data has the side effect 
+	//		of returning the current state of the game, including opponents' data
+	private void sendAndReceiveServerUpdate() {
+		// TODO Auto-generated method stub
+
+		gameData = serverSession.updatePlayerData(playerData);
+		
+
+	    // Update Opponents' data, positions & actions
+		// 		This may be unnecessary and just automatically update itself since 
+		//		we're reusing the same PlayerData instances
+		// 	
+	    for(PlayerData player: gameData.getAllPlayers()){
+	    	
+	    	if( player.getPublicID() == Ninja.getPlayerID() ) {	continue;	}
+
+		    // Find and update Opponent's data 
+	    	Opponent opponent = opponents.get(player.getPublicID());
+	    	opponent.setPlayerData( player );
+	    }
+		
+	} 
+
+    public boolean keyDown(int keyCode) {
+
+        if (Gdx.input.isKeyPressed(Keys.ESCAPE))
+            Gdx.app.exit();
+
+        return false;
     }
 
 

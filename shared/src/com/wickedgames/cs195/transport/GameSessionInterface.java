@@ -15,7 +15,7 @@ public interface GameSessionInterface {
 
 	// These next 3 methods are the main commands used for the CS195 Game Prototype
 	
-	GameInstance joinGame(PlayerData userPlayer);
+	GameInstance joinGame(Integer gameId, PlayerData userPlayer);
 
 	GameInstance updatePlayerData(PlayerData userPlayer);
 	
