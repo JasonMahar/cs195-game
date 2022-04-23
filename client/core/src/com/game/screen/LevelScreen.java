@@ -2,6 +2,7 @@ package com.game.screen;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -12,13 +13,10 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.game.*;
 import com.game.entities.*;
-import com.game.entities.ui.*;
+//import com.game.entities.ui.*;
 import com.wickedgames.cs195.model.*;
 import com.wickedgames.cs195.transport.*;
 
@@ -27,8 +25,8 @@ import java.util.Collection;
 import java.util.Hashtable;
 
 
-
 public class LevelScreen extends BaseScreen {
+
     private Ninja ninja;
     private Hashtable<Integer,Opponent> opponents;
     private boolean win;
@@ -80,28 +78,31 @@ public class LevelScreen extends BaseScreen {
 
 		initializeDataFromServer();
 		
-        TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
-//        pies = new ArrayList<Pie>();
-
-        for (MapObject obj : tilemapActor.getTileList("Rock")) {
-            MapProperties props = obj.getProperties();
-            new Rock((float) props.get("x"), (float) props.get("y"), mainStage);
-        }
-
+//        TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
+//		
+//        for (MapObject obj : tilemapActor.getTileList("Rock")) {
+//            MapProperties props = obj.getProperties();
+//            new Rock((float) props.get("x"), (float) props.get("y"), mainStage);
+//        }
 
 
-        MapObject startPoint = tilemapActor.getRectangleList("Start").get(0);
-        MapProperties props = startPoint.getProperties();
-        ninja = new Ninja((float) props.get("x"), (float) props.get("y"), mainStage);
+        BaseActor space = new BaseActor(0, 0, mainStage);
+        space.loadTexture("grass.jpg");
+        space.setSize(800, 600);
+        BaseActor.setWorldBounds(space);
+
+        ninja = new Ninja(400, 300, mainStage);
 
         win = false;
 
+// jason's comment: Nat appears to remove this code. 
+//        But I think we're going to need buttons in the UI in the future 
+//        (unless they're being handled in another class, like they probably should.)
+//        so leaving them here (but commented out) as an example for later.
+//        
+/*
         // user interface code
-
-
-
         Button.ButtonStyle buttonStyle = new Button.ButtonStyle();
-
 
 
         Button restartButton = new Button(buttonStyle);
@@ -150,10 +151,12 @@ public class LevelScreen extends BaseScreen {
         uiTable.add(restartButton).top();
         uiTable.add(muteButton).top();
         uiTable.row();
+*/
+        
 
-
-
+// TODO: waterDrop is currently not used. Maybe use it as sound when pies hit?
         waterDrop = Gdx.audio.newSound(Gdx.files.internal("Water_Drop.ogg"));
+        
         instrumental = Gdx.audio.newMusic(Gdx.files.internal("Master_of_the_Feast.ogg"));
         oceanSurf = Gdx.audio.newMusic(Gdx.files.internal("Ocean_Waves.ogg"));
 
@@ -244,7 +247,6 @@ public class LevelScreen extends BaseScreen {
 	// updating the server with the players recent data has the side effect 
 	//		of returning the current state of the game, including opponents' data
 	private void sendAndReceiveServerUpdate() {
-		// TODO Auto-generated method stub
 
 		gameData = serverSession.updatePlayerData(playerData);
 		
@@ -266,11 +268,13 @@ public class LevelScreen extends BaseScreen {
 
     public boolean keyDown(int keyCode) {
 
+        if (keyCode == Input.Keys.SPACE)
+            ninja.shoot();
+        
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
             Gdx.app.exit();
 
         return false;
     }
-
 
 }

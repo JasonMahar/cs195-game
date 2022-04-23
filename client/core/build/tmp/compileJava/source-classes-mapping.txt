@@ -31,8 +31,6 @@ com/game/entities/Whirlpool.java
  com.game.entities.Whirlpool
 com/game/BaseActor.java
  com.game.BaseActor
-com/game/TilemapActor.java
- com.game.TilemapActor
 com/game/entities/Rock.java
  com.game.entities.Rock
 com/game/entities/ui/DialogBox.java
@@ -64,5 +62,3 @@ com/wickedgames/cs195/model/CS195PlayerData.java
  com.wickedgames.cs195.model.CS195PlayerData
 com/game/BaseGame.java
  com.game.BaseGame
-com/game/scene/SceneActions.java
- com.game.scene.SceneActions
