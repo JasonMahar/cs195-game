@@ -25,5 +25,12 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-client/.gradle
-/build/
+
+# should we ignore Eclipse and Idea project files? 
+# I guess we'll allow them in case we break them and need to compare to previous versions
+#client/.gradle
+#/build/
+#server/.project
+#*.idea
+#*.prefs
+#*.lst
