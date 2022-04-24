@@ -1,4 +1,8 @@
 package com.wickedgames.cs195.model;
+/**
+ * @author Jason Mahar
+ *
+ */
 
 
 /* GameDesignVars

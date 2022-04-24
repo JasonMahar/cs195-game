@@ -237,7 +237,7 @@ public class GameSession implements GameSessionInterface {
 			(Integer)json.getInt("ID"), 
 			(HashMap<Integer, PlayerData>)json.get("players")
 		);
-		return null;
+		return instance;
 	}
 	
 
