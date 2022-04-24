@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.wickedgames.cs195.controller.GamesController;
 import com.wickedgames.cs195.controller.PlayersController;
 import com.wickedgames.cs195.model.GameInstance;
-import com.wickedgames.cs195.model.PlayerSprite;
+import com.wickedgames.cs195.model.PlayerData;
 
 //import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -107,7 +107,7 @@ STUB_createSampleGame();
 	 * receives the Player's data, which is automatically added to the GameInstance
 	 */
 	@PostMapping("/game")
-	public GameInstance createGame(@RequestBody PlayerSprite newPlayer) {
+	public GameInstance createGame(@RequestBody PlayerData newPlayer) {
 		System.out.println("ServerApplication.createGame() called with newPlayer id: " + newPlayer.getPublicID());
 
 		Integer ID = GamesController.createGame();
@@ -125,7 +125,7 @@ STUB_createSampleGame();
 	 * if successful return the current GameInstance
 	 */
 	@PostMapping("/game/{gameID}")
-	public GameInstance joinGame(@PathVariable Integer gameID, @RequestBody PlayerSprite newPlayer) {
+	public GameInstance joinGame(@PathVariable Integer gameID, @RequestBody PlayerData newPlayer) {
 		
 
 		if( newPlayer == null) {
@@ -188,7 +188,7 @@ STUB_createSampleGame();
 	 * normally the URI looks like "/player/{id}" in which getPlayer is called
 	 */
 	@GetMapping("/player")
-	public Collection<PlayerSprite> player(@RequestParam(value = "id", defaultValue = "0") String id) {
+	public Collection<PlayerData> player(@RequestParam(value = "id", defaultValue = "0") String id) {
 
 		System.out.println("ServerApplication.player() called. id = " + id);
 		
@@ -212,16 +212,16 @@ STUB_createSampleGame();
 		else {
 			System.out.println("getPlayer playerID = " + playerID);
 
-			Collection<PlayerSprite> playerList = new ArrayList<PlayerSprite>();
-			PlayerSprite player = playersController.getPlayer(playerID);
+			Collection<PlayerData> playerList = new ArrayList<PlayerData>();
+			PlayerData player = playersController.getPlayer(playerID);
 			playerList.add(player);
 			return playerList;	
 			
 		}
 
-//PlayerSprite ps = playersController.getPlayer(playerID);
+//PlayerData ps = playersController.getPlayer(playerID);
 //
-//System.out.println("ServerApplication.player() returning PlayerSprite: " + ps);
+//System.out.println("ServerApplication.player() returning PlayerData: " + ps);
 //		return ps;
 
 		return playersController.getAllPlayers();	
@@ -233,7 +233,7 @@ STUB_createSampleGame();
 	 * gets player identified by id passed in 
 	 */
 	@GetMapping("/player/{id}")
-	public PlayerSprite getPlayer(@PathVariable String id) {
+	public PlayerData getPlayer(@PathVariable String id) {
 
 		System.out.println("ServerApplication.getPlayer() called with id: " + id);
 
@@ -267,7 +267,7 @@ STUB_createSampleGame();
 	 * if successful return all games (since leaving a game returns to the Multiplayer Menu that lists games)
 	 */
 	@PutMapping("/player/{gameID}")
-	public GameInstance updatePlayer(@PathVariable Integer gameID, @RequestBody PlayerSprite player) {
+	public GameInstance updatePlayer(@PathVariable Integer gameID, @RequestBody PlayerData player) {
 		System.out.println("ServerApplication.leaveGame() called with gameID: " +
 				gameID + ", playerID: " + player.getPublicID());
 		
@@ -298,13 +298,13 @@ STUB_createSampleGame();
 		
 		/*
 //		STUB_playerID = playersController.createPlayer();
-		PlayerSprite player1 = new PlayerSprite("Player1");
+		PlayerData player1 = new PlayerData("Player1");
 		player1.setPublicID(STUB_playerID);
 		playersController.addPlayer(player1);
-		//System.out.println("ServerApplication.main() created PlayerSprite: " + player1);
+		//System.out.println("ServerApplication.main() created PlayerData: " + player1);
 		
 //		STUB_playerID2 = playersController.createPlayer();
-		PlayerSprite player2 = new PlayerSprite("Player2");
+		PlayerData player2 = new PlayerData("Player2");
 		player2.setPublicID(STUB_playerID2);
 		playersController.addPlayer(player2);
 		

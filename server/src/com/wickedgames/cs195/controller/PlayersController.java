@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-import com.wickedgames.cs195.model.PlayerSprite;
+import com.wickedgames.cs195.model.*;
 
 /*  Class PlayersController
  * 
@@ -17,14 +17,14 @@ import com.wickedgames.cs195.model.PlayerSprite;
  */
 public class PlayersController {
 	
-	private static HashMap<Integer,PlayerSprite> players = new HashMap<Integer,PlayerSprite>();
+	private static HashMap<Integer,PlayerData> players = new HashMap<Integer,PlayerData>();
 	private static Random rand = new Random();
 	
 
 	public static Integer createPlayer() {
 
 		Integer key = createNewKey();
-		PlayerSprite player = new PlayerSprite();
+		PlayerData player = new CS195PlayerData();
 		player.setPublicID(key);
 		players.put(key, player);
 		return key;
@@ -40,7 +40,7 @@ public class PlayersController {
 	}
 
 	
-	public PlayerSprite getPlayer(Integer ID) {
+	public PlayerData getPlayer(Integer ID) {
 
 		System.out.println("PlayersController.getPlayer() called. id = " + ID);
 		
@@ -50,14 +50,14 @@ public class PlayersController {
 
 	// Add/Update/Remove Players:
 	
-	public boolean addPlayer(PlayerSprite player) {
+	public boolean addPlayer(PlayerData player) {
 
 		if( player == null )	return false;
 
 		return players.put(player.getPublicID(), player) == null;
 	}
 	
-	public boolean updatePlayer(PlayerSprite player) {
+	public boolean updatePlayer(PlayerData player) {
 
 		if( player == null )	return false;
 				
@@ -69,7 +69,7 @@ public class PlayersController {
 		return players.remove(playerPublicID) != null;
 	}
 
-	public Collection<PlayerSprite> getAllPlayers() {
+	public Collection<PlayerData> getAllPlayers() {
 		
 		return players.values();
 	}

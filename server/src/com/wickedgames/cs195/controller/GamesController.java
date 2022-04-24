@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.wickedgames.cs195.model.GameInstance;
-import com.wickedgames.cs195.model.PlayerSprite;
+import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.model.GameInstance.GameState;
 
 /*  Class GamesController
  * 
@@ -23,7 +23,7 @@ public class GamesController {
 	public static Integer createGame() {
 
 		Integer key = createNewKey();
-		GameInstance game = new GameInstance(key);
+		GameInstance game = new GameInstance(GameState.GAME_LOBBY, key , null);
 		games.put(key, game);
 		return key;
 	}
@@ -54,13 +54,13 @@ public class GamesController {
 	
 	// Add/Update/Remove Players:
 	
-	public boolean addPlayer(Integer gameID, PlayerSprite player) {
+	public boolean addPlayer(Integer gameID, PlayerData player) {
 		
 		GameInstance game = getGame(gameID);
 		return game.addPlayer(player);
 	}
 	
-	public boolean updatePlayer(Integer gameID,PlayerSprite player) {
+	public boolean updatePlayer(Integer gameID, PlayerData player) {
 
 		GameInstance game = getGame(gameID);
 		return game.updatePlayer(player);

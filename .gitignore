@@ -28,8 +28,10 @@ hs_err_pid*
 
 # should we ignore Eclipse and Idea project files? 
 # I guess we'll allow them in case we break them and need to compare to previous versions
-#client/.gradle
-#/build/
+
+client/.gradle
+/build/
+
 #server/.project
 #*.idea
 #*.prefs

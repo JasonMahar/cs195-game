@@ -1,0 +1,10 @@
+
+From an IDE, run the server code as a Spring Boot App.
+
+From the command line, run one of the following commands from the server folder:
+	on Windows: run
+	other OSs: ./mvnw spring-boot:run
+
+
+To verify the server is running locally, try the following URL in a browser:
+	http://localhost:8080/hello?name=Nat
