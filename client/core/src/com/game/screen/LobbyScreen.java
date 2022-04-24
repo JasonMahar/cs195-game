@@ -138,7 +138,7 @@ public class LobbyScreen extends BaseScreen {
         Label playersHeading = new Label(PLAYERS_HEADING_TEXT, playersHeadingStyle);
         
 
-        Texture listBackground = new Texture(Gdx.files.internal("dialog.png")); // or button.png 
+        Texture listBackground = new Texture(Gdx.files.internal("button.png")); // was  dialog.png 
         TextureRegion listRegion = new TextureRegion(listBackground);
 //        listRegion.setRegionWidth(600);
 //        listRegion.setRegionHeight(400);

@@ -25,6 +25,10 @@ public class Pie extends BaseActor {
     public void act(float dt) {
         super.act(dt);
         applyPhysics(dt);
-        wrapAroundWorld();
+
+
+// jason's comment: I'm assuming we don't want players or pies to wrap around to other side of screen/world
+//             
+//        wrapAroundWorld();
     }
 }

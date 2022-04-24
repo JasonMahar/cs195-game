@@ -1,17 +1,16 @@
 package com.game.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.game.*;
 import com.wickedgames.cs195.transport.*;
 
+import static com.badlogic.gdx.Gdx.input;
+import static com.badlogic.gdx.Input.Keys;
+
 
 
 public class Ninja extends BaseActor {
-
 
 	///////////////////////////////////////
 	// static attributes/accessors
@@ -98,7 +97,8 @@ public class Ninja extends BaseActor {
 
    public void act(float deltaTime) {
         super.act(deltaTime);
-
+        
+/*
         float degreesPerSecond = 120; // degrees per second
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             rotateBy(degreesPerSecond * deltaTime);
@@ -109,8 +109,26 @@ public class Ninja extends BaseActor {
             accelerateAtAngle(getRotation());
 
         }
+*/
+
+
+// jason's comment: reverting movement back to absolute directions instead of
+//		relative as above.
+//        
+        if (input.isKeyPressed(Keys.LEFT))  accelerateAtAngle(180);
+        if (input.isKeyPressed(Keys.RIGHT)) accelerateAtAngle(0);
+        if (input.isKeyPressed(Keys.UP))    accelerateAtAngle(90);
+        if (input.isKeyPressed(Keys.DOWN))  accelerateAtAngle(270);
 
         applyPhysics(deltaTime);
+                            
+        setAnimationPaused(!isMoving());
+        if (getSpeed() > 0)
+            setRotation(getMotionAngle());
+
+        boundToWorld();
+        
+        alignCamera();
 
 // jason's comment: I'm assuming we don't want players or pies to wrap around to other side of screen/world
 //        

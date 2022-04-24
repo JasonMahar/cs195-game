@@ -153,7 +153,7 @@ public class LevelScreen extends BaseScreen {
         uiTable.row();
 */
         
-
+/*
 // TODO: waterDrop is currently not used. Maybe use it as sound when pies hit?
         waterDrop = Gdx.audio.newSound(Gdx.files.internal("Water_Drop.ogg"));
         
@@ -167,6 +167,7 @@ public class LevelScreen extends BaseScreen {
         oceanSurf.setLooping(true);
         oceanSurf.setVolume(audioVolume);
         oceanSurf.play();
+        */
     }
 
 	
