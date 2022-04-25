@@ -19,6 +19,8 @@ com/wickedgames/cs195/model/Projectile.java
  com.wickedgames.cs195.model.Projectile
 com/game/entities/Rock.java
  com.game.entities.Rock
+com/game/entities/NamePlate.java
+ com.game.entities.NamePlate
 com/game/entities/Ninja.java
  com.game.entities.Ninja
 com/game/screen/MenuScreen.java
