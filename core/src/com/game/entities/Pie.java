@@ -14,6 +14,13 @@ public class Pie extends BaseActor {
 
         addAction(Actions.delay(1));
         addAction(Actions.after(Actions.fadeOut(0.02f)));
+
+        loadTexture("pie.png");
+
+        addAction(Actions.delay(1));
+        addAction(Actions.after(Actions.fadeOut(0.2f)));
+        addAction(Actions.after(Actions.removeActor()));
+
         addAction(Actions.forever(Actions.rotateBy(30 + random, 1)));
 
         setSpeed(400);
@@ -26,6 +33,4 @@ public class Pie extends BaseActor {
         applyPhysics(dt);
         wrapAroundWorld();
     }
-
-
 }

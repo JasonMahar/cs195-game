@@ -27,14 +27,13 @@ public class LevelScreen extends BaseScreen {
         }
 
         ninja = new Ninja(0, 0, mainStage);
+        BaseActor space = new BaseActor(0, 0, mainStage);
+        space.loadTexture("grass.jpg");
+        space.setSize(800, 600);
+        BaseActor.setWorldBounds(space);
 
-
-
-
+        ninja = new Ninja(400, 300, mainStage);
     }
-
-
-
     public void update(float dt) {
 
 

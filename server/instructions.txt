@@ -1,0 +1,6 @@
+
+
+Run the server code as a Spring Boot App.
+
+try the following URL in a browser:
+http://localhost:8080/hello?name=Nat
