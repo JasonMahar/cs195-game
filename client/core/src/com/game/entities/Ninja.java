@@ -15,7 +15,7 @@ public class Ninja extends BaseActor {
 	///////////////////////////////////////
 	// static attributes/accessors
 	
-	public static String playerName;
+	public static String playerName = "";
 //	public static Integer playerID;
 // STUB:
 	public static Integer playerID = STUB_GameSession.STUB_DEFAULT_PLAYER_ID;

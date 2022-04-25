@@ -2,16 +2,16 @@ package com.game.entities;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.game.BaseActor;
-import com.wickedgames.cs195.model.PlayerData;
-import com.wickedgames.cs195.model.Projectile;
-import com.wickedgames.cs195.model.PlayerData.Facing;
-import com.wickedgames.cs195.model.PlayerData.State;
+import com.game.BaseGame;
+import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.model.PlayerData.*;
 
 public class Opponent extends BaseActor implements PlayerData {
-
-
+	
 	// IDs are set by the server so that they'll be unique
 	private int publicID;		// public ID is how a player is referred to by other players
 //	private int privateID = PlayerData.INVALID_PLAYER_ID;	// invalid for Opponent PlayerData
@@ -25,11 +25,15 @@ public class Opponent extends BaseActor implements PlayerData {
 //	private float speed;	// speed inherited from BaseActor class
 	
 	private Projectile[] projectiles;
-	
+
+
+	private NamePlate namePlate;
 
 	public Opponent(float x, float y, Stage s) {
         super(x, y, s);
 
+        namePlate = new NamePlate(x, y + getHeight()/2, s);
+        
         String[] filenames = {
         		"run/ninja-run_00.png", 
         		"run/ninja-run_01.png", 
@@ -156,6 +160,57 @@ public class Opponent extends BaseActor implements PlayerData {
 	@Override
 	public void setProjectile(int index, Projectile projectile) {
 		projectiles[index] = projectile;
+	}
+
+	/**
+	 * @param x the x to set
+	 */
+	@Override
+	public void setX(float x) {
+		super.setX(x);
+		namePlate.setX(x);
+//		System.out.println("Opponent.setX updated. x = " + x);
+	}
+
+	/**
+	 * @param y the y to set
+	 */
+	@Override
+	public void setY(float y) {
+		super.setY(y);
+		namePlate.setY(y + getHeight()/2);
+//		System.out.println("Opponent.setY updated. y = " + y);
+	}
+	
+	/**
+	 * @param x the x to set
+	 */
+	@Override
+	public void setPosition(float x, float y) {
+		super.setPosition(x,y);
+		try {
+			namePlate.setPosition(x, y + getHeight()/2);		// not sure which of these to use,
+			namePlate.centerAtPosition(x, y + getHeight()/2);	// so setting both
+//			System.out.println("Opponent.setPosition updated. x = " + x + ", y = " + y);
+		}
+		catch(NullPointerException ex) {
+			System.out.println("Opponent.setPosition ERROR: namePlate not created yet.");
+		}
+	}
+
+
+	/**
+	 * @return the namePlate
+	 */
+	public String getNamePlate() {
+		return namePlate.getName();
+	}
+
+	/**
+	 * @param namePlate the namePlate to set
+	 */
+	public void setNamePlate(String name) {
+		this.namePlate.setName(name);
 	}
 
 	

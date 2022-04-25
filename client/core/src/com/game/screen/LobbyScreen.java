@@ -109,7 +109,7 @@ public class LobbyScreen extends BaseScreen {
         BaseActor background = new BaseActor(0, 0, mainStage);
         background.loadTexture("dojo.jpg");
         background.setSize(800, 600);
-        background.setOpacity(0.75f); 		// darken background
+//        background.setOpacity(0.75f); 		// darken background
         
 
         
@@ -119,7 +119,7 @@ public class LobbyScreen extends BaseScreen {
 //        Drawable titleDrawable = new TextureRegionDrawable(titleRegion);
         
         // Screen Title
-        LabelStyle titleStyle = new LabelStyle(font, Color.YELLOW);
+        LabelStyle titleStyle = new LabelStyle(font, Color.GOLD);
 //        titleStyle.background = titleDrawable;
         Label titleLabel = new Label(TITLE_TEXT, titleStyle);
         
@@ -129,29 +129,28 @@ public class LobbyScreen extends BaseScreen {
 //        playersListGroup.setColor(Color.FOREST);
 //        playersListGroup.setSize(500, 300);
 
-        BaseActor playersListBackground = new BaseActor(0, 0, mainStage);
+//        BaseActor playersListBackground = new BaseActor(0, 0, mainStage);
 //        playersListBackground.loadTexture("dialog.png");
 //        playersListBackground.setSize(500, 300);
-        playersListBackground.setColor(Color.RED);
+//        playersListBackground.setColor(Color.RED);
         
-        LabelStyle playersHeadingStyle = new LabelStyle(font, Color.CYAN);
+        LabelStyle playersHeadingStyle = new LabelStyle(font, Color.GOLD);
         Label playersHeading = new Label(PLAYERS_HEADING_TEXT, playersHeadingStyle);
         
 
-        Texture listBackground = new Texture(Gdx.files.internal("button.png")); // was  dialog.png 
-        TextureRegion listRegion = new TextureRegion(listBackground);
+        Texture listSelection = new Texture(Gdx.files.internal("dialog.png")); // was  button.png 
+        TextureRegion listSelectionRegion = new TextureRegion(listSelection);
+        Drawable listSelectionDrawable = new TextureRegionDrawable(listSelectionRegion);
+        ListStyle listStyle = new ListStyle( font, 
+        		Color.GOLD, Color.WHITE, listSelectionDrawable );
+        
 //        listRegion.setRegionWidth(600);
 //        listRegion.setRegionHeight(400);
 //        listRegion.setTexture( new Texture(Gdx.files.internal("button.png")) );
-        Drawable listBackgroundDrawable = new TextureRegionDrawable(listRegion);
-        
-//        Drawable region = new BaseDrawable();
-
-        ListStyle listStyle = new ListStyle(
-        		font, 
-        		Color.YELLOW, Color.WHITE, listBackgroundDrawable
-    		);
-//        listStyle.background = 
+        Texture listBackground = new Texture(Gdx.files.internal("dialog-translucent.png")); // was  button.png 
+        TextureRegion listBackgroundRegion = new TextureRegion(listBackground);
+        Drawable listBackgroundDrawable = new TextureRegionDrawable(listBackgroundRegion);
+        listStyle.background = listBackgroundDrawable;
         
         List<String> list = new List<String>(listStyle);
         list.clearItems();
@@ -169,10 +168,13 @@ public class LobbyScreen extends BaseScreen {
             String[] nameStrings = new String[playersList.size()];
         	int i=0;
             for( PlayerData player : playersList) {
-            	nameStrings[i++] = player.getName();
+            	nameStrings[i++] = "   " + player.getName();
             	System.out.println("LobbyScreen.initialize adding player to list: " + player.getName());
             }
             list.setItems( nameStrings );
+            list.setSize(440, 222);
+            list.setPosition(150, 140);
+            list.setOrigin(55, 88);
         }
 
 //        playersListGroup.addActor(playersListBackground);
@@ -199,18 +201,22 @@ public class LobbyScreen extends BaseScreen {
             }
         });
         
-        uiTable.add(titleLabel).colspan(2).padBottom(50);
+        uiTable.add(titleLabel).colspan(2).padBottom(40);
         uiTable.row();
         
 //      uiTable.add(playersListBackground);
       uiTable.add(playersHeading).colspan(2).row();
-      uiTable.add(list).colspan(2).padBottom(50);
+      uiTable.add(list).colspan(2).width(480).height(240).padBottom(40);
 //        uiTable.add(playersListGroup).colspan(2).padBottom(50);
         
         uiTable.row();
+//        uiTable.add(startButton).right();
         uiTable.add(startButton);
         uiTable.add(quitButton);
         uiTable.top();
+
+        mainStage.setScrollFocus(list);
+        mainStage.setKeyboardFocus(list);
     }
 
     @Override

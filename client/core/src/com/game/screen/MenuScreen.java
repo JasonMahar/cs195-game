@@ -2,10 +2,22 @@ package com.game.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.game.*;
 import com.game.entities.*;
 import com.wickedgames.cs195.model.*;
@@ -16,8 +28,11 @@ import static com.badlogic.gdx.scenes.scene2d.InputEvent.Type.touchDown;
 
 public class MenuScreen extends BaseScreen {
 
-// STUB		private String userName = "";
-	private String userName = "Default Player Name";	// STUB
+	public static final int MAX_CHARACTERS = 20;
+	
+// STUB		
+//	private String userName = "Default Player Name";	// STUB
+	private TextField nameField;
 
 	
     public MenuScreen() {
@@ -33,29 +48,51 @@ public class MenuScreen extends BaseScreen {
         BaseActor title = new BaseActor(0, 0, mainStage);
         title.loadTexture("title.png");
 
+
+    	// create Font for Label and TextField
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(
+        		Gdx.files.internal("OpenSans.ttf") );
+        FreeTypeFontParameter fontParameters = new FreeTypeFontParameter();
+        fontParameters.size = 40;
+        fontParameters.borderWidth = 1;
+//      fontParameters.color = Color.WHITE;
+//      fontParameters.color = Color.GOLD;
+        BitmapFont font = fontGenerator.generateFont(fontParameters);
+//        font.setColor(Color.BLACK);
+        
+        LabelStyle labelStyle = new LabelStyle(font, Color.GOLD);
+        Label nameLabel = new Label("Name:", labelStyle);
+
+    	// create Font for text
+        TextFieldStyle fieldStyle = new TextFieldStyle();
+        fieldStyle.font = font;
+        fieldStyle.fontColor = Color.GOLD;
+
+        Texture fieldBackground = new Texture(Gdx.files.internal("dialog-translucent.png")); // was  button.png 
+//        Texture fieldBackground = new Texture(Gdx.files.internal("dialog.png")); 
+        
+//        TextureRegion fieldRegion = new TextureRegion(fieldBackground);
+//        fieldRegion.setRegionWidth(600);
+//        fieldRegion.setRegionHeight(400);
+//        fieldRegion.setTexture( new Texture(Gdx.files.internal("button.png")) );
+        Drawable fieldBackgroundDrawable = new TextureRegionDrawable(fieldBackground);
+        fieldBackgroundDrawable.setMinWidth(200);
+        fieldBackgroundDrawable.setMinHeight(60);
+        fieldStyle.background = fieldBackgroundDrawable;
+        
+        nameField = new TextField(Ninja.getPlayerName(), fieldStyle);
+        nameField.setMaxLength(MAX_CHARACTERS);
+        nameField.setColor(Color.LIGHT_GRAY);
+        
         TextButton startButton = new TextButton("Join Game", BaseGame.textButtonStyle);
         startButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event e) {
             	
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
-	    		
-            	System.out.println("Running MenuScreen startButton handler called. userName: " + userName);
-                if( userName == null || userName.isBlank() ) {
-                	return false;
-                }
-                
-// STUB:       	//        	GameSessionInterface serverSession = new GameSession();
-                GameSessionInterface serverSession = new STUB_GameSession();
-                PlayerData userPlayer = serverSession.createNewPlayer(userName);
-        		GameInstance gameData = serverSession.createNewGame(userPlayer);
 
-        		Ninja.setPlayerID(userPlayer.getPublicID());
-        		Ninja.setPlayerName(userName);
-        		Ninja.setPlayerID(userPlayer.getPublicID());
-        		
-                NinjaPie.setActiveScreen(new LobbyScreen());
-                return true;
+            	
+                return gotoLobby();
             }
         });
 
@@ -69,10 +106,18 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
-        uiTable.add(title).colspan(2).padBottom(50);
+        uiTable.add(title).colspan(4).padTop(40).padBottom(40);
         uiTable.row();
-        uiTable.add(startButton);
+        uiTable.add(nameLabel);
+//        uiTable.add(nameField).colspan(2).fillX(); 
+        uiTable.add(nameField).colspan(3).width(400).height(60).left();
+        uiTable.row().padTop(30);
+        uiTable.add(startButton).colspan(3).right();
         uiTable.add(quitButton);
+
+        mainStage.setScrollFocus(nameField);
+        mainStage.setKeyboardFocus(nameField);
+        nameField.getOnscreenKeyboard().show(true);
     }
 
     @Override
@@ -82,13 +127,9 @@ public class MenuScreen extends BaseScreen {
     public boolean keyDown(int keyCode) {
         if (Gdx.input.isKeyPressed(Keys.ENTER)) {
 
-        	System.out.println("Running MenuScreen keyDown handler called "
-        			+ "with isKeyPressed(Keys.ENTER). userName: " + userName);
-            if( userName == null || userName.isBlank() ) {
-            	return false;
-            }
-            
-            NinjaPie.setActiveScreen(new LobbyScreen());
+//        	System.out.println("Running MenuScreen keyDown handler called "
+//        			+ "with isKeyPressed(Keys.ENTER). userName: " + userName);
+        	return gotoLobby();
         }
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
@@ -97,6 +138,28 @@ public class MenuScreen extends BaseScreen {
         return false;
     }
 
+    
+    private boolean gotoLobby() {
+    	
+        String userName = nameField.getText();
+//    	System.out.println("MenuScreen.gotoLobby(). userName: " + userName);
+    	if( userName == null || userName.isBlank() ) {
+        	return false;
+        }
+        
+//STUB:       	//        	GameSessionInterface serverSession = new GameSession();
+        GameSessionInterface serverSession = new STUB_GameSession();
+        PlayerData userPlayer = serverSession.createNewPlayer(userName);
+		GameInstance gameData = serverSession.createNewGame(userPlayer);
+
+		Ninja.setPlayerName(userName);
+		Ninja.setPlayerID(userPlayer.getPublicID());
+		
+        NinjaPie.setActiveScreen(new LobbyScreen());
+        
+        return true;
+    }
+    
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;

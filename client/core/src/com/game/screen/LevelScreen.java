@@ -69,10 +69,14 @@ public class LevelScreen extends BaseScreen {
 	    	System.out.println("LevelScreen.initializeDataFromServer creating player: " + player);
 
 		    // Create an Opponent's data 
-	    	opponents.put( player.getPublicID(), new Opponent(player.getX(), player.getY(), mainStage, player) );
+	    	Opponent newOpponent = new Opponent(player.getX(), player.getY(), mainStage, player);
+	    	opponents.put( player.getPublicID(), newOpponent );
+	    	newOpponent.setNamePlate(player.getName());
+
+	        BaseActor space = new BaseActor(0, 0, mainStage);
 	    }
 	    
-		sendAndReceiveServerUpdate();
+//		sendAndReceiveServerUpdate();
 	    
 	}
 	
@@ -198,17 +202,6 @@ public class LevelScreen extends BaseScreen {
                 }
          */
     	
-    	timeSinceLastServerUpdate += deltaTime;
-    	
-// TODO: server updates almost certainly need to be moved into their own asynchronous thread
-//	 this is just quick & dirty try 
-    	if( timeSinceLastServerUpdate > GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES) {
-    		
-    		sendAndReceiveServerUpdate();
-    		timeSinceLastServerUpdate = 0.0f;
-    	}
-    	
-    	
         for (BaseActor rockActor : BaseActor.getList(mainStage, "com.game.entities.Rock"))
             ninja.preventOverlap(rockActor);
 
@@ -232,9 +225,10 @@ public class LevelScreen extends BaseScreen {
             
                     
         // Update Opponents' data, positions & actions
-        for(PlayerData opponent: gameData.getAllPlayers()){
+        for(PlayerData player: gameData.getAllPlayers()){
         	
-        	if( opponent == playerData ) {	continue;	}
+        	if( player == playerData ) {	continue;	}
+        	
 //                    	
 //                    	opponent.update(deltaTime);
 
@@ -247,7 +241,18 @@ public class LevelScreen extends BaseScreen {
 //            	        }
         }
         
-    
+
+    	timeSinceLastServerUpdate += deltaTime;
+    	
+// TODO: server updates almost certainly need to be moved into their own asynchronous thread
+//	 this is just quick & dirty try 
+    	if( timeSinceLastServerUpdate > GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES) {
+    		
+    		sendAndReceiveServerUpdate();
+    		timeSinceLastServerUpdate = 0.0f;
+    	}
+    	
+    	
     
     } // END update()
 
@@ -268,7 +273,7 @@ public class LevelScreen extends BaseScreen {
 
 		    // Find and update Opponent's data 
 	    	Opponent opponent = opponents.get(player.getPublicID());
-
+	    	
 // STUB: since we're not receive real server data, let client update predictively 
 //
 //	    	opponent.setPlayerData( player );
