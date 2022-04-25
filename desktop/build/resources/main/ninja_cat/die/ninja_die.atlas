@@ -1,0 +1,89 @@
+
+ninja_die.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: xy
+ninja-die
+  rotate: false
+  xy: 0, 1374
+  size: 1045, 591
+  orig: 1258, 981
+  offset: 11, 214
+  index: 4
+ninja-die
+  rotate: false
+  xy: 0, 782
+  size: 1015, 590
+  orig: 1258, 981
+  offset: 52, 231
+  index: 5
+ninja-die
+  rotate: false
+  xy: 0, 157
+  size: 976, 623
+  orig: 1258, 981
+  offset: 65, 229
+  index: 6
+ninja-die
+  rotate: false
+  xy: 1046, 1343
+  size: 921, 622
+  orig: 1258, 981
+  offset: 78, 285
+  index: 3
+ninja-die
+  rotate: false
+  xy: 1016, 654
+  size: 902, 687
+  orig: 1258, 981
+  offset: 106, 218
+  index: 7
+ninja-die
+  rotate: false
+  xy: 977, 30
+  size: 832, 622
+  orig: 1258, 981
+  offset: 148, 200
+  index: 8
+
+ninja_die2.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: xy
+ninja-die
+  rotate: false
+  xy: 0, 1190
+  size: 767, 557
+  orig: 1258, 981
+  offset: 173, 244
+  index: 2
+ninja-die
+  rotate: false
+  xy: 768, 1238
+  size: 777, 509
+  orig: 1258, 981
+  offset: 177, 183
+  index: 9
+ninja-die
+  rotate: false
+  xy: 0, 787
+  size: 810, 401
+  orig: 1258, 981
+  offset: 200, 201
+  index: 1
+ninja-die
+  rotate: false
+  xy: 0, 504
+  size: 912, 281
+  orig: 1258, 981
+  offset: 80, 167
+  index: 10
+ninja-die
+  rotate: false
+  xy: 0, 0
+  size: 528, 502
+  orig: 1258, 981
+  offset: 306, 185
+  index: 0

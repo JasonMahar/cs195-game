@@ -1,0 +1,69 @@
+
+ninja_run.png
+size: 2048, 2048
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+ninja-run
+  rotate: false
+  xy: 2, 4
+  size: 472, 457
+  orig: 1258, 981
+  offset: 348, 226
+  index: 0
+ninja-run
+  rotate: false
+  xy: 555, 4
+  size: 517, 430
+  orig: 1258, 981
+  offset: 320, 210
+  index: 1
+ninja-run
+  rotate: false
+  xy: 1108, 4
+  size: 551, 440
+  orig: 1258, 981
+  offset: 296, 174
+  index: 2
+ninja-run
+  rotate: false
+  xy: 2, 524
+  size: 512, 491
+  orig: 1258, 981
+  offset: 313, 175
+  index: 3
+ninja-run
+  rotate: false
+  xy: 555, 524
+  size: 513, 515
+  orig: 1258, 981
+  offset: 317, 175
+  index: 4
+ninja-run
+  rotate: false
+  xy: 1108, 524
+  size: 514, 518
+  orig: 1258, 981
+  offset: 321, 182
+  index: 5
+ninja-run
+  rotate: false
+  xy: 2, 1044
+  size: 515, 460
+  orig: 1258, 981
+  offset: 323, 191
+  index: 6
+ninja-run
+  rotate: false
+  xy: 555, 1044
+  size: 515, 444
+  orig: 1258, 981
+  offset: 331, 183
+  index: 7
+ninja-run
+  rotate: false
+  xy: 1108, 1044
+  size: 530, 442
+  orig: 1258, 981
+  offset: 321, 175
+  index: 8

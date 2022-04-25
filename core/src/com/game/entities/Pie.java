@@ -9,12 +9,11 @@ public class Pie extends BaseActor {
 
     public Pie(float x, float y, Stage stage) {
         super(x, y, stage);
-        float random = MathUtils.random(5);
+        float random = MathUtils.random(1);
         loadTexture("pie.png");
 
         addAction(Actions.delay(1));
-        addAction(Actions.after(Actions.fadeOut(0.2f)));
-        addAction(Actions.after(Actions.removeActor()));
+        addAction(Actions.after(Actions.fadeOut(0.02f)));
         addAction(Actions.forever(Actions.rotateBy(30 + random, 1)));
 
         setSpeed(400);
@@ -27,4 +26,6 @@ public class Pie extends BaseActor {
         applyPhysics(dt);
         wrapAroundWorld();
     }
+
+
 }

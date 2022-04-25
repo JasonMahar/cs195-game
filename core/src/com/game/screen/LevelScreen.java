@@ -16,12 +16,17 @@ public class LevelScreen extends BaseScreen {
 
 
     public void initialize() {
-        BaseActor space = new BaseActor(0, 0, mainStage);
-        space.loadTexture("grass.jpg");
-        space.setSize(800, 600);
-        BaseActor.setWorldBounds(space);
 
-        ninja = new Ninja(400, 300, mainStage);
+        TilemapActor tma = new TilemapActor("grass.tmx", mainStage);
+
+        for (MapObject obj : tma.getRectangleList("Solid")) {
+            MapProperties props = obj.getProperties();
+            new Solid((float) props.get("x"), (float) props.get("y"),
+                    (float) props.get("width"), (float) props.get("height"),
+                    mainStage);
+        }
+
+        ninja = new Ninja(0, 0, mainStage);
 
 
 
