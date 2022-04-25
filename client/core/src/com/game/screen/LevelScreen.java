@@ -66,8 +66,10 @@ public class LevelScreen extends BaseScreen {
 	    		continue;
 	    	}
 
+	    	System.out.println("LevelScreen.initializeDataFromServer creating player: " + player);
+
 		    // Create an Opponent's data 
-	    	opponents.put( player.getPublicID(), new Opponent(0, 0, mainStage, player) );
+	    	opponents.put( player.getPublicID(), new Opponent(player.getX(), player.getY(), mainStage, player) );
 	    }
 	    
 		sendAndReceiveServerUpdate();
@@ -76,7 +78,6 @@ public class LevelScreen extends BaseScreen {
 	
 	public void initialize() {
 
-		initializeDataFromServer();
 		
 //        TilemapActor tilemapActor = new TilemapActor("map.tmx", mainStage);
 //		
@@ -89,10 +90,15 @@ public class LevelScreen extends BaseScreen {
         BaseActor space = new BaseActor(0, 0, mainStage);
         space.loadTexture("grass.jpg");
         space.setSize(800, 600);
+//        space.setVisible(false);
         BaseActor.setWorldBounds(space);
 
         ninja = new Ninja(400, 300, mainStage);
 
+
+		initializeDataFromServer();
+        
+        
         win = false;
 
 // jason's comment: Nat appears to remove this code. 
@@ -262,7 +268,13 @@ public class LevelScreen extends BaseScreen {
 
 		    // Find and update Opponent's data 
 	    	Opponent opponent = opponents.get(player.getPublicID());
-	    	opponent.setPlayerData( player );
+
+// STUB: since we're not receive real server data, let client update predictively 
+//
+//	    	opponent.setPlayerData( player );
+        	
+//	    	System.out.println("LevelScreen.sendAndReceiveServerUpdate updating player: " + player);
+
 	    }
 		
 	} 

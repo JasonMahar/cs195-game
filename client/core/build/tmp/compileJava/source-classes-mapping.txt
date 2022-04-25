@@ -11,44 +11,32 @@ com/wickedgames/cs195/transport/GameSessionInterface.java
 com/wickedgames/cs195/model/GameInstance.java
  com.wickedgames.cs195.model.GameInstance
  com.wickedgames.cs195.model.GameInstance$GameState
+com/game/BaseActor.java
+ com.game.BaseActor
+com/game/entities/Opponent.java
+ com.game.entities.Opponent
 com/wickedgames/cs195/model/Projectile.java
  com.wickedgames.cs195.model.Projectile
+com/game/entities/Rock.java
+ com.game.entities.Rock
 com/game/entities/Ninja.java
  com.game.entities.Ninja
-com/game/entities/Starfish.java
- com.game.entities.Starfish
 com/game/screen/MenuScreen.java
  com.game.screen.MenuScreen
  com.game.screen.MenuScreen$1
  com.game.screen.MenuScreen$2
 com/game/NinjaPie.java
  com.game.NinjaPie
-com/game/screen/LobbyScreen.java
- com.game.screen.LobbyScreen
- com.game.screen.LobbyScreen$1
- com.game.screen.LobbyScreen$2
-com/game/entities/Whirlpool.java
- com.game.entities.Whirlpool
-com/game/BaseActor.java
- com.game.BaseActor
-com/game/entities/Rock.java
- com.game.entities.Rock
-com/game/entities/ui/DialogBox.java
- com.game.entities.ui.DialogBox
-com/game/scene/SceneSegment.java
- com.game.scene.SceneSegment
-com/game/entities/Sign.java
- com.game.entities.Sign
 com/wickedgames/cs195/model/GameDesignVars.java
  com.wickedgames.cs195.model.GameDesignVars
 com/game/screen/LevelScreen.java
  com.game.screen.LevelScreen
- com.game.screen.LevelScreen$1
- com.game.screen.LevelScreen$2
 com/wickedgames/cs195/model/PlayerData.java
  com.wickedgames.cs195.model.PlayerData
  com.wickedgames.cs195.model.PlayerData$Facing
  com.wickedgames.cs195.model.PlayerData$State
+com/wickedgames/cs195/transport/STUB_GameSession.java
+ com.wickedgames.cs195.transport.STUB_GameSession
 com/wickedgames/cs195/transport/ServerCommands.java
  com.wickedgames.cs195.transport.ServerCommands
  com.wickedgames.cs195.transport.ServerCommands$1
@@ -56,9 +44,11 @@ com/wickedgames/cs195/transport/ServerCommands.java
  com.wickedgames.cs195.transport.ServerCommands$3
  com.wickedgames.cs195.transport.ServerCommands$4
  com.wickedgames.cs195.transport.ServerCommands$5
-com/game/scene/Scene.java
- com.game.scene.Scene
 com/wickedgames/cs195/model/CS195PlayerData.java
  com.wickedgames.cs195.model.CS195PlayerData
+com/game/screen/LobbyScreen.java
+ com.game.screen.LobbyScreen
+ com.game.screen.LobbyScreen$1
+ com.game.screen.LobbyScreen$2
 com/game/BaseGame.java
  com.game.BaseGame

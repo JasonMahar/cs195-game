@@ -15,6 +15,8 @@ public class STUB_GameSession implements GameSessionInterface {
 
 	public static final int DEFAULT_GAME_ID = 1;	
 	public static final int STUB_DEFAULT_PLAYER_ID = 1;
+	private static final float INITIAL_MOVEMENT = 2.0f;
+	private static final float INITIAL_FACING = 40.0f;
 	
 	
 	// This is a singleton to take the place of the server preserving the
@@ -41,10 +43,14 @@ public class STUB_GameSession implements GameSessionInterface {
 		// so looping through playerIDs 2 to 4 and giving them startingLocations 1 to 3
 		for(int playerID = 2; playerID<5; ++playerID) {
 
+			// replacing initial speed of PlayerData.STOPPED with SLOW_MOVEMENT
+			// replacing initial PlayerData.Facing.LEFT with 30.0
+			PlayerData.Facing direction = PlayerData.Facing.LEFT;
+			direction.setDirection(INITIAL_FACING);
 			PlayerData dummyPlayer = new CS195PlayerData( playerID, playerID, 
 					"Player " + playerID, PlayerData.State.RUNNING, 
 					startingLocations[playerID-1][0], startingLocations[playerID-1][1], 
-					PlayerData.Facing.LEFT, PlayerData.STOPPED, 
+					/*PlayerData.Facing.LEFT*/ direction, /*PlayerData.STOPPED */ INITIAL_MOVEMENT * playerID, 
 					null /*Projectile[] projectiles*/ );
 			game.addPlayer( dummyPlayer );
 		}

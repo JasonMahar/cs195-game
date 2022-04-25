@@ -30,9 +30,20 @@ public class Opponent extends BaseActor implements PlayerData {
 	public Opponent(float x, float y, Stage s) {
         super(x, y, s);
 
-        String[] filenames = {"run/ninja-run_00.png", "run/ninja-run_01.png", "run/ninja-run_02.png", "run/ninja-run_03.png", "run/ninja-run_04.png", "run/ninja-run_05.png"};
-
-        loadAnimationFromFiles(filenames, 0.1f, true);
+        String[] filenames = {
+        		"run/ninja-run_00.png", 
+        		"run/ninja-run_01.png", 
+        		"run/ninja-run_02.png", 
+        		"run/ninja-run_03.png", 
+        		"run/ninja-run_04.png",
+        		"run/ninja-run_05.png", 
+        		"run/ninja-run_06.png", 
+        		"run/ninja-run_07.png", 
+        		"run/ninja-run_08.png", 
+        		"run/ninja-run_09.png", 
+        		"run/ninja-run_10.png", 
+        		"run/ninja-run_11.png"};
+        loadAnimationFromFiles(filenames,0.1f, true);
 
         setAcceleration(400);
         setMaxSpeed(100);
