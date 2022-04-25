@@ -1,4 +1,0 @@
-com/mygdx/game/Launcher.java
- com.mygdx.game.Launcher
-com/mygdx/demo/Launcher.java
- com.mygdx.demo.Launcher
