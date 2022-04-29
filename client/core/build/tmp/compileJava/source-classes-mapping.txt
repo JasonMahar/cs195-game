@@ -15,10 +15,12 @@ com/game/BaseActor.java
  com.game.BaseActor
 com/game/entities/Opponent.java
  com.game.entities.Opponent
-com/wickedgames/cs195/model/Projectile.java
- com.wickedgames.cs195.model.Projectile
 com/game/entities/Rock.java
  com.game.entities.Rock
+com/wickedgames/cs195/model/Projectile.java
+ com.wickedgames.cs195.model.Projectile
+com/game/entities/NamePlate.java
+ com.game.entities.NamePlate
 com/game/entities/Ninja.java
  com.game.entities.Ninja
 com/game/screen/MenuScreen.java
