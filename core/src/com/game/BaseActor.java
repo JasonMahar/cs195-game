@@ -55,16 +55,12 @@ public class BaseActor extends Group {
         boundaryPolygon = null;
     }
 
-    // ----------------------------------------------
-    // Limiting & Positioning methods
-    // ----------------------------------------------
-
     /**
      * If this object moves completely past the world bounds,
      * adjust its position to the opposite side of the world.
      */
     public void wrapAroundWorld() {
-        if (getX() + getWidth() < 0)
+        /*if (getX() + getWidth() < 0)
             setX(worldBounds.width);
 
         if (getX() > worldBounds.width)
@@ -74,7 +70,7 @@ public class BaseActor extends Group {
             setY(worldBounds.height);
 
         if (getY() > worldBounds.height)
-            setY(-getHeight());
+            setY(-getHeight());*/
     }
 
     /**
@@ -130,7 +126,8 @@ public class BaseActor extends Group {
         int fileCount = fileNames.length;
         Array<TextureRegion> textureArray = new Array<>();
 
-        for (String fileName : fileNames) {
+        for (int n = 0; n < fileCount; n++) {
+            String fileName = fileNames[n];
             Texture texture = new Texture(Gdx.files.internal(fileName));
             texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             textureArray.add(new TextureRegion(texture));
@@ -193,7 +190,7 @@ public class BaseActor extends Group {
     public Animation<TextureRegion> loadTexture(String fileName) {
         String[] fileNames = new String[1];
         fileNames[0] = fileName;
-        return loadAnimationFromFiles(fileNames, 1, false);
+        return loadAnimationFromFiles(fileNames, 1, true);
     }
 
     /**
@@ -209,10 +206,19 @@ public class BaseActor extends Group {
      * Checks if animation is complete: if play mode is normal (not looping)
      * and elapsed time is greater than time corresponding to last frame.
      *
-     * @return boolean
+     * @return
      */
     public boolean isAnimationFinished() {
         return animation.isAnimationFinished(elapsedTime);
+    }
+
+    /**
+     * Sets the opacity of this actor.
+     *
+     * @param opacity value from 0 (transparent) to 1 (opaque)
+     */
+    public void setOpacity(float opacity) {
+        this.getColor().a = opacity;
     }
 
     // ----------------------------------------------
@@ -331,20 +337,20 @@ public class BaseActor extends Group {
      * Speed is limited by maxSpeed value. <br>
      * Acceleration vector reset to (0,0) at end of method. <br>
      *
-     * @param delta Time elapsed since previous frame (delta time); typically obtained from <code>act</code> method.
+     * @param deltaTime Time elapsed since previous frame (delta time); typically obtained from <code>act</code> method.
      * @see #acceleration
      * @see #deceleration
      * @see #maxSpeed
      */
-    public void applyPhysics(float delta) {
+    public void applyPhysics(float deltaTime) {
         // apply acceleration
-        velocityVec.add(accelerationVec.x * delta, accelerationVec.y * delta);
+        velocityVec.add(accelerationVec.x * deltaTime, accelerationVec.y * deltaTime);
 
         float speed = getSpeed();
 
         // decrease speed (decelerate) when not accelerating
         if (accelerationVec.len() == 0)
-            speed -= deceleration * delta;
+            speed -= deceleration * deltaTime;
 
         // keep speed within set bounds
         speed = MathUtils.clamp(speed, 0, maxSpeed);
@@ -353,7 +359,7 @@ public class BaseActor extends Group {
         setSpeed(speed);
 
         // update position according to value stored in velocity vector
-        moveBy(velocityVec.x * delta, velocityVec.y * delta);
+        moveBy(velocityVec.x * deltaTime, velocityVec.y * deltaTime);
 
         // reset acceleration
         accelerationVec.set(0, 0);
@@ -496,8 +502,7 @@ public class BaseActor extends Group {
 
     /**
      * Set world dimensions for use by methods boundToWorld() and scrollTo().
-     *
-     * @param BaseActor whose size determines the world bounds (typically a background image)
+
      */
     public static void setWorldBounds(BaseActor referenceActor) {
         setWorldBounds(referenceActor.getWidth(), referenceActor.getHeight());
@@ -588,7 +593,7 @@ public class BaseActor extends Group {
     }
 
     // ----------------------------------------------
-    // Actor methods: act, draw and etc.
+    // Actor methods: act and draw
     // ----------------------------------------------
 
     /**
@@ -626,14 +631,5 @@ public class BaseActor extends Group {
                     getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 
         super.draw(batch, parentAlpha);
-    }
-
-    /**
-     * Sets the opacity of this actor.
-     *
-     * @param opacity value from 0 (transparent) to 1 (opaque)
-     */
-    public void setOpacity(float opacity) {
-        this.getColor().a = opacity;
     }
 }

@@ -28,9 +28,10 @@ public class TilemapActor extends Actor {
     private OrthographicCamera tiledCamera;
     private OrthoCachedTiledMapRenderer tiledMapRenderer;
 
-    public TilemapActor(String s, Stage mainStage) {
+    public TilemapActor(String filename, Stage theStage) {
 
-        tiledMap = new TmxMapLoader().load(s);
+        // set up tile map, renderer, and camera
+        tiledMap = new TmxMapLoader().load(filename);
         int tileWidth = (int) tiledMap.getProperties().get("tilewidth");
         int tileHeight = (int) tiledMap.getProperties().get("tileheight");
         int numTilesHorizontal = (int) tiledMap.getProperties().get("width");
@@ -42,8 +43,8 @@ public class TilemapActor extends Actor {
         tiledMapRenderer.setBlending(true);
         tiledCamera = new OrthographicCamera();
         tiledCamera.setToOrtho(false, windowWidth, windowHeight);
-        tiledCamera.update();
-        mainStage.addActor(this);
+        //tiledCamera.update();
+        theStage.addActor(this);
     }
 
     public void act(float deltaTime) {
