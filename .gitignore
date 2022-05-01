@@ -26,4 +26,7 @@
 hs_err_pid*
 
 client/.gradle
-/build/
+**/build/*
+.idea
+.gradle
+
