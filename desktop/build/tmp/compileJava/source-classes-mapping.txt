@@ -1,2 +1,0 @@
-com/game/desktop/DesktopLauncher.java
- com.game.desktop.DesktopLauncher
