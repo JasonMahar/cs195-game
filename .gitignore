@@ -30,7 +30,9 @@ hs_err_pid*
 # I guess we'll allow them in case we break them and need to compare to previous versions
 
 client/.gradle
-/build/
+**/build/*
+.idea
+.gradle
 
 #server/.project
 #*.idea

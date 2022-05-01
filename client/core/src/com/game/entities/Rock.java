@@ -1,12 +1,11 @@
 package com.game.entities;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.game.BaseActor;
 
-public class Rock extends BaseActor {
+public class Rock extends Solid {
 
-    public Rock(float x, float y, Stage s) {
-        super(x, y, s);
+    public Rock(float x, float y, Stage stage) {
+        super(x, y, 32, 32, stage);
         loadTexture("rock.png");
         setBoundaryPolygon(8);
     }

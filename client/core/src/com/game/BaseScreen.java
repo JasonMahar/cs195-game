@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public abstract class BaseScreen implements Screen, InputProcessor {
+
     protected Stage mainStage;
     protected Stage uiStage;
     protected Table uiTable;
@@ -36,6 +37,9 @@ public abstract class BaseScreen implements Screen, InputProcessor {
     // (2) update game logic
     // (3) render the graphics
     public void render(float deltaTime) {
+        // limit amount of time that can pass while window is being dragged
+        deltaTime = Math.min(deltaTime, 1 / 30f);
+
         // act methods
         uiStage.act(deltaTime);
         mainStage.act(deltaTime);
@@ -70,10 +74,10 @@ public abstract class BaseScreen implements Screen, InputProcessor {
      * Set up InputMultiplexer here, in case screen is reactivated at a later time.
      */
     public void show() {
-        InputMultiplexer im = (InputMultiplexer) Gdx.input.getInputProcessor();
-        im.addProcessor(this);
-        im.addProcessor(uiStage);
-        im.addProcessor(mainStage);
+        InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
+        inputProcessor.addProcessor(this);
+        inputProcessor.addProcessor(uiStage);
+        inputProcessor.addProcessor(mainStage);
     }
 
     /**
@@ -82,17 +86,17 @@ public abstract class BaseScreen implements Screen, InputProcessor {
      * Other InputProcessors must be removed manually.
      */
     public void hide() {
-        InputMultiplexer im = (InputMultiplexer) Gdx.input.getInputProcessor();
-        im.removeProcessor(this);
-        im.removeProcessor(uiStage);
-        im.removeProcessor(mainStage);
+        InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
+        inputProcessor.removeProcessor(this);
+        inputProcessor.removeProcessor(uiStage);
+        inputProcessor.removeProcessor(mainStage);
     }
 
     /**
      * Useful for checking for touch-down events.
      */
-    public boolean isTouchDownEvent(Event e) {
-        return (e instanceof InputEvent) && ((InputEvent) e).getType().equals(Type.touchDown);
+    public boolean isTouchDownEvent(Event event) {
+        return (event instanceof InputEvent) && ((InputEvent) event).getType().equals(Type.touchDown);
     }
 
     // methods required by InputProcessor interface
@@ -104,7 +108,7 @@ public abstract class BaseScreen implements Screen, InputProcessor {
         return false;
     }
 
-    public boolean keyTyped(char c) {
+    public boolean keyTyped(char character) {
         return false;
     }
 
