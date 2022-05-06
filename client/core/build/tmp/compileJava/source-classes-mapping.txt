@@ -21,12 +21,15 @@ com/wickedgames/cs195/model/Projectile.java
  com.wickedgames.cs195.model.Projectile
 com/game/entities/NamePlate.java
  com.game.entities.NamePlate
+com/game/entities/ui/DialogBox.java
+ com.game.entities.ui.DialogBox
 com/game/entities/Ninja.java
  com.game.entities.Ninja
 com/game/screen/MenuScreen.java
  com.game.screen.MenuScreen
  com.game.screen.MenuScreen$1
  com.game.screen.MenuScreen$2
+ com.game.screen.MenuScreen$3
 com/game/NinjaPie.java
  com.game.NinjaPie
 com/wickedgames/cs195/model/GameDesignVars.java
@@ -52,5 +55,6 @@ com/game/screen/LobbyScreen.java
  com.game.screen.LobbyScreen
  com.game.screen.LobbyScreen$1
  com.game.screen.LobbyScreen$2
+ com.game.screen.LobbyScreen$3
 com/game/BaseGame.java
  com.game.BaseGame

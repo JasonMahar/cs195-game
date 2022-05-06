@@ -17,7 +17,7 @@ public interface GameSessionInterface {
 	
 	GameInstance joinGame(Integer gameId, PlayerData userPlayer);
 
-	GameInstance updatePlayerData(PlayerData userPlayer);
+	GameInstance updatePlayerData(Integer gameID, PlayerData userPlayer);
 	
 	boolean quitGame(PlayerData userPlayer);
 

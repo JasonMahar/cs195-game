@@ -23,11 +23,13 @@ public class PlayersController {
 
 	public static Integer createPlayer() {
 
-		Integer key = createNewKey();
 		PlayerData player = new CS195PlayerData();
-		player.setPublicID(key);
-		players.put(key, player);
-		return key;
+		player.setPublicID(createNewKey());
+		int privateKey = createNewKey();
+		player.setPrivateID(privateKey);
+		players.put(privateKey, player);
+		
+		return privateKey;
 	}
 	
 	private static Integer createNewKey() {
@@ -40,7 +42,7 @@ public class PlayersController {
 	}
 
 	
-	public PlayerData getPlayer(Integer ID) {
+	public static PlayerData getPlayer(Integer ID) {
 
 		System.out.println("PlayersController.getPlayer() called. id = " + ID);
 		
@@ -50,26 +52,26 @@ public class PlayersController {
 
 	// Add/Update/Remove Players:
 	
-	public boolean addPlayer(PlayerData player) {
+	public static boolean addPlayer(PlayerData player) {
 
 		if( player == null )	return false;
 
 		return players.put(player.getPublicID(), player) == null;
 	}
 	
-	public boolean updatePlayer(PlayerData player) {
+	public static boolean updatePlayer(PlayerData player) {
 
 		if( player == null )	return false;
 				
 		return players.put(player.getPublicID(), player) != null;
 	}
 	
-	public boolean removePlayer(Integer playerPublicID ) {
+	public static boolean removePlayer(Integer playerPublicID ) {
 
 		return players.remove(playerPublicID) != null;
 	}
 
-	public Collection<PlayerData> getAllPlayers() {
+	public static Collection<PlayerData> getAllPlayers() {
 		
 		return players.values();
 	}

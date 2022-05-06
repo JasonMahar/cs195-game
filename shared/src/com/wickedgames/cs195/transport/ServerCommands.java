@@ -3,7 +3,6 @@
  */
 package com.wickedgames.cs195.transport;
 
-import java.util.Collection;
 
 import com.wickedgames.cs195.model.GameInstance;
 import com.wickedgames.cs195.model.PlayerData;
@@ -131,7 +130,7 @@ public enum ServerCommands {
 		@Override
 		public GameInstance send(GameSessionInterface session, String params, PlayerData player, Integer gameID) {
 
-			return session.updatePlayerData(player);
+			return session.updatePlayerData(gameID, player);
 		}
 	};
 

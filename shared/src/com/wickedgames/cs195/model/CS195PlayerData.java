@@ -1,8 +1,6 @@
 package com.wickedgames.cs195.model;
 
 
-import java.util.Arrays;
-
 
 /**
  * @author Jason Mahar
@@ -22,7 +20,13 @@ public class CS195PlayerData implements PlayerData {
 	private Facing facing;		// 360 degrees, with ordinal values 
 	private float speed;
 	
-	private Projectile[] projectiles;
+//TODO: get livesRemaining working
+	private int livesRemaining;
+	
+    
+//TODO: add projectiles back in
+	
+//	private Projectile[] projectiles;
 	
 	/**
 	 * 
@@ -30,32 +34,37 @@ public class CS195PlayerData implements PlayerData {
 	public CS195PlayerData() {
 		System.out.println("CS195PlayerData() constructor. ");
 		
-		publicID = 0; 		// IDs are set by the server
-		privateID = 0;
-		name = ""; 			// Server will def
-		state = State.IN_LOBBY;
+		publicID = GameDesignVars.DEFAULT_PLAYER_ID; 		// IDs are set by the server
+		privateID = GameDesignVars.DEFAULT_PLAYER_ID;;
+		name = GameDesignVars.DEFAULT_PLAYER_NAME; 			// Server will def
+		state = State.MAIN_MENU;
 		facing = Facing.RIGHT;
 		speed = STOPPED;
+		livesRemaining = GameDesignVars.MAX_LIVES;
 		
-		projectiles = new Projectile[GameDesignVars.MAX_AMMO];
+		
+//		projectiles = new Projectile[GameDesignVars.MAX_AMMO];
 		
 		System.out.println("Created CS195PlayerData: " + this.toString());
 		
 	}
 
 	
-	public CS195PlayerData(int publicID, int privateID, String name, State state, float x,
-			float y, Facing facing, float speed, Projectile[] projectiles) {
+	public CS195PlayerData(int publicID, /* int privateID, */ String name, State state, float x,
+			float y, Facing facing, float speed /*, int livesRemaining, Projectile[] projectiles */ ) {
 		super();
 		this.publicID = publicID;
-		this.privateID = privateID;
+//		this.privateID = privateID;
 		this.name = name;
 		this.state = state;
 		this.x = x;
 		this.y = y;
 		this.facing = facing;
 		this.speed = speed;
-		this.projectiles = projectiles;
+		
+//		this.livesRemaining = livesRemaining;
+		
+//		this.projectiles = projectiles;
 	}
 
 
@@ -152,12 +161,12 @@ public class CS195PlayerData implements PlayerData {
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-	
+	/*
 	@Override
 	public Projectile[] getAllProjectiles() {
 		return projectiles;
 	}
-	
+
 	@Override
 	public Projectile getProjectile(int index) {
 		return projectiles[index];
@@ -168,14 +177,24 @@ public class CS195PlayerData implements PlayerData {
 		projectiles[index] = projectile;
 	}
 
-	
+
+	public Projectile[] getProjectiles() {
+		return projectiles;
+	}
+
+
+	public void setProjectiles(Projectile[] projectiles) {
+		this.projectiles = projectiles;
+	}
+
+	*/
 	@Override
 	public String toString() {
 		
 		return /* super.toString() + */
 				"{ publicID=" + publicID + ", name=" + name + ", state=" + state + ", x="
-				+ x + ", y=" + y + ", facing=" + facing + ", speed=" + speed + ", projectiles="
-				+ Arrays.toString(projectiles) + "}";
+				+ x + ", y=" + y + ", facing=" + facing + ", speed=" + speed /* + ", projectiles="
+				 + Arrays.toString(projectiles) */ + "}";
 	}
 
 

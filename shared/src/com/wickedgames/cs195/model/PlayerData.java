@@ -2,9 +2,6 @@ package com.wickedgames.cs195.model;
 
 import java.text.DecimalFormat;
 
-import com.wickedgames.cs195.model.PlayerData.Facing;
-import com.wickedgames.cs195.model.PlayerData.State;
-
 
 public interface PlayerData {
 
@@ -60,7 +57,7 @@ public interface PlayerData {
 		}
 	};
 
-	public enum State { IN_LOBBY, RUNNING, CROUCHING, DEAD }; 
+	public enum State { MAIN_MENU, IN_LOBBY, RUNNING, CROUCHING, DEAD }; 
 	
 
 	// value range for speed:
@@ -93,9 +90,12 @@ public interface PlayerData {
 	float getSpeed();
 	void setSpeed(float speed);
 
-	Projectile[] getAllProjectiles();
-	Projectile getProjectile(int index);
-	void setProjectile(int index, Projectile projectile);
+    
+//TODO: Add Projectiles back
+	
+//	Projectile[] getAllProjectiles();
+//	Projectile getProjectile(int index);
+//	void setProjectile(int index, Projectile projectile);
 
 	String toString();
 

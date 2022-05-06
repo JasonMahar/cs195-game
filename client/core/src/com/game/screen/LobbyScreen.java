@@ -18,20 +18,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.game.BaseActor;
-import com.game.BaseGame;
-import com.game.BaseScreen;
-import com.game.NinjaPie;
-import com.game.entities.Ninja;
-import com.wickedgames.cs195.model.GameDesignVars;
-import com.wickedgames.cs195.model.GameInstance;
-import com.wickedgames.cs195.model.PlayerData;
-import com.wickedgames.cs195.transport.GameSessionInterface;
-import com.wickedgames.cs195.transport.STUB_GameSession;
+import com.game.*;
+import com.game.entities.*;
+import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.transport.*;
 
 import static com.badlogic.gdx.scenes.scene2d.InputEvent.Type.touchDown;
 
@@ -60,43 +55,68 @@ public class LobbyScreen extends BaseScreen {
 
 	public void initializeGameData() {
     	System.out.println("Running LobbyScreen.initializeGameData()");
+
+    	
+
+    	//NOTE: this can return a STUB_GameSession if GameDesignVars.USE_STUB_IN_PLACE_OF_SERVER = true       	
+    	serverSession = GameSession.getGameSession();
+    	
+// TODO: gameID shouldn't be hardcoded. Normally would do a createGame first and get the ID from there
+//    			GameInstance gameData = serverSession.createNewGame(userPlayer);
+
+// TODO: probably should move joinGame to MainScreen and going back from the LobbyScreen should
+//		send a leaveGame.  Even if game crashes we should still do a leaveGame
+    	// Don't joinGame if player is already in it 
+    	// This happens when the player refreshes the screen
+    	if( gameData == null || gameData.getPlayer(Ninja.getPlayerID()) == null ) {
+    		gameData = serverSession.joinGame(GameDesignVars.GAME_LOBBY_ID, Ninja.getPlayerData());	
+    	}
+    	else {
+            gameData = serverSession.getGameData(GameDesignVars.GAME_LOBBY_ID);
+    		
+    	}
+        
+		if(gameData == null) {
+	    	System.out.println("ERROR: LobbyScreen.initializeGameData gameData is null");
+			
+// TODO: popup error message about server not responding or could not create game instance
+			return;
+//			return false;
+		}
 		
 
     	// this try shouldn't be here. 
     	// TODO: figure out which method is not catching its JSONException
-    	try { // JSONException
-
-// STUB:       	//        	serverSession = new GameSession();
-			serverSession = new STUB_GameSession();
+//    	try { // JSONException
 
 //    		PlayerData userPlayer = serverSession.createNewPlayer(Ninja.getPlayerName());
 	    	
 // TODO: gameID shouldn't be hardcoded. Normally would do a createGame first and get the ID from there
-//	    	gameData = serverSession.joinGame(STUB_GameSession.DEFAULT_GAME_ID, userPlayer);
-			gameData = serverSession.getGameData(STUB_GameSession.DEFAULT_GAME_ID);
+//			gameData = serverSession.getGameData(GameDesignVars.GAME_LOBBY_ID);
 
-	    	System.out.println("Running LobbyScreen.initialize() 2");
-	    	
 	    	Collection<PlayerData> players = gameData.getAllPlayers();
 	    	for(PlayerData player : players) {
 	    		System.out.println("found player: " + player);	
 	    	}
 	    	
-	    	System.out.println("Running LobbyScreen.initialize() 3");
-		    	
-    	} catch (Exception e) {
-
-			System.out.println("LobbyScreen.initialize() caught JSONException = " + e);
-			e.printStackTrace();
-    	}
+//		    	
+//    	} catch (Exception e) {
+//
+//			System.out.println("LobbyScreen.initialize() caught JSONException = " + e);
+//			e.printStackTrace();
+//    	}
     	
 	}
 
+	
+	
 	public void initialize() {
     	System.out.println("Running LobbyScreen.initialize()");
 
     	
     	initializeGameData();
+    	
+// TODO: all of these fonts and styles should really be moved to a skin.json
 
     	// create Font for text
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(
@@ -138,7 +158,8 @@ public class LobbyScreen extends BaseScreen {
         Label playersHeading = new Label(PLAYERS_HEADING_TEXT, playersHeadingStyle);
         
 
-        Texture listSelection = new Texture(Gdx.files.internal("dialog.png")); // was  button.png 
+        Texture listSelection = new Texture(Gdx.files.internal("sign.png"));
+//        Texture listSelection = new Texture(Gdx.files.internal("dialog.png")); // was  button.png 
         TextureRegion listSelectionRegion = new TextureRegion(listSelection);
         Drawable listSelectionDrawable = new TextureRegionDrawable(listSelectionRegion);
         ListStyle listStyle = new ListStyle( font, 
@@ -181,18 +202,59 @@ public class LobbyScreen extends BaseScreen {
 //        playersListGroup.addActor(playersHeading);
 //        playersListGroup.addActor(list);
         
+        
+        // Now lay them all out in the uiTable
+        
+        uiTable.add(titleLabel).colspan(4).padBottom(40);
+        uiTable.row();
+        
+//      uiTable.add(playersListBackground);
+      uiTable.add(playersHeading).colspan(4).row();
+      uiTable.add(list).colspan(4).width(480).height(240).padBottom(40);
+//        uiTable.add(playersListGroup).colspan(2).padBottom(50);
+        uiTable.row();
+        
+        
+        createAndAddButtons();
+        uiTable.top();
+        
+        mainStage.setScrollFocus(list);
+        mainStage.setKeyboardFocus(list);
+    }
+
+    private void createAndAddButtons() {
+
+    	// can't get "Start Game" to fit on screen. don't know how to resize it
         TextButton startButton = new TextButton("Start Game", BaseGame.textButtonStyle);
+//        TextButton startButton = new TextButton("Start", BaseGame.textButtonStyle);
+//        TextButtonStyle style = startButton.getStyle(); 
+//        startButton.setWidth(2.0f);
+//        startButton.scaleBy(-0.6f, 1.0f); - doesn't change anything :(
+//        startButton.setSize(startButton.getWidth()/2, startButton.getHeight());
         startButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
+                
+// TODO: need to send game state change to Server so that it will set starting locations
+                
                 NinjaPie.setActiveScreen( new LevelScreen() );
                 return true;
             }
         });
 
-        TextButton quitButton = new TextButton("Back", BaseGame.textButtonStyle);
-        quitButton.addListener(new EventListener() {
+        TextButton refreshButton = new TextButton("Refresh", BaseGame.textButtonStyle);
+        refreshButton.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event e) {
+                if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
+                NinjaPie.setActiveScreen(new LobbyScreen());
+                return true;
+            }
+        });
+
+        TextButton backButton = new TextButton("Back", BaseGame.textButtonStyle);
+        backButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event e) {
                 if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
@@ -201,25 +263,15 @@ public class LobbyScreen extends BaseScreen {
             }
         });
         
-        uiTable.add(titleLabel).colspan(2).padBottom(40);
-        uiTable.row();
         
-//      uiTable.add(playersListBackground);
-      uiTable.add(playersHeading).colspan(2).row();
-      uiTable.add(list).colspan(2).width(480).height(240).padBottom(40);
-//        uiTable.add(playersListGroup).colspan(2).padBottom(50);
-        
-        uiTable.row();
-//        uiTable.add(startButton).right();
-        uiTable.add(startButton);
-        uiTable.add(quitButton);
-        uiTable.top();
+//      uiTable.add(startButton).right();
+      uiTable.add(startButton).colspan(2).expand().center();
+      uiTable.add(refreshButton);
+      uiTable.add(backButton).left();
+	
+	}
 
-        mainStage.setScrollFocus(list);
-        mainStage.setKeyboardFocus(list);
-    }
-
-    @Override
+	@Override
     public void update(float deltaTime) {
     }
 

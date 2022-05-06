@@ -136,6 +136,23 @@ public class GameInstance {
 	}
 	
 
+
+	/**
+	 * @return the players
+	 */
+	public HashMap<Integer, PlayerData> getPlayers() {
+		return players;
+	}
+
+
+	/**
+	 * @param players the players to set
+	 */
+	public void setPlayers(HashMap<Integer, PlayerData> players) {
+		this.players = players;
+	}
+
+	
 	public Collection<PlayerData> getAllPlayers() {
 		return players.values();
 	}
@@ -145,15 +162,14 @@ public class GameInstance {
 	}
 
 
-
 	@Override
 	public String toString() {
 		return "{ "
-				+ "gameState=" + gameState + ","
-				+ getAllPlayers()
+				+ "ID=" + ID + ", "
+				+ "gameState=" + gameState + ", "
+				+ getPlayers()
 				+ " }";
 	}
-	
 	
 
 	//////////////////////////////////////////////////////////////////////////
