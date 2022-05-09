@@ -366,12 +366,12 @@ public class ServerApplication {
 	 * 
 	 * updates a player's data for the game with gameID.
 	 * 
-	 * if successful return all games (since leaving a game returns to the Multiplayer Menu that lists games)
+	 * if successful return GameInstance - i.e. latest updated data
 	 */
 	@PutMapping("/player/{gameID}")
 	public GameInstance updatePlayer(@PathVariable Integer gameID, @RequestBody CS195PlayerData player) {
-		System.out.println("ServerApplication.leaveGame() called with gameID: " +
-				gameID + ", playerID: " + player.getPublicID());
+//		System.out.println("ServerApplication.updatePlayer() called with gameID: " +
+//				gameID + ", playerID: " + player.getPublicID());
 		
 		GameInstance game = gamesController.getGame(gameID);
 		game.updatePlayer(player);

@@ -32,7 +32,7 @@ public class CS195PlayerData implements PlayerData {
 	 * 
 	 */
 	public CS195PlayerData() {
-		System.out.println("CS195PlayerData() constructor. ");
+//		System.out.println("CS195PlayerData() constructor. ");
 		
 		publicID = GameDesignVars.DEFAULT_PLAYER_ID; 		// IDs are set by the server
 		privateID = GameDesignVars.DEFAULT_PLAYER_ID;;
@@ -45,7 +45,7 @@ public class CS195PlayerData implements PlayerData {
 		
 //		projectiles = new Projectile[GameDesignVars.MAX_AMMO];
 		
-		System.out.println("Created CS195PlayerData: " + this.toString());
+//		System.out.println("Created CS195PlayerData: " + this.toString());
 		
 	}
 
@@ -73,7 +73,7 @@ public class CS195PlayerData implements PlayerData {
 	 */
 	public CS195PlayerData(String name) {
 		this();
-		System.out.println("CS195PlayerData() constructor. name = " + name);
+//		System.out.println("CS195PlayerData() constructor. name = " + name);
 		this.setName(name);
 	}
 

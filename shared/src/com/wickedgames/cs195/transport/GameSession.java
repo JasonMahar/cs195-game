@@ -78,7 +78,7 @@ public class GameSession implements GameSessionInterface {
 		    System.out.println("received game json: " + returnedJson.toString());
 		    
 
-			if( returnedJson == null || returnedJson.isEmpty() ) {
+			if( returnedJson == null /* || returnedJson.isEmpty() */) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
@@ -110,7 +110,7 @@ public class GameSession implements GameSessionInterface {
 		try {
 			json = readJsonArrayFromUrl(SERVER_GAME_URI);
 			
-			if( json == null || json.isEmpty() ) {
+			if( json == null /* || returnedJson.isEmpty() */ ) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
@@ -139,7 +139,7 @@ public class GameSession implements GameSessionInterface {
 		try {
 			json = readJsonFromUrl(SERVER_GAME_URI + gameID);
 			
-			if( json == null || json.isEmpty() ) {
+			if( json == null  /* || returnedJson.isEmpty() */ ) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
@@ -183,7 +183,7 @@ public class GameSession implements GameSessionInterface {
 		    returnedJson = postJsonToUrl(json, SERVER_GAME_URI + gameID);
 		    
 		    
-			if( returnedJson == null || returnedJson.isEmpty() ) {
+			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
 				
 				System.out.println("ERROR: received game json = null ");
 			}
@@ -239,7 +239,7 @@ public class GameSession implements GameSessionInterface {
 		    returnedJson = putJsonToUrl(json, SERVER_PLAYER_URI + gameID);
 		    
 		    
-			if( returnedJson == null || returnedJson.isEmpty() ) {
+			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
 				
 				System.out.println("ERROR: received game json = null ");
 			}
