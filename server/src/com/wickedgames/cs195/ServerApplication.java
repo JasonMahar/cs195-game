@@ -25,10 +25,10 @@ public class ServerApplication {
 
 
 // STUBS!
-//	private static Integer STUB_gameID = 1;
-//	private static Integer STUB_playerID = 1001;
-//	private static Integer STUB_playerID2 = 1002;
-//	private static Integer STUB_playerID3 = 1003;
+	private static Integer STUB_gameID = 1;
+	private static Integer STUB_playerID = 1001;
+	private static Integer STUB_playerID2 = 1002;
+	private static Integer STUB_playerID3 = 1003;
 	
 	
 	private static GamesController gamesController = new GamesController();
@@ -61,11 +61,23 @@ public class ServerApplication {
 	 */
 	@PostMapping("/game")
 	public GameInstance createGame(@RequestBody CS195PlayerData newPlayer) {
-		System.out.println("ServerApplication.createGame() called with newPlayer id: " + newPlayer.getPublicID());
+//		System.out.println("ServerApplication.createGame() called with newPlayer id: " + newPlayer.getPublicID());
 
-		Integer ID = GamesController.createGame();
+		Integer ID = GameDesignVars.BAD_GAME_ID;
+// HACK: 
+		// this will simply instantiate a GameInstance with GAME_LOBBY_ID
+		//		replacing the previous instance if there was one		
+		if( GameDesignVars.ONLY_ONE_GAME ) {
+			ID = GameDesignVars.GAME_LOBBY_ID;
+			GamesController.createGame(ID);
+		}
+		else {
+
+			ID = GamesController.createGame();
+		}
 		GameInstance newGame = gamesController.getGame(ID);
 		newGame.addPlayer(newPlayer);
+		PlayersController.addPlayer(newPlayer);
 		
 		return newGame;
 	}
@@ -107,6 +119,8 @@ public class ServerApplication {
 			//		first iteration, we'll go ahead and return the game
 //			return null;
 		}
+
+		PlayersController.addPlayer(newPlayer);
 		newPlayer.setState(State.IN_LOBBY);
 		
 		return game;
@@ -385,7 +399,6 @@ public class ServerApplication {
 		return game;
 	}
 	
-	/*
 	// STUB Methods for Testing!
 	//
 	
@@ -396,21 +409,21 @@ public class ServerApplication {
 		// TODO: Creating just a single game instance for early testing purposes 
 		GamesController.createGame();
 		//GameInstance game = gamesController.getGame(STUB_gameID);
-		System.out.println("ServerApplication.STUB_createSampleGame() created demo game. id = " + GameDesignVars.THE_ONLY_GAME_ID);
+		System.out.println("ServerApplication.STUB_createSampleGame() created demo game. id = " + GameDesignVars.GAME_LOBBY_ID);
 		
-////		STUB_playerID = PlayersController.createPlayer();
-//		PlayerData player1 = new CS195PlayerData("Player1");
-//		player1.setPublicID(STUB_playerID);
-//		PlayersController.addPlayer(player1);
-//		//System.out.println("ServerApplication.main() created PlayerData: " + player1);
-//		
-////		STUB_playerID2 = PlayersController.createPlayer();
-//		PlayerData player2 = new CS195PlayerData("Player2");
-//		player2.setPublicID(STUB_playerID2);
-//		PlayersController.addPlayer(player2);
-//		
-//		gamesController.addPlayer(STUB_gameID, player1);
-//		gamesController.addPlayer(STUB_gameID, player2);
+//		STUB_playerID = PlayersController.createPlayer();
+		PlayerData player1 = new CS195PlayerData("Player1");
+		player1.setPublicID(STUB_playerID);
+		PlayersController.addPlayer(player1);
+		//System.out.println("ServerApplication.main() created PlayerData: " + player1);
+		
+//		STUB_playerID2 = PlayersController.createPlayer();
+		PlayerData player2 = new CS195PlayerData("Player2");
+		player2.setPublicID(STUB_playerID2);
+		PlayersController.addPlayer(player2);
+		
+		gamesController.addPlayer(STUB_gameID, player1);
+		gamesController.addPlayer(STUB_gameID, player2);
 	}
 	
 	
@@ -420,5 +433,4 @@ public class ServerApplication {
 	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return String.format("Hello %s!", name);
 	}
-*/
 }

@@ -1,5 +1,5 @@
-com/wickedgames/cs195/transport/GameSession.java
- com.wickedgames.cs195.transport.GameSession
+com/wickedgames/cs195/transport/STUB_GameSession.java
+ com.wickedgames.cs195.transport.STUB_GameSession
 com/game/BaseScreen.java
  com.game.BaseScreen
 com/wickedgames/cs195/model/CS195Projectile.java
@@ -25,23 +25,22 @@ com/game/entities/ui/DialogBox.java
  com.game.entities.ui.DialogBox
 com/game/entities/Ninja.java
  com.game.entities.Ninja
-com/game/screen/MenuScreen.java
- com.game.screen.MenuScreen
- com.game.screen.MenuScreen$1
- com.game.screen.MenuScreen$2
- com.game.screen.MenuScreen$3
+com/wickedgames/cs195/model/CS195PlayerData.java
+ com.wickedgames.cs195.model.CS195PlayerData
 com/game/NinjaPie.java
  com.game.NinjaPie
 com/wickedgames/cs195/model/GameDesignVars.java
  com.wickedgames.cs195.model.GameDesignVars
-com/game/screen/LevelScreen.java
- com.game.screen.LevelScreen
+com/game/BaseGame.java
+ com.game.BaseGame
 com/wickedgames/cs195/model/PlayerData.java
  com.wickedgames.cs195.model.PlayerData
  com.wickedgames.cs195.model.PlayerData$Facing
  com.wickedgames.cs195.model.PlayerData$State
-com/wickedgames/cs195/transport/STUB_GameSession.java
- com.wickedgames.cs195.transport.STUB_GameSession
+com/game/screen/LevelScreen.java
+ com.game.screen.LevelScreen
+com/wickedgames/cs195/transport/GameSession.java
+ com.wickedgames.cs195.transport.GameSession
 com/wickedgames/cs195/transport/ServerCommands.java
  com.wickedgames.cs195.transport.ServerCommands
  com.wickedgames.cs195.transport.ServerCommands$1
@@ -49,12 +48,17 @@ com/wickedgames/cs195/transport/ServerCommands.java
  com.wickedgames.cs195.transport.ServerCommands$3
  com.wickedgames.cs195.transport.ServerCommands$4
  com.wickedgames.cs195.transport.ServerCommands$5
-com/wickedgames/cs195/model/CS195PlayerData.java
- com.wickedgames.cs195.model.CS195PlayerData
+ com.wickedgames.cs195.transport.ServerCommands$6
+ com.wickedgames.cs195.transport.ServerCommands$7
+ com.wickedgames.cs195.transport.ServerCommands$8
+ com.wickedgames.cs195.transport.ServerCommands$9
+com/game/screen/MenuScreen.java
+ com.game.screen.MenuScreen
+ com.game.screen.MenuScreen$1
+ com.game.screen.MenuScreen$2
+ com.game.screen.MenuScreen$3
 com/game/screen/LobbyScreen.java
  com.game.screen.LobbyScreen
  com.game.screen.LobbyScreen$1
  com.game.screen.LobbyScreen$2
  com.game.screen.LobbyScreen$3
-com/game/BaseGame.java
- com.game.BaseGame

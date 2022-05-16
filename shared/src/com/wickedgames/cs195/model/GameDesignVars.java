@@ -22,7 +22,10 @@ public final class GameDesignVars {
 // STUB:
 	public static final boolean USE_STUB_IN_PLACE_OF_SERVER = false;
 // STUB:
+	public static final boolean ONLY_ONE_GAME = true;
+	
 	public static final Integer GAME_LOBBY_ID = 1;	
+	public static final Integer BAD_GAME_ID = 0;	
 	
 	public static final boolean START_WITH_SOUND_ENABLED = false;	
 	

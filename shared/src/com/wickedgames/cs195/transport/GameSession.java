@@ -42,11 +42,35 @@ import com.wickedgames.cs195.model.PlayerData.*;
  */
 public class GameSession implements GameSessionInterface {
 
+// HACK: using package access for the admin tool to see the raw JSON string received
+	private static String lastJSONReceived = "";
+	
+	/**
+	 * @return the lastJSONReceived
+	 */
+	static String getLastJSONReceived() {
+		return lastJSONReceived;
+	}
+
+	/**
+	 * @param lastJSONReceived the lastJSONReceived to set
+	 */
+	private static void setLastJSONReceived(String lastJSONReceived) {
+		GameSession.lastJSONReceived = lastJSONReceived;
+	}
+
+
 	private static final String SERVER_BASE_URI = "http://localhost:8080/";
 	private static final String SERVER_GAME_URI = SERVER_BASE_URI + "game/";
 	private static final String SERVER_PLAYER_URI = SERVER_BASE_URI + "player/";
 
-
+	
+// TODO: this next should probably get moved to GameSessionInterface
+//		Would it be better for GameSessionInterface to know 
+//		about all implementations than GameSession?
+	
+	// only way for clients to get a GameSessionInterface is to call this 
+	//		class method: GameSession.getGameSession()
 	public static GameSessionInterface getGameSession() {
 		
 		if( GameDesignVars.USE_STUB_IN_PLACE_OF_SERVER ) {
@@ -75,25 +99,23 @@ public class GameSession implements GameSessionInterface {
 			json = new JSONObject(userPlayer);
 		    System.out.println("sending userPlayer json: " + json.toString());
 		    returnedJson = postJsonToUrl(json, SERVER_GAME_URI);
-		    System.out.println("received game json: " + returnedJson.toString());
 		    
-
 			if( returnedJson == null /* || returnedJson.isEmpty() */) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
-			    System.out.println("received game json: " + returnedJson.toString());
-
+			    System.out.println( "received game json: " + returnedJson.toString() );
+			    setLastJSONReceived( returnedJson.toString() );
 			    return createGameInstanceFromJSON( returnedJson );
 			}
 		    
 
 		} catch (IOException e) {
-			System.out.println("GameSession.getGameData() caught IOException = " + e);
+			System.out.println("GameSession.createNewGame() caught IOException = " + e);
 			System.out.println("Check if server is running and that SERVER_BASE_URI is set correct." );
 			e.printStackTrace();
 		} catch (JSONException e) {
-			System.out.println("GameSession.getGameData() caught JSONException = " + e);
+			System.out.println("GameSession.createNewGame() caught JSONException = " + e);
 			e.printStackTrace();
 		}
 		
@@ -106,23 +128,24 @@ public class GameSession implements GameSessionInterface {
 	public Collection<GameInstance> getAllGames() {
 		System.out.println("GameSession.getAllGames() called.");
 		
-		JSONArray json;
+		JSONArray returnedJson;
 		try {
-			json = readJsonArrayFromUrl(SERVER_GAME_URI);
+			returnedJson = readJsonArrayFromUrl(SERVER_GAME_URI);
 			
-			if( json == null /* || returnedJson.isEmpty() */ ) {
+			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
-			    System.out.println("received game json: " + json.toString());
+			    System.out.println("received game json: " + returnedJson.toString());
+			    setLastJSONReceived( returnedJson.toString() );
 			}
 
 		} catch (IOException e) {
-			System.out.println("GameSession.getGameData() caught IOException = " + e);
+			System.out.println("GameSession.getAllGames() caught IOException = " + e);
 			System.out.println("Check if server is running and that SERVER_BASE_URI is set correct." );
 			e.printStackTrace();
 		} catch (JSONException e) {
-			System.out.println("GameSession.getGameData() caught JSONException = " + e);
+			System.out.println("GameSession.getAllGames() caught JSONException = " + e);
 			e.printStackTrace();
 		}
 		    
@@ -135,15 +158,16 @@ public class GameSession implements GameSessionInterface {
 	public GameInstance getGameData(Integer gameID) {
 		System.out.println("GameSession.getGameData() called with gameID: " + gameID);
 		
-		JSONObject json = null;
+		JSONObject returnedJson = null;
 		try {
-			json = readJsonFromUrl(SERVER_GAME_URI + gameID);
+			returnedJson = readJsonFromUrl(SERVER_GAME_URI + gameID);
 			
-			if( json == null  /* || returnedJson.isEmpty() */ ) {
+			if( returnedJson == null  /* || returnedJson.isEmpty() */ ) {
 			    System.out.println("ERROR: received game json is null ");
 			}
 			else {
-			    System.out.println("received game json: " + json.toString());
+			    System.out.println("received game json: " + returnedJson.toString());
+			    setLastJSONReceived( returnedJson.toString() );
 			}
 
 		} catch (IOException e) {
@@ -156,9 +180,51 @@ public class GameSession implements GameSessionInterface {
 		}
 		    
 		
-		return createGameInstanceFromJSON( json );
+		return createGameInstanceFromJSON( returnedJson );
 	}
 
+	@Override
+	public GameInstance startGame(Integer gameID) {
+		return updateGameState(gameID, GameState.IN_GAME);
+	}
+
+	
+	public GameInstance updateGameState(Integer gameID, GameState state) {
+	
+		System.out.println("GameSession.updateGameState() called with gameID: " + gameID);
+
+		JSONObject json;
+		JSONObject returnedJson;
+		try {
+			json = new JSONObject(state);
+		    System.out.println("sending updateGameState json: " + json.toString());
+		    System.out.println("\t to URI: " + SERVER_GAME_URI + gameID);
+		    returnedJson = putJsonToUrl(json, SERVER_GAME_URI + gameID);
+		    
+		    
+			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
+				
+				System.out.println("ERROR: received game json = null ");
+			}
+			else {
+				System.out.println("received game json: " + returnedJson);
+			    setLastJSONReceived( returnedJson.toString() );
+			    return createGameInstanceFromJSON( returnedJson );
+			}
+		    
+
+		} catch (IOException e) {
+			System.out.println("GameSession.updateGameState() caught IOException = " + e);
+			System.out.println("Check if server is running and that SERVER_BASE_URI is set correct." );
+			e.printStackTrace();
+		} catch (JSONException e) {
+			System.out.println("GameSession.updateGameState() caught JSONException = " + e);
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 
 
 	// client needs to createPlayer() to get a PlayerData object first
@@ -176,8 +242,7 @@ public class GameSession implements GameSessionInterface {
 		JSONObject json;
 		JSONObject returnedJson;
 		try {
-			// HACK: instead of making server parse the json, 
-			//		I'm just going to pass the name in as a param
+			
 			json = new JSONObject(userPlayer);
 		    System.out.println("sending userPlayer json: " + json.toString());
 		    returnedJson = postJsonToUrl(json, SERVER_GAME_URI + gameID);
@@ -189,6 +254,7 @@ public class GameSession implements GameSessionInterface {
 			}
 			else {
 				System.out.println("received game json: " + returnedJson);
+			    setLastJSONReceived( returnedJson.toString() );
 			    return createGameInstanceFromJSON( returnedJson );
 			}
 		    
@@ -207,7 +273,7 @@ public class GameSession implements GameSessionInterface {
 	
 
 	//TODO: implement!
-	
+	// probably return the updated PlayerData
 	@Override
 	public boolean quitGame(PlayerData userPlayer) {
 
@@ -215,13 +281,10 @@ public class GameSession implements GameSessionInterface {
 	}
 
 	
-
-	//TODO: implement!
-	
 	@Override
 	public GameInstance updatePlayerData(Integer gameID, PlayerData userPlayer) {
 
-//		System.out.println("GameSession.updatePlayerData() called with gameID: " + gameID);
+//		System.out.println("\nGameSession.updatePlayerData() called with gameID: " + gameID);
 
 		if(userPlayer == null) {
 // TODO: throw an error
@@ -231,11 +294,10 @@ public class GameSession implements GameSessionInterface {
 		JSONObject json;
 		JSONObject returnedJson;
 		try {
-			// HACK: instead of making server parse the json, 
-			//		I'm just going to pass the name in as a param
+			
 			json = new JSONObject(userPlayer);
-		    System.out.println("sending userPlayer json: " + json.toString());
-		    System.out.println("\t to URI: " + SERVER_PLAYER_URI + gameID);
+//		    System.out.println("sending userPlayer json: " + json.toString());
+//		    System.out.println("\t to URI: " + SERVER_PLAYER_URI + gameID);
 		    returnedJson = putJsonToUrl(json, SERVER_PLAYER_URI + gameID);
 		    
 		    
@@ -244,17 +306,18 @@ public class GameSession implements GameSessionInterface {
 				System.out.println("ERROR: received game json = null ");
 			}
 			else {
-				System.out.println("received game json: " + returnedJson);
+//				System.out.println("received game json: " + returnedJson);
+			    setLastJSONReceived( returnedJson.toString() );
 			    return createGameInstanceFromJSON( returnedJson );
 			}
 		    
 
 		} catch (IOException e) {
-			System.out.println("GameSession.joinGame() caught IOException = " + e);
+			System.out.println("GameSession.updatePlayerData() caught IOException = " + e);
 			System.out.println("Check if server is running and that SERVER_BASE_URI is set correct." );
 			e.printStackTrace();
 		} catch (JSONException e) {
-			System.out.println("GameSession.joinGame() caught JSONException = " + e);
+			System.out.println("GameSession.updatePlayerData() caught JSONException = " + e);
 			e.printStackTrace();
 		}
 		
@@ -263,22 +326,22 @@ public class GameSession implements GameSessionInterface {
 	
 
 
-	//TODO: implement!
 	@Override
-	public Collection<PlayerData> getAllPlayersData() {
+	public HashMap<Integer, PlayerData> getAllPlayersData() {
 		System.out.println("GameSession.getAllPlayersData() called.");
 
-		ArrayList<PlayerData> playersArray = new ArrayList<PlayerData>();
+		HashMap<Integer, PlayerData> playersMap = new HashMap<>();
 		
 		try {
 			JSONArray jsonAry = readJsonArrayFromUrl(SERVER_PLAYER_URI);
 		    System.out.println(jsonAry.toString());
+		    setLastJSONReceived( jsonAry.toString() );
 
 		    for( int i=0; i < jsonAry.length(); ++i ) {
 		    	JSONObject json = jsonAry.getJSONObject(i);
 		    	CS195PlayerData newPlayer = createCS195PlayerDataFromJSON( json );
 //			    System.out.println(json.get("id"));
-		    	playersArray.add(newPlayer);
+		    	playersMap.put(newPlayer.getPublicID(), newPlayer);
 		    }
 		    	 
 		} catch (JSONException | IOException e) {
@@ -286,7 +349,7 @@ public class GameSession implements GameSessionInterface {
 			e.printStackTrace();
 		}
 
-		return playersArray;
+		return playersMap;
 	}
 	
 	
@@ -298,9 +361,10 @@ public class GameSession implements GameSessionInterface {
 			// if ID = 0, leave the value blank in order to return all players' data
 			if( ID != 0 ) {
 
-				JSONObject json = readJsonFromUrl(SERVER_PLAYER_URI + "/" + ID);
-			    System.out.println(json.toString());
-				return createCS195PlayerDataFromJSON( json );
+				JSONObject returnedJson = readJsonFromUrl(SERVER_PLAYER_URI  + ID);
+			    System.out.println(returnedJson.toString());
+			    setLastJSONReceived( returnedJson.toString() );
+				return createCS195PlayerDataFromJSON( returnedJson );
 			}
 			else {
 //				JSONArray jsonAry;
@@ -339,11 +403,14 @@ public class GameSession implements GameSessionInterface {
 //			jsonSend.append("name", playerName);	// append makes the value a JSON Array
 			jsonSend.put("name", playerName);		// put makes the value an Object (which the server casts to String)
 		    System.out.println("sending json: " + jsonSend.toString());
-		    
-		    JSONObject jsonRcv = postJsonToUrl(jsonSend, SERVER_PLAYER_URI+ "?name=" + playerName);
-		    System.out.println("received PlayerData json: " + jsonRcv.toString());
 
-			PlayerData newPlayer = createCS195PlayerDataFromJSON(jsonRcv);
+			// HACK: instead of making server parse the json, 
+			//		I'm just going to pass the name in as a param
+		    JSONObject returnedJson = postJsonToUrl(jsonSend, SERVER_PLAYER_URI+ "?name=" + playerName);
+		    System.out.println("received PlayerData json: " + returnedJson.toString());
+
+			PlayerData newPlayer = createCS195PlayerDataFromJSON(returnedJson);
+		    setLastJSONReceived( returnedJson.toString() );
 //			newPlayer.setName(playerName);
 			
 			return newPlayer;

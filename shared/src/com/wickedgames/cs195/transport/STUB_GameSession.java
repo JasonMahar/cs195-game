@@ -2,6 +2,7 @@ package com.wickedgames.cs195.transport;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.wickedgames.cs195.model.CS195PlayerData;
 import com.wickedgames.cs195.model.GameInstance;
@@ -32,7 +33,6 @@ public class STUB_GameSession implements GameSessionInterface {
 	public STUB_GameSession() {	}
 
 
-	
 	public void STUB_add3DummyPlayers() { 
 		
 		// I'm going to assume startingLocations[0] is for the player, 
@@ -123,16 +123,29 @@ public class STUB_GameSession implements GameSessionInterface {
 		return game;
 	}
 
-	@Override
-	public Collection<PlayerData> getAllPlayersData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public PlayerData getPlayerData(int ID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+	@Override
+	public HashMap<Integer, PlayerData> getAllPlayersData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public GameInstance startGame(Integer gameID) {
+
+		return game;
+	}
+	
+
+
 
 }

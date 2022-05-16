@@ -1,19 +1,26 @@
 package com.wickedgames.cs195.transport;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.wickedgames.cs195.model.GameInstance;
 import com.wickedgames.cs195.model.PlayerData;
 
 public interface GameSessionInterface {
+	
+	Collection<GameInstance> getAllGames();
 
-	// This is a convenience method for creating a basic PlayerData object 
+	GameInstance getGameData(Integer gameID);
+
+	GameInstance createNewGame(PlayerData userPlayer);
+	
+	GameInstance startGame(Integer gameID);
+	
+
+	// creates a basic PlayerData object 
 	// 		with only the playerName, so that it can be passed into 
 	//		createNewGame() or joinGame()
 	PlayerData createNewPlayer(String playerName);
-	
-
-	// These next 3 methods are the main commands used for the CS195 Game Prototype
 	
 	GameInstance joinGame(Integer gameId, PlayerData userPlayer);
 
@@ -21,16 +28,8 @@ public interface GameSessionInterface {
 	
 	boolean quitGame(PlayerData userPlayer);
 
-
-	
-	
-	Collection<GameInstance> getAllGames();
-
-	GameInstance getGameData(Integer gameID);
-	
-	GameInstance createNewGame(PlayerData userPlayer);
-	
-	Collection<PlayerData> getAllPlayersData();
+	HashMap<Integer, PlayerData> getAllPlayersData();
 
 	PlayerData getPlayerData(int ID);
+
 }

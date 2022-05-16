@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 
 public interface PlayerData {
 
-	public static final int		INVALID_PLAYER_ID = 0;
+	public static final int INVALID_PLAYER_ID = 0;
 
 	// Facing is the direction the Sprite is angled at
 	// Not sure if facing should actually be 360 degrees and 
@@ -97,6 +97,6 @@ public interface PlayerData {
 //	Projectile getProjectile(int index);
 //	void setProjectile(int index, Projectile projectile);
 
-	String toString();
+	// TODO: String toString();
 
 }

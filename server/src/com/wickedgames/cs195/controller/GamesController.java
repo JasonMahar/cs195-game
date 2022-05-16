@@ -26,7 +26,8 @@ public class GamesController {
 	 */
 	public static Integer createGame(Integer key) {
 		
-		// STUB: there is only 1 game for this first iteration so could potentially re-use ID == GameDesignVars.GAME_LOBBY_ID
+		// NOTE: there is only 1 game for this first iteration so could 
+		//		potentially re-use key/ID == GameDesignVars.GAME_LOBBY_ID
 		GameInstance game = new GameInstance(GameState.GAME_LOBBY, key , null);
 		games.put(key, game);
 		return key;
