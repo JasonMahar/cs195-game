@@ -100,6 +100,9 @@ public class ServerApplication {
 			return null;
 		}
 		System.out.println("\twith gameID: " + gameID + ", playerID: " + newPlayer.getPublicID());
+
+		newPlayer.setState(State.IN_LOBBY);
+		PlayersController.addPlayer(newPlayer);
 		
 		GameInstance game = gamesController.getGame(gameID);
 		if( game == null) {
@@ -119,9 +122,6 @@ public class ServerApplication {
 			//		first iteration, we'll go ahead and return the game
 //			return null;
 		}
-
-		PlayersController.addPlayer(newPlayer);
-		newPlayer.setState(State.IN_LOBBY);
 		
 		return game;
 	}
@@ -220,20 +220,40 @@ public class ServerApplication {
 	// 		(for this first iteration, everyone in the lobby has Start Game privileges, 
 	//		since we're skipping the CreateGame step and there's only one GameID to JoinGame)
 	//
+//	@PutMapping("/game/{id}")
+//	public GameInstance updateGameState(@PathVariable Integer gameID, @RequestBody GameState state) {
+//		System.out.println("ServerApplication.updateGameState() called with gameID: " +
+//				gameID + ", state: " + state);
+	
+// HACK: for some reason passing in state is messing up the ID, so hardcoding the state	
 	@PutMapping("/game/{id}")
-	public GameInstance updateGameState(@PathVariable Integer gameID, @RequestBody GameState state) {
-		System.out.println("ServerApplication.updateGameState() called with gameID: " +
-				gameID + ", state: " + state);
+	public GameInstance updateGameState(@PathVariable Integer gameID) {
+//		public GameInstance updateGameState(@PathVariable String ID) {
+//		public GameInstance updateGameState(@PathVariable String ID, @RequestParam(value = "state", defaultValue = "IN_GAME") String state) {
+		System.out.println("ServerApplication.updateGameState() called with gameID: " + gameID + ",");
 
+//		Integer gameID = 1;
+//		try {
+//			gameID = Integer.valueOf(ID);
+//		}
+//        catch (NumberFormatException ex){
+//            ex.printStackTrace();
+//        }
+
+		// HACK: for some reason passing in state is messing up the ID, so hardcoding the state	
+//		GameState gameState = GameState.valueOf(state);
+		GameState gameState = GameState.ENTERING_GAME;
+		System.out.println("\tstate: " + gameState);
+		
 		GameInstance game = gamesController.getGame(gameID);
-		game.setGameState(state);
+		game.setGameState(gameState);
 		
 
 		// different game states will change Player's state as appropriate
 		State playersState = null;
 				
 				
-		switch(state) {
+		switch(gameState) {
 		
 			case GAME_STARTING:
 			case ENTERING_GAME:
@@ -260,7 +280,7 @@ public class ServerApplication {
 				break;
 				
 			default:
-				System.out.println("\tERROR: Unknown state: " + state  + ". returning null");
+				System.out.println("\tERROR: Unknown state: " + gameState  + ". returning null");
 				return null;
 		}
 
@@ -273,6 +293,43 @@ public class ServerApplication {
 		
 		return game;
 	}
+	
+	
+	// SUPER HACK: I can't get the gameID to show up for updateGameState so I'm just create a 
+	// whole new version with no parameters
+	@PutMapping("/startgame/")
+	public GameInstance startGame() {
+		System.out.println("ServerApplication.startGame() called");
+
+		// HACK: for some reason passing in state is messing up the ID, so hardcoding the state	
+//			GameState gameState = GameState.valueOf(state);
+		GameState gameState = GameState.ENTERING_GAME;
+		System.out.println("\tstate: " + gameState);
+
+// HACK: can't get gameID to pass in so hardcoding it:
+		Integer gameID = GameDesignVars.GAME_LOBBY_ID;
+		
+		GameInstance game = gamesController.getGame(gameID);
+		game.setGameState(gameState);
+		
+//		switch(gameState) {
+//			case IN_GAME:
+		State playersState =  State.RUNNING;
+
+		// need to set all players spawn points
+		MapManager.setPlayersStartingLocations( game.getAllPlayers() );
+
+		if( playersState != null) {
+
+			for(PlayerData player : game.getAllPlayers()) {
+				player.setState(playersState);
+			}
+		}
+		
+		return game;
+	}
+	
+	
 	
 	/////////////////////////////////////////////
 	//
@@ -288,6 +345,7 @@ public class ServerApplication {
 	 */
 	@PostMapping("/player")
 	public PlayerData createPlayer(@RequestParam(value = "name", defaultValue = "") String name) {
+//		System.out.println("ServerApplication.createPlayer() called with name = " + name);
 		System.out.println("ServerApplication.createPlayer() called");
 
 		Integer ID = PlayersController.createPlayer();
@@ -303,20 +361,21 @@ public class ServerApplication {
 	 * normally the URI looks like "/player/{id}" in which getPlayer is called
 	 */
 	@GetMapping("/player")
-	public Collection<PlayerData> player(@RequestParam(value = "id", defaultValue = "0") String id) {
+//	public Collection<PlayerData> player(@RequestParam(value = "id", defaultValue = "0") String id) {
+	public Collection<PlayerData> getAllplayers() {
 
-		System.out.println("ServerApplication.player() called. id = " + id);
-		
-		Integer playerID = 0;
-		try {
-			playerID = Integer.valueOf(id);
-		}
-        catch (NumberFormatException ex){
-            ex.printStackTrace();
-        }
-		
-		if( playerID == null || playerID == 0 ) {
-			System.out.println("no playerID = " + playerID + ". getting all players.");
+		System.out.println("ServerApplication.getAllplayers() called. ");
+//		
+//		Integer playerID = 0;
+//		try {
+//			playerID = Integer.valueOf(id);
+//		}
+//        catch (NumberFormatException ex){
+//            ex.printStackTrace();
+//        }
+//		
+//		if( playerID == null || playerID == 0 ) {
+//			System.out.println("no playerID = " + playerID + ". getting all players.");
 
 			// TODO:
 			// 	should normally return an error code for invalid param or data not found
@@ -325,16 +384,16 @@ public class ServerApplication {
 //			playerID = STUB_playerID;
 
 			return PlayersController.getAllPlayers();	
-		}
-		else {
-			System.out.println("getPlayer playerID = " + playerID);
-
-			Collection<PlayerData> playerList = new ArrayList<PlayerData>();
-			PlayerData player = PlayersController.getPlayer(playerID);
-			playerList.add(player);
-			return playerList;	
-			
-		}
+//		}
+//		else {
+//			System.out.println("getPlayer playerID = " + playerID);
+//
+//			Collection<PlayerData> playerList = new ArrayList<PlayerData>();
+//			PlayerData player = PlayersController.getPlayer(playerID);
+//			playerList.add(player);
+//			return playerList;	
+//			
+//		}
 
 //PlayerData ps = PlayersController.getPlayer(playerID);
 //

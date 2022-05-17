@@ -1,11 +1,14 @@
 package com.wickedgames.cs195.transport;
 
+import java.util.Collection;
+
 /**
  * @author Jason
  *
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.wickedgames.cs195.model.*;
 import com.wickedgames.cs195.model.GameInstance.GameState;
@@ -62,64 +65,6 @@ public enum ServerCommands {
     		
 */
 	
-	CREATE_GAME{
-
-		@Override
-		public String toString() {	return "Create Game";	}
-
-		@Override
-		public GameInstance send(String params, PlayerData player, Integer gameID) {
-
-			if(player == null && params != null && !params.isBlank()) {
-				player = ServerCommands.getGameSession().createNewPlayer(params);
-			}
-			
-			GameInstance game = ServerCommands.getGameSession().createNewGame(player);
-			
-			if( game == null ) {
-				resultMessage = "ERROR: CREATE_GAME.send() could not create GameInstance";
-			}
-			else {
-				resultMessage = SUCCESS_MESSAGE;
-			}
-			
-			return game;
-		}
-	},
-
-	// returns Collection<GameInstance>, so doesn't fit the model for here
-//	LIST_GAMES{
-//
-//		@Override
-//		public String toString() {	return "List Games";	}
-//
-//		@Override
-//		public GameInstance send(String params, PlayerData player, Integer gameID) {
-//
-//			return ServerCommands.getGameSession().getAllGames();
-//		}
-//	},
-
-	GET_GAME_INFO{
-
-		@Override
-		public String toString() {	return "Get Game Info";	}
-
-		@Override
-		public GameInstance send(String params, PlayerData player, Integer gameID) {
-
-			GameInstance game = ServerCommands.getGameSession().getGameData(gameID);
-			
-			if( game == null ) {
-				resultMessage = "ERROR: GET_GAME_INFO.send() could not create GameInstance";
-			}
-			else {
-				resultMessage = SUCCESS_MESSAGE;
-			}
-			
-			return game;
-		}
-	},
 
 	CREATE_PLAYER{
 
@@ -153,6 +98,7 @@ public enum ServerCommands {
 		}
 	},
 
+	
 	JOIN_GAME{
 
 		@Override
@@ -188,6 +134,7 @@ public enum ServerCommands {
 		}
 	},
 
+	
 	START_GAME{
 
 		@Override
@@ -208,49 +155,11 @@ public enum ServerCommands {
 		}
 	},
 
-	LEAVE_GAME{
-
-		@Override
-		public String toString() {	return "Leave Game";	}
-
-		@Override
-		public GameInstance send(String params, PlayerData player, Integer gameID) {
-
-			ServerCommands.getGameSession().quitGame(player);
-			resultMessage = SUCCESS_MESSAGE;
-			return null;
-		}
-	},
-
-
-	// returns a Collection of PlayerData, so doesn't fit the model for here
-	GET_ALL_PLAYERS_DATA{
-
-		@Override
-		public String toString() {	return "List All Players";	}
-
-		@Override
-		public GameInstance send(String params, PlayerData player, Integer gameID) {
-
-			HashMap<Integer, PlayerData> players = ServerCommands.getGameSession().getAllPlayersData();
-
-			if( players == null ) {
-				resultMessage = "ERROR: GET_ALL_PLAYERS_DATA.send() PlayerData player is null.";
-				return null;
-			}
-			
-			// since send() always returns a GameInstance, 
-			//		GET_ALL_PLAYERS_DATA returns the players HashMap inside a dummy GameInstance
-			GameInstance dummyGame = new GameInstance(GameState.UNKNOWN, GameDesignVars.BAD_GAME_ID, players);
-
-			resultMessage = SUCCESS_MESSAGE;
-			return dummyGame;
-		}
-	},
 	
-	
-	// returns only a PlayerData, so doesn't fit the model for here
-	
+	// returns only a PlayerData. doesn't fit the normal model of 
+	// returning a game. So instead we return a dummy GameInstance 
+	// with just the PlayerData set
+	//
 	GET_PLAYER_DATA{
 
 		@Override
@@ -275,6 +184,40 @@ public enum ServerCommands {
 		}
 	},
 
+	
+	// returns only a PlayerData. doesn't fit the normal model of 
+	// returning a game. So instead we return a dummy GameInstance 
+	// with just the HashMap of PlayerData set
+	//
+	GET_ALL_PLAYERS_DATA{
+
+		@Override
+		public String toString() {	return "Get All Players";	}
+
+		@Override
+		public GameInstance send(String params, PlayerData player, Integer gameID) {
+
+			HashMap<Integer, PlayerData> players = ServerCommands.getGameSession().getAllPlayersData();
+
+			if( players == null ) {
+				resultMessage = "ERROR: GET_ALL_PLAYERS_DATA.send() PlayerData player is null.";
+				return null;
+			}
+			
+			// since send() always returns a GameInstance, 
+			//		GET_ALL_PLAYERS_DATA returns the players HashMap inside a dummy GameInstance
+			GameInstance dummyGame = new GameInstance(GameState.UNKNOWN, GameDesignVars.BAD_GAME_ID, players);
+
+			resultMessage = SUCCESS_MESSAGE;
+			return dummyGame;
+		}
+	},
+	
+	
+	// returns only a PlayerData. doesn't fit the normal model of 
+	// returning a game. So instead we return a dummy GameInstance 
+	// with just the PlayerData set
+	//
 	UPDATE_PLAYER_DATA{
 
 		@Override
@@ -286,8 +229,105 @@ public enum ServerCommands {
 			resultMessage = SUCCESS_MESSAGE;
 			return ServerCommands.getGameSession().updatePlayerData(gameID, player);
 		}
-	};
+	},
 	
+	
+	/*
+	 *  to create a game, it  needs the PlayerData of who's creating it passed in
+	 *  (games with no players in them will get removed by the server)
+	 */
+	CREATE_GAME{
+
+		@Override
+		public String toString() {	return "Create Game";	}
+
+		@Override
+		public GameInstance send(String params, PlayerData player, Integer gameID) {
+
+			if(player == null && params != null && !params.isBlank()) {
+				player = ServerCommands.getGameSession().createNewPlayer(params);
+			}
+			
+			GameInstance game = ServerCommands.getGameSession().createNewGame(player);
+			
+			if( game == null ) {
+				resultMessage = "ERROR: CREATE_GAME.send() could not create GameInstance";
+			}
+			else {
+				resultMessage = SUCCESS_MESSAGE;
+			}
+			
+			return game;
+		}
+	},
+
+	
+	GET_GAME_INFO{
+
+		@Override
+		public String toString() {	return "Get Game Info";	}
+
+		@Override
+		public GameInstance send(String params, PlayerData player, Integer gameID) {
+
+			GameInstance game = ServerCommands.getGameSession().getGameData(gameID);
+			
+			if( game == null ) {
+				resultMessage = "ERROR: GET_GAME_INFO.send() could not create GameInstance";
+			}
+			else {
+				resultMessage = SUCCESS_MESSAGE;
+			}
+			
+			return game;
+		}
+	},
+
+	// returns Collection<GameInstance>, so doesn't fit the model for here
+	// HACK: just returning first GameInstance
+	LIST_GAMES{
+
+		@Override
+		public String toString() {	return "List Games";	}
+
+		@Override
+		public GameInstance send(String params, PlayerData player, Integer gameID) {
+
+			Collection<GameInstance> games = ServerCommands.getGameSession().getAllGames();
+			if( games == null ) {
+				resultMessage = "LIST_GAMES.send() no GameInstances returned.";
+				return null;
+			}
+			
+			
+//			GameInstance[] gamesArray = (GameInstance[])games.toArray();
+//			
+//			if( gamesArray.length == 0 )  {
+//				resultMessage = "LIST_GAMES.send() no GameInstances returned";
+//				return null;
+//			}
+//			return gamesArray[0];
+
+// HACK: only returning first GameInstance
+			Iterator<GameInstance> it = games.iterator();
+			GameInstance game = it.next();
+			return game;
+		}
+	},
+
+	LEAVE_GAME{
+
+		@Override
+		public String toString() {	return "Leave Game";	}
+
+		@Override
+		public GameInstance send(String params, PlayerData player, Integer gameID) {
+
+			ServerCommands.getGameSession().quitGame(player);
+			resultMessage = SUCCESS_MESSAGE;
+			return null;
+		}
+	};
 	
 	////////////////////////////////////////
 	// methods for each enum value:
@@ -339,6 +379,13 @@ public enum ServerCommands {
 	 */
 	public static String getLastResultMessage() {
 		return resultMessage;
+	}
+	
+
+	public static void clearLastResults() {
+
+		resultMessage = "";
+		GameSession.setLastJSONReceived("");
 	}
 
 

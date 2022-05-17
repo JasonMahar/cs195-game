@@ -12,6 +12,12 @@ import com.wickedgames.cs195.model.PlayerData.Facing;
  */
 public class MapManager {
 
+	private static float MAP_WIDTH = 800f; 
+	private static float MAP_HEIGHT = 600f; 
+//	private static float START_DISTANCE_FROM_EDGE = 30f;
+	private static float AVATAR_HEIGHT = 50f;
+	private static float AVATAR_WIDTH = 40f;
+	
 	// indices into the Float[]
 	public static int X_VALUE = 0;
 	public static int Y_VALUE = 1;
@@ -27,63 +33,70 @@ public class MapManager {
 	 * 
 	startingLocations					
 	{ 
-		//	 	X		Y	FACING		CORNER OF SCREEN
+		//	 	x		Y	FACING		CORNER OF SCREEN
 		//	   ---     ---  ------ 		----------------
-			{ 64.0f, 896.0f, UP}, 		// LEFT, BOTTOM 
-			{536.0f,  64.0f, DOWN}, 	// RIGHT, TOP
-			{ 64.0f,  64.0f, DOWN}, 	// LEFT, TOP
-			{536.0f, 896.0f, UP} 		// RIGHT, BOTTOM
+			{ 64.0f,  536f, UP}, 		// LEFT, BOTTOM 
+			{  736f, 64.0f, DOWN}, 	// RIGHT, TOP
+			{ 64.0f, 64.0f, DOWN}, 	// LEFT, TOP
+			{  736f,  536f, UP} 		// RIGHT, BOTTOM
 		});
+	
+	
+			// STUB:
+Polygon myCharacter = createPlayerAvatar(AVATAR_WIDTH, MAP_HEIGHT - AVATAR_HEIGHT, 90, AVATAR_COLORS[0]);
+Polygon otherCharacter = createPlayerAvatar(MAP_WIDTH - AVATAR_WIDTH, AVATAR_HEIGHT, 270, AVATAR_COLORS[1]);
+Polygon thirdCharacter = createPlayerAvatar(AVATAR_WIDTH, AVATAR_HEIGHT, 270, AVATAR_COLORS[2]);
+Polygon fourthCharacter = createPlayerAvatar(MAP_WIDTH - AVATAR_WIDTH, MAP_HEIGHT - AVATAR_HEIGHT, 90, AVATAR_COLORS[3]);
+
+	private static int MAP_WIDTH = 800; 
+	private static int MAP_HEIGHT = 600; 
+	private static int START_DISTANCE_FROM_EDGE = 30;
+	private static float AVATAR_HEIGHT = 50f;
+	private static float AVATAR_WIDTH = 40f;
 	
 	 */
 	public static ArrayList<Float[]> getstartingLocations() {
 		
 		// only need to create startingLocations once 
-		if( startingLocations == null) {
+		if( MapManager.startingLocations == null) {
 			
-			startingLocations = new ArrayList<Float[]>();
-			startingLocations.set(0, new Float[] {64.0f, 896.0f, Facing.UP.getDirection()} );
-			startingLocations.set(1, new Float[] {536.0f, 64.0f, Facing.DOWN.getDirection()} );
-			startingLocations.set(2, new Float[] {64.0f, 64.0f, Facing.DOWN.getDirection()} );
-			startingLocations.set(3, new Float[] {536.0f, 896.0f, Facing.UP.getDirection()} );
+			MapManager.startingLocations = new ArrayList<Float[]>();
+			MapManager.startingLocations.add(new Float[] {AVATAR_WIDTH, MAP_HEIGHT - AVATAR_HEIGHT,Facing.UP.getDirection()} );
+			MapManager.startingLocations.add(new Float[] {MAP_WIDTH - AVATAR_WIDTH, AVATAR_HEIGHT, Facing.DOWN.getDirection()} );
+			MapManager.startingLocations.add(new Float[] {AVATAR_WIDTH, AVATAR_HEIGHT, Facing.DOWN.getDirection()} );
+			MapManager.startingLocations.add(new Float[] {MAP_WIDTH - AVATAR_WIDTH, MAP_HEIGHT - AVATAR_HEIGHT, Facing.UP.getDirection()} );
 		}
 		
-		return startingLocations;
+		return MapManager.startingLocations;
 	}
 	
 
 	public static boolean setPlayersStartingLocations( Collection<PlayerData> players ) {
 		
-		getstartingLocations();		// initializes startingLocations
+		MapManager.getstartingLocations();		// initializes startingLocations
 		
-		
-		// only need to create startingLocations once 
-		if(startingLocations == null) {
-			startingLocations = new  ArrayList<Float[]>();
-			
-			Float [] nextLocation;
-			int locationIndex = 0;
-			for( PlayerData player : players ) {
+		Float [] nextLocation;
+		int locationIndex = 0;
+		for( PlayerData player : players ) {
 
-				// if more players than startingLocations
-				if( locationIndex >= startingLocations.size() ) {	
+			// if more players than startingLocations
+			if( locationIndex >= MapManager.startingLocations.size() ) {	
 
-					System.out.println("WARNING: ServerApplication.setPlayersStartingLocations() locationIndex = " +
-							locationIndex + " is greater than # of locations =  " + startingLocations.size() +
-							"\n\tRepeating same locations previously used.");
-					locationIndex = 0;	
-				}
-				
-				
-				nextLocation = startingLocations.get(locationIndex);
-				player.setX( nextLocation[X_VALUE] );
-				player.setY( nextLocation[Y_VALUE] );
-				player.getFacing().setDirection( nextLocation[FACING_VALUE] );
-				
-				++locationIndex;
+				System.out.println("WARNING: ServerApplication.setPlayersStartingLocations() locationIndex = " +
+						locationIndex + " is greater than # of locations =  " + MapManager.startingLocations.size() +
+						"\n\tRepeating same locations previously used.");
+				locationIndex = 0;	
 			}
-
+			
+			
+			nextLocation = MapManager.startingLocations.get(locationIndex);
+			player.setX( nextLocation[X_VALUE] );
+			player.setY( nextLocation[Y_VALUE] );
+			player.getFacing().setDirection( nextLocation[FACING_VALUE] );
+			
+			++locationIndex;
 		}
+
 		return true;
 	}
 	

@@ -16,18 +16,21 @@ import com.wickedgames.cs195.model.*;
 
 public class PlayerController{
 
+	PlayerData myPlayerData;
 	Node myCharacter;
 //	double speed = 5.0;
-	double speed = GameDesignVars.MAX_PLAYER_SPEED;
+	float speed = GameDesignVars.MAX_PLAYER_SPEED;
 	
 	
-	public PlayerController(Node character) {
+	public PlayerController(Node character, PlayerData playerData ) {
 		myCharacter = character;
+		myPlayerData = playerData;
 	}
 
 	
-	public void setNodeToControl(Node character) {
+	public void setNodeToControl(Node character, PlayerData playerData ) {
 		myCharacter = character;
+		myPlayerData = playerData;
 	}
 	
 	
@@ -67,24 +70,28 @@ public class PlayerController{
 		
 //		System.out.println("MOVIN' UP!");
 		myCharacter.setTranslateY(myCharacter.getTranslateY() - speed);
+		myPlayerData.setY(myPlayerData.getY() - speed);
 	}
 	
 	public void moveDown() {
 		
 //		System.out.println("MOVIN' DOWN!");
 		myCharacter.setTranslateY(myCharacter.getTranslateY() + speed);
+		myPlayerData.setY(myPlayerData.getY() + speed);
 	}
 	
 	public void moveLeft() {
 		
 //		System.out.println("MOVIN' LEFT!");
 		myCharacter.setTranslateX(myCharacter.getTranslateX() - speed);
+		myPlayerData.setX(myPlayerData.getX() - speed);
 	}
 	
 	public void moveRight() {
 		
 //		System.out.println("MOVIN' RIGHT!");
 		myCharacter.setTranslateX(myCharacter.getTranslateX() + speed);
+		myPlayerData.setX(myPlayerData.getX() + speed);
 	}
 
 

@@ -160,6 +160,8 @@ public class Main extends Application {
 	private void initializeMap(Collection<PlayerData> players) {
 
 		int index = 0;
+		String playerName = "";
+		
 		for(PlayerData player : players) {
 			
 			Polygon character = createPlayerAvatar(
@@ -168,18 +170,28 @@ public class Main extends Application {
 					player.getFacing().getDirection(), 
 					AVATAR_COLORS[index++]);
 			
-			playerAvatars.put(player.getName(), character);
+			playerName = player.getName();
+			playerAvatars.put(playerName, character);
 		}
 		
 		// Set keyboard inputs to control the first Player (should be same as 
 		// 		currentlySelectedGame and the currently selected playersChoices)
 		//
+
+//		String playerName = (String)playersChoices.getValue();
+//		String playerName = playersChoices.getSelectionModel().getSelectedItem();
 		
-		String playerName = (String)playersChoices.getValue();
-		Polygon avatar = playerAvatars.get(playerName);
-		if( avatar != null ) {
-			setAvatarToControl( avatar );
+		
+		if( currentlySelectedPlayer != null && !currentlySelectedPlayer.getName().isEmpty()) {
+			playerName = currentlySelectedPlayer.getName();
 		}
+		else {  // just select last playerName added to be currentlySelectedPlayer
+			this.updateCurrentlySelectedPlayer(playerName);
+		}
+		System.out.println("initializeMap setting active player to " + playerName);
+		
+		Polygon avatar = playerAvatars.get(playerName);
+		setAvatarToControl( avatar );
 
 		controller.initializeInputs(scene);
 	}
@@ -239,12 +251,23 @@ public class Main extends Application {
         
 		Text playersText = new Text("Players:");     
 		playersChoices = new ChoiceBox<String>();
+		
 		// add a listener. when Player is changed, list of Players is set to that game
-		playersChoices.setOnAction((event) -> {
+//		playersChoices.setOnAction((event) -> {
+//
+//				System.out.println("playersChoices OnAction handler called");
+//			  	onPlayerChoiceChanged();
+//	        });
 
-				System.out.println("playersChoices OnAction handler called");
-			  	onPlayerChoiceChanged();
-	        });
+		// add a listener. when Player is changed, currentlySelectedPlayer is set 
+		playersChoices.getSelectionModel()
+				.selectedItemProperty()
+				.addListener(
+		         (ObservableValue<? extends String> ov, String old_val, String new_val) -> {
+
+						System.out.println("playersChoices OnAction handler called with new_val = " + new_val);
+					  	onPlayerChoiceChanged(new_val);
+	         	});
 
 	    Button submitButton = new Button("Submit"); 
 	    submitButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -325,10 +348,10 @@ public class Main extends Application {
 		}
 		
 		if( controller == null ) {
-			controller = new PlayerController(character);
+			controller = new PlayerController(character, currentlySelectedPlayer);
 		}
 		else {
-			controller.setNodeToControl(character);
+			controller.setNodeToControl(character, currentlySelectedPlayer);
 		}
 		
 		if( currentlySelectedPlayer == null ) {
@@ -415,27 +438,25 @@ public class Main extends Application {
 		String params = commandsParametersField.getText();
 		commandsParametersField.clear();					// auto clearing commandsParametersField but maybe shouldn't?
 		Integer gameID = (Integer)gamesChoices.getValue();
-		String playerName = (String)playersChoices.getValue();
+		
+
+		String playerName = (String)playersChoices.getSelectionModel().getSelectedItem();
+//		String playerName = (String)playersChoices.getValue();
 
 		System.out.println("\tparams: " + params);
 		System.out.println("\tgameID: " + gameID.toString());
 		System.out.println("\tplayerName: " + playerName);
 		
-		// pass in PlayerData if we have it in currentlySelectedGame or knownPlayers
-		if( currentlySelectedGame != null ) {
-			
-			currentlySelectedPlayer = currentlySelectedGame.getPlayer(playerName);
-		}
-		
 		if( currentlySelectedPlayer == null ) {
-			currentlySelectedPlayer = knownPlayers.get(playerName);
+			// update currentlySelectedPlayer to pass into ServerCommands  
+			updateCurrentlySelectedPlayer(playerName);
 		}
-		
 		if( currentlySelectedPlayer == null ) {
 			System.out.println("command enum: " + command.name());
 			System.out.println("WARNING: no playerData yet for " + playerName);
 		}
-			
+		
+		ServerCommands.clearLastResults();
 		
 		// note that since since send() can only return GameInstance,
 		//		sometimes the results is only the part of the GameInstance we asked for
@@ -444,22 +465,49 @@ public class Main extends Application {
 		GameInstance results = command.send(params, currentlySelectedPlayer, gameID);
 		
 		processResults( command, results, params );
-		
 		resultsText.setText(ServerCommands.getLastResultMessage());
-		jsonText.setText(ServerCommands.getLastJSONReceived());
 		System.out.println("\tgetLastResultMessage: " + ServerCommands.getLastResultMessage());
-			
+
+		jsonText.setText(ServerCommands.getLastJSONReceived());
+		System.out.println("\tgetLastJSONReceived: " + ServerCommands.getLastJSONReceived());
+
 		if( ServerCommands.SUCCESS_MESSAGE.equals( ServerCommands.getLastResultMessage() ) ) {
 			resultsText.setFill(Color.GREEN);
 		}
 		else {
 			resultsText.setFill(Color.RED);
 		}
-
-		System.out.println("\tgetLastJSONReceived: " + ServerCommands.getLastJSONReceived());
 	}
 
 	
+// HACK: currentlySelectedPlayer is supposed to get set whenever playersChoices gets 
+//		set or changed. But sometimes it's not getting updated, so trying to make sure 
+//		we get most updated data.
+	/*
+	 *  sets currentlySelectedPlayer to the most up-to-date PlayerData that has
+	 *  playerName, based on:
+	 *  	(1) looking in currentlySelectedGame,
+	 *  	(2) leaves currentlySelectedPlayer as-is if already has that name, or
+	 *  	(3) in knownPlayers
+	 */
+	private void updateCurrentlySelectedPlayer(String playerName) {
+		
+		// first check in currentlySelectedGame 
+		if( currentlySelectedGame != null ) {
+			
+			PlayerData playerFromGame = currentlySelectedGame.getPlayer(playerName);
+			if(playerFromGame != null) {
+				currentlySelectedPlayer = playerFromGame;
+			}
+		}
+		
+		// if PlayerData was not found in currentlySelectedGame or already set in
+		// currentlySelectedPlayer, check knownPlayers
+		if( currentlySelectedPlayer == null ) {
+			currentlySelectedPlayer = knownPlayers.get(playerName);
+		}
+	}
+
 
 	private void addPlayerNameToPlayersChoices(String playerName) {
 
@@ -479,10 +527,10 @@ public class Main extends Application {
 			//		don't want to change playersChoices.setValue
 //			addPlayerNameToPlayersChoices(player.getName());
 
-			if( !playersChoices.getItems().contains( player.getName() ) ) {
-				
+			knownPlayers.put(player.getName(), player);
+			
+			if( !playersChoices.getItems().contains( player.getName() ) ) {	
 				playersChoices.getItems().add( player.getName() );
-				knownPlayers.put(player.getName(), player);
 			}
 		}
 	}
@@ -493,21 +541,21 @@ public class Main extends Application {
 		playersChoices.getItems().clear();
 	}
 	
-	private String onPlayerChoiceChanged() {
+	private String onPlayerChoiceChanged(String nameSelected) {
 
-		String nameSelected = playersChoices.getSelectionModel().getSelectedItem();
+//		String nameSelected = playersChoices.getSelectionModel().getSelectedItem();
+		updateCurrentlySelectedPlayer(nameSelected);
+		jsonText.setText("PlayerData: " + currentlySelectedPlayer);
+		resultsText.setText("");
+		
 		if( currentlySelectedGame != null  ) {
 			
-			currentlySelectedPlayer = currentlySelectedGame.getPlayer(nameSelected);
-//			jsonText.setText("PlayerData: " + currentlySelectedPlayer);
-//			resultsText.setText("");
-			
-
 //			int indexSelected = playersChoices.getSelectionModel().getSelectedIndex();
 //			if( indexSelected < playerAvatars.size() ) {
 				
-			setAvatarToControl( playerAvatars.get(nameSelected));
-//			
+			Polygon avatar = playerAvatars.get(nameSelected);
+			setAvatarToControl( avatar );
+			
 		}
 	
 	
@@ -535,6 +583,9 @@ public class Main extends Application {
 				command == ServerCommands.LEAVE_GAME) {
 			// GameInstance just holds the updated player data
 			
+			if( results == null ) {
+				return;
+			}
 			currentlySelectedPlayer = results.getPlayer(playerName);
 			addPlayerNameToPlayersChoices(playerName);
 			knownPlayers.put(playerName, currentlySelectedPlayer);
@@ -547,9 +598,7 @@ public class Main extends Application {
 			if( currentlySelectedGame == null ) {
 				currentlySelectedGame = results;
 			}
-			else {
-				currentlySelectedGame.addPlayer(currentlySelectedPlayer);
-			}
+			currentlySelectedGame.addPlayer(currentlySelectedPlayer);
 		}
 		else if( command == ServerCommands.GET_ALL_PLAYERS_DATA) {
 			System.out.println("Main.processResults: ServerCommands.GET_ALL_PLAYERS_DATA");
@@ -568,13 +617,14 @@ public class Main extends Application {
 			System.out.println("Main.processResults: ServerCommands.START_GAME.  Go Players!");
 			
 			currentlySelectedGame = results;
-			initializeMap(currentlySelectedGame.getAllPlayers());
 			
 			// replace playersChoices with returned list of Players
 			// Since game has now started playersChoices shouldn't be changed after this,
 			// 		except for removing players that leave the game
 			clearPlayersChoices();
 			addAllPlayerNamesToPlayersChoices( currentlySelectedGame.getAllPlayers() );
+			
+			initializeMap(currentlySelectedGame.getAllPlayers());
 		}
 		else { // ServerCommands.CREATE_GAME, ServerCommands.GET_GAME_INFO, ServerCommands.JOIN_GAME, ?ServerCommands.LEAVE_GAME?
 			

@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -55,7 +56,7 @@ public class GameSession implements GameSessionInterface {
 	/**
 	 * @param lastJSONReceived the lastJSONReceived to set
 	 */
-	private static void setLastJSONReceived(String lastJSONReceived) {
+	static void setLastJSONReceived(String lastJSONReceived) {
 		GameSession.lastJSONReceived = lastJSONReceived;
 	}
 
@@ -138,6 +139,14 @@ public class GameSession implements GameSessionInterface {
 			else {
 			    System.out.println("received game json: " + returnedJson.toString());
 			    setLastJSONReceived( returnedJson.toString() );
+			    
+			    Collection<GameInstance> games = new ArrayList<GameInstance>();
+			    for( int i = 0; i < returnedJson.length(); ++i ) {
+			    	JSONObject json = returnedJson.getJSONObject(i);
+			    	games.add(createGameInstanceFromJSON( json ));
+			    }
+			    
+			    return games;
 			}
 
 		} catch (IOException e) {
@@ -196,11 +205,20 @@ public class GameSession implements GameSessionInterface {
 		JSONObject json;
 		JSONObject returnedJson;
 		try {
-			json = new JSONObject(state);
-		    System.out.println("sending updateGameState json: " + json.toString());
-		    System.out.println("\t to URI: " + SERVER_GAME_URI + gameID);
-		    returnedJson = putJsonToUrl(json, SERVER_GAME_URI + gameID);
+
+//// HACK: since server is not parsing the json I'm sending, 
+////		I'm just going to pass the state in as a param
+//		    String uri = SERVER_GAME_URI + gameID + "?state="+state.name();
+//		    String uri = SERVER_GAME_URI + gameID;
+			String uri = SERVER_BASE_URI + "startgame/";
 		    
+			JSONObject jsonSend = new JSONObject();
+			jsonSend.put("state", state.ordinal());		// put makes the value an Object (which the server casts to String)
+//		    System.out.println("sending updateGameState json: " + jsonSend.toString());
+		    System.out.println("sending updateGameState json: " + jsonSend);
+		    System.out.println("\t to URI: " + uri);
+
+		    returnedJson = putJsonToUrl(jsonSend, uri);
 		    
 			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
 				
@@ -244,8 +262,11 @@ public class GameSession implements GameSessionInterface {
 		try {
 			
 			json = new JSONObject(userPlayer);
+		    String uri = SERVER_GAME_URI + gameID;
 		    System.out.println("sending userPlayer json: " + json.toString());
-		    returnedJson = postJsonToUrl(json, SERVER_GAME_URI + gameID);
+		    		    System.out.println("\t to URI: " + uri);
+		    
+		    returnedJson = postJsonToUrl(json, uri);
 		    
 		    
 			if( returnedJson == null /* || returnedJson.isEmpty() */ ) {
@@ -400,13 +421,14 @@ public class GameSession implements GameSessionInterface {
 		try {
 
 			JSONObject jsonSend = new JSONObject();
-//			jsonSend.append("name", playerName);	// append makes the value a JSON Array
 			jsonSend.put("name", playerName);		// put makes the value an Object (which the server casts to String)
-		    System.out.println("sending json: " + jsonSend.toString());
 
 			// HACK: instead of making server parse the json, 
 			//		I'm just going to pass the name in as a param
-		    JSONObject returnedJson = postJsonToUrl(jsonSend, SERVER_PLAYER_URI+ "?name=" + playerName);
+		    String URI = SERVER_PLAYER_URI+ "?name=" + playerName;
+		    System.out.println("sending createNewPlayer json: " + jsonSend);
+		    System.out.println("\t to URI: " + URI);
+		    JSONObject returnedJson = postJsonToUrl(jsonSend, URI );
 		    System.out.println("received PlayerData json: " + returnedJson.toString());
 
 			PlayerData newPlayer = createCS195PlayerDataFromJSON(returnedJson);
@@ -439,29 +461,18 @@ public class GameSession implements GameSessionInterface {
 
 		GameState state = GameState.valueOf((String)json.get("gameState"));
 		Integer id = json.getInt("id");
-		JSONObject playersJSON = (JSONObject)json.get("players");
-		Map<String, Object> playersMap = playersJSON.toMap();
+//		JSONObject playersJSON = (JSONObject)json.get("players");
+//		Map<String, Object> playersMap = playersJSON.toMap();
+		JSONArray playersJSON = (JSONArray)json.get("allPlayers");
+//		List<Object> playersMap = playersJSON.toList();
 		
 		// parse players into the expected HashMap<Integer, PlayerData>
 		HashMap<Integer, PlayerData> playersHashMap = new HashMap<Integer, PlayerData>();
-		for (Map.Entry<String, Object> entry : playersMap.entrySet()) {
-			
-			Integer key = Integer.parseInt(entry.getKey());
-			HashMap<String, Object> value = (HashMap<String, Object>)entry.getValue();
+		for (int i=0; i < playersJSON.length(); ++i) {
+			JSONObject value = playersJSON.getJSONObject(i);
 			CS195PlayerData nextPlayer = createCS195PlayerDataFromJSON( value );
-			playersHashMap.put(key, nextPlayer);
-		}
-
-		
-//		Iterator<?> keys = playersJSON.keys();
-//		.entrySet()
-//        while( keys.hasNext() ){
-//            String key = (String)keys.next();
-//            String value = jObject.getString(key); 
-//            map.put(key, value);
-//
-//        }
-				
+			playersHashMap.put(nextPlayer.getPublicID(), nextPlayer);
+		}	
 		
 		return new GameInstance( state, id, playersHashMap );
 	}

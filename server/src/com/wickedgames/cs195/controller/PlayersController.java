@@ -24,12 +24,17 @@ public class PlayersController {
 	public static Integer createPlayer() {
 
 		PlayerData player = new CS195PlayerData();
-		player.setPublicID(createNewKey());
+		int publicKey = createNewKey();
+		player.setPublicID(publicKey);
 		int privateKey = createNewKey();
 		player.setPrivateID(privateKey);
-		players.put(privateKey, player);
 		
-		return privateKey;
+// NOTE: in future this should be by private key which only the player it belongs to
+//		will know. But for simplicity we're just using publicKey for everything.
+//		players.put(privateKey, player);
+		players.put(publicKey, player);
+		
+		return publicKey;
 	}
 	
 	private static Integer createNewKey() {
