@@ -20,7 +20,7 @@ public class GameInstance {
 	 *       ^                                                |
 	 *       +-----------<-------------<-------------<--------+
 	 */
-	public enum GameState { GAME_LOBBY, GAME_STARTING, ENTERING_GAME, IN_GAME, CLOSING }; 
+	public enum GameState { GAME_LOBBY, GAME_STARTING, ENTERING_GAME, IN_GAME, CLOSING, UNKNOWN }; 
 	
 	// current Game State
 	private GameState gameState;
@@ -136,6 +136,24 @@ public class GameInstance {
 	}
 	
 
+
+	/**
+	 * @return the players
+	 */
+/*
+	private HashMap<Integer, PlayerData> getPlayers() {
+		return players;
+	}
+*/
+
+	/**
+	 * @param players the players to set
+	 */
+	public void setPlayers(HashMap<Integer, PlayerData> players) {
+		this.players = players;
+	}
+
+	
 	public Collection<PlayerData> getAllPlayers() {
 		return players.values();
 	}
@@ -144,16 +162,32 @@ public class GameInstance {
 		return players.get(playerID);
 	}
 
+	/*
+	 *  NOTE: we're not enforcing unique names yet, 
+	 *  	so this will return the first match.
+	 */
+	public PlayerData getPlayer(String playerName) {
+		
+		for( PlayerData player : players.values() ) {
+			
+			if( player.getName().equals(playerName) ) {
+				return player;
+			}
+		}
+		
+		return null;
+	}
 
 
 	@Override
 	public String toString() {
-		return "{ "
-				+ "gameState=" + gameState + ","
+		return "\n{ "
+				+ "'_commnent' : 'GAME',"
+				+ "'ID' : " + ID + ", "
+				+ "'gameState' : " + gameState + ", "
 				+ getAllPlayers()
-				+ " }";
+				+ " } ";
 	}
-	
 	
 
 	//////////////////////////////////////////////////////////////////////////

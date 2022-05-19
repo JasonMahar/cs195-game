@@ -32,8 +32,9 @@ public class MenuScreen extends BaseScreen {
 	
 // STUB		
 //	private String userName = "Default Player Name";	// STUB
+	
+	
 	private TextField nameField;
-
 	
     public MenuScreen() {
     	super();
@@ -68,8 +69,8 @@ public class MenuScreen extends BaseScreen {
         fieldStyle.font = font;
         fieldStyle.fontColor = Color.GOLD;
 
-        Texture fieldBackground = new Texture(Gdx.files.internal("dialog-translucent.png")); // was  button.png 
-//        Texture fieldBackground = new Texture(Gdx.files.internal("dialog.png")); 
+        Texture fieldBackground = new Texture(Gdx.files.internal("dialog-translucent.png"));
+//        Texture fieldBackground = new Texture(Gdx.files.internal("dialog.png"));  // also tried  button.png 
         
 //        TextureRegion fieldRegion = new TextureRegion(fieldBackground);
 //        fieldRegion.setRegionWidth(600);
@@ -96,6 +97,19 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
+
+        TextButton rulesButton = new TextButton("Rules", BaseGame.textButtonStyle);
+        rulesButton.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event e) {
+                if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(touchDown)) return false;
+
+// TODO: make a rules/credits dialog box pop up
+                
+                return true;
+            }
+        });
+        
         TextButton quitButton = new TextButton("Quit", BaseGame.textButtonStyle);
         quitButton.addListener(new EventListener() {
             @Override
@@ -112,7 +126,8 @@ public class MenuScreen extends BaseScreen {
 //        uiTable.add(nameField).colspan(2).fillX(); 
         uiTable.add(nameField).colspan(3).width(400).height(60).left();
         uiTable.row().padTop(30);
-        uiTable.add(startButton).colspan(3).right();
+        uiTable.add(startButton).colspan(2).right();
+        uiTable.add(rulesButton);
         uiTable.add(quitButton);
 
         mainStage.setScrollFocus(nameField);
@@ -144,19 +159,25 @@ public class MenuScreen extends BaseScreen {
         String userName = nameField.getText();
 //    	System.out.println("MenuScreen.gotoLobby(). userName: " + userName);
     	if( userName == null || userName.isBlank() ) {
+// TODO: popup error message about must enter user name
         	return false;
         }
         
-//STUB:       	//        	GameSessionInterface serverSession = new GameSession();
-        GameSessionInterface serverSession = new STUB_GameSession();
+    	//NOTE: this can return a STUB_GameSession if GameDesignVars.USE_STUB_IN_PLACE_OF_SERVER = true       	
+    	GameSessionInterface serverSession = GameSession.getGameSession();
+    	
         PlayerData userPlayer = serverSession.createNewPlayer(userName);
-		GameInstance gameData = serverSession.createNewGame(userPlayer);
-
+		if(userPlayer == null) {
+// TODO: popup error message about server not responding or could not create game instance
+			return false;
+		}
+		
+		
+        Ninja.setPlayerData(userPlayer);
 		Ninja.setPlayerName(userName);
 		Ninja.setPlayerID(userPlayer.getPublicID());
-		
-        NinjaPie.setActiveScreen(new LobbyScreen());
         
+        NinjaPie.setActiveScreen(new LobbyScreen());
         return true;
     }
     

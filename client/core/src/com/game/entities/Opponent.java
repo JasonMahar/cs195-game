@@ -24,7 +24,7 @@ public class Opponent extends BaseActor implements PlayerData {
 //	private Facing facing;		// 360 degrees, with ordinal values 
 //	private float speed;	// speed inherited from BaseActor class
 	
-	private Projectile[] projectiles;
+//	private Projectile[] projectiles;
 
 
 	private NamePlate namePlate;
@@ -93,7 +93,7 @@ public class Opponent extends BaseActor implements PlayerData {
 		this.setY( other.getY() );
 		this.setFacing( other.getFacing() );
 		this.setSpeed( other.getSpeed() );
-		this.projectiles =  other.getAllProjectiles();
+//		this.projectiles =  other.getAllProjectiles();
 	}
 
 
@@ -147,6 +147,7 @@ public class Opponent extends BaseActor implements PlayerData {
 		setRotation( facing.getDirection() );
 	}
 
+/*
 	@Override
 	public Projectile[] getAllProjectiles() {
 		return projectiles;
@@ -161,6 +162,7 @@ public class Opponent extends BaseActor implements PlayerData {
 	public void setProjectile(int index, Projectile projectile) {
 		projectiles[index] = projectile;
 	}
+*/
 
 	/**
 	 * @param x the x to set
@@ -219,8 +221,8 @@ public class Opponent extends BaseActor implements PlayerData {
 		
 		return /* super.toString() + */
 				"{ publicID=" + publicID + ", name=" + name + ", state=" + state + ", x="
-				+ getX()  + ", y=" + getY()  + ", facing=" + getFacing() + ", speed=" + getSpeed() + ", projectiles="
-				+ Arrays.toString(projectiles) + "}";
+				+ getX()  + ", y=" + getY()  + ", facing=" + getFacing() + ", speed=" + getSpeed() /*+ ", projectiles="
+				+ Arrays.toString(projectiles) */ + "}";
 	}
 
 

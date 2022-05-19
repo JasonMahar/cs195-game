@@ -2,13 +2,10 @@ package com.wickedgames.cs195.model;
 
 import java.text.DecimalFormat;
 
-import com.wickedgames.cs195.model.PlayerData.Facing;
-import com.wickedgames.cs195.model.PlayerData.State;
-
 
 public interface PlayerData {
 
-	public static final int		INVALID_PLAYER_ID = 0;
+	public static final int INVALID_PLAYER_ID = 0;
 
 	// Facing is the direction the Sprite is angled at
 	// Not sure if facing should actually be 360 degrees and 
@@ -60,7 +57,7 @@ public interface PlayerData {
 		}
 	};
 
-	public enum State { IN_LOBBY, RUNNING, CROUCHING, DEAD }; 
+	public enum State { MAIN_MENU, IN_LOBBY, RUNNING, CROUCHING, DEAD }; 
 	
 
 	// value range for speed:
@@ -93,10 +90,13 @@ public interface PlayerData {
 	float getSpeed();
 	void setSpeed(float speed);
 
-	Projectile[] getAllProjectiles();
-	Projectile getProjectile(int index);
-	void setProjectile(int index, Projectile projectile);
+    
+//TODO: Add Projectiles back
+	
+//	Projectile[] getAllProjectiles();
+//	Projectile getProjectile(int index);
+//	void setProjectile(int index, Projectile projectile);
 
-	String toString();
+	// TODO: String toString();
 
 }

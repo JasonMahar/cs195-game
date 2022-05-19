@@ -2,14 +2,11 @@ package com.wickedgames.cs195.transport;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import com.wickedgames.cs195.model.CS195PlayerData;
-import com.wickedgames.cs195.model.GameDesignVars;
 import com.wickedgames.cs195.model.GameInstance;
 import com.wickedgames.cs195.model.PlayerData;
-import com.wickedgames.cs195.model.Projectile;
-import com.wickedgames.cs195.model.PlayerData.Facing;
-import com.wickedgames.cs195.model.PlayerData.State;
 
 public class STUB_GameSession implements GameSessionInterface {
 
@@ -33,10 +30,9 @@ public class STUB_GameSession implements GameSessionInterface {
 		};
 	
 	
-	public STUB_GameSession() {}
+	public STUB_GameSession() {	}
 
 
-	
 	public void STUB_add3DummyPlayers() { 
 		
 		// I'm going to assume startingLocations[0] is for the player, 
@@ -47,11 +43,11 @@ public class STUB_GameSession implements GameSessionInterface {
 			// replacing initial PlayerData.Facing.LEFT with 30.0
 			PlayerData.Facing direction = PlayerData.Facing.LEFT;
 			direction.setDirection(INITIAL_FACING);
-			PlayerData dummyPlayer = new CS195PlayerData( playerID, playerID, 
+			PlayerData dummyPlayer = new CS195PlayerData( playerID, /* playerID, */ 
 					"Player " + playerID, PlayerData.State.RUNNING, 
 					startingLocations[playerID-1][0], startingLocations[playerID-1][1], 
-					/*PlayerData.Facing.LEFT*/ direction, /*PlayerData.STOPPED */ INITIAL_MOVEMENT * playerID, 
-					null /*Projectile[] projectiles*/ );
+					/*PlayerData.Facing.LEFT*/ direction, /*PlayerData.STOPPED */ INITIAL_MOVEMENT * playerID 
+					/* , Projectile[] projectiles*/ );
 			game.addPlayer( dummyPlayer );
 		}
 	}
@@ -69,12 +65,19 @@ public class STUB_GameSession implements GameSessionInterface {
 	@Override
 	public GameInstance joinGame(Integer gameId, PlayerData userPlayer) {
 
-		game.addPlayer(userPlayer);
+// STUB: createNewGame is no longer being used for this first iteration, 
+//		so go ahead and inititalize data here.
+		if( game == null) {
+			createNewGame(userPlayer);
+		}
+		else {
+			game.addPlayer(userPlayer);
+		}
 		return game;
 	}
 
 	@Override
-	public GameInstance updatePlayerData(PlayerData userPlayer) {
+	public GameInstance updatePlayerData(Integer gameID, PlayerData userPlayer) {
 		// TODO Auto-generated method stub
 		return game;
 	}
@@ -120,16 +123,29 @@ public class STUB_GameSession implements GameSessionInterface {
 		return game;
 	}
 
-	@Override
-	public Collection<PlayerData> getAllPlayersData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public PlayerData getPlayerData(int ID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+	@Override
+	public HashMap<Integer, PlayerData> getAllPlayersData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public GameInstance startGame(Integer gameID) {
+
+		return game;
+	}
+	
+
+
 
 }

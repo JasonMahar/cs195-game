@@ -18,6 +18,7 @@ import com.game.*;
 import com.game.entities.*;
 //import com.game.entities.ui.*;
 import com.wickedgames.cs195.model.*;
+import com.wickedgames.cs195.model.PlayerData.State;
 import com.wickedgames.cs195.transport.*;
 
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ public class LevelScreen extends BaseScreen {
 
     private GameSessionInterface serverSession;
 	private GameInstance gameData;
-	private PlayerData	playerData = null;
 	
 	// when timeSinceLastServerUpdate > GameDesignVars.GAMEPLAY_TIME_BETWEEN_UPDATES, 
 	//		get update from server
@@ -53,27 +53,35 @@ public class LevelScreen extends BaseScreen {
 
 		opponents = new Hashtable<Integer, Opponent>();
 		
-// STUB:       	//        	serverSession = new GameSession();
-		serverSession = new STUB_GameSession();
-		gameData = serverSession.getGameData(STUB_GameSession.DEFAULT_GAME_ID);
+     	//  GameSession.getGameSession() can return GameSession or
+		//		STUB_GameSession based on GameDesignVars setting
+		serverSession = GameSession.getGameSession();
+		
+		gameData = serverSession.getGameData(GameDesignVars.GAME_LOBBY_ID);
 				
 	    // Create Ninja's and Opponents' data 
 	    for(PlayerData player: gameData.getAllPlayers()){
 	    	
 	    	// Create Ninja's data 
 	    	if( player.getPublicID() == Ninja.getPlayerID() ) {	
-	    		playerData = player;	
+
+		    	System.out.println("LevelScreen.initializeDataFromServer setting our player data: " + player);
+		    	
+// NOTE: this should be set by the server but we're not telling the server 
+//		that we're changing state to start the game in this first iteration
+		    	player.setState(State.RUNNING);
+	            ninja = new Ninja(player.getX(), player.getY(), mainStage);
+	    		Ninja.setPlayerData(player);	
 	    		continue;
 	    	}
 
-	    	System.out.println("LevelScreen.initializeDataFromServer creating player: " + player);
+	    	System.out.println("LevelScreen.initializeDataFromServer creating opponent: " + player);
 
 		    // Create an Opponent's data 
 	    	Opponent newOpponent = new Opponent(player.getX(), player.getY(), mainStage, player);
 	    	opponents.put( player.getPublicID(), newOpponent );
 	    	newOpponent.setNamePlate(player.getName());
 
-	        BaseActor space = new BaseActor(0, 0, mainStage);
 	    }
 	    
 //		sendAndReceiveServerUpdate();
@@ -96,9 +104,6 @@ public class LevelScreen extends BaseScreen {
         space.setSize(800, 600);
 //        space.setVisible(false);
         BaseActor.setWorldBounds(space);
-
-        ninja = new Ninja(400, 300, mainStage);
-
 
 		initializeDataFromServer();
         
@@ -227,7 +232,7 @@ public class LevelScreen extends BaseScreen {
         // Update Opponents' data, positions & actions
         for(PlayerData player: gameData.getAllPlayers()){
         	
-        	if( player == playerData ) {	continue;	}
+        	if( player.getPublicID() == Ninja.getPlayerID() ) {	continue;	}
         	
 //                    	
 //                    	opponent.update(deltaTime);
@@ -260,7 +265,19 @@ public class LevelScreen extends BaseScreen {
 	//		of returning the current state of the game, including opponents' data
 	private void sendAndReceiveServerUpdate() {
 
-		gameData = serverSession.updatePlayerData(playerData);
+		
+		if( Ninja.getPlayerData() == null ) {
+
+		    System.out.println("ERROR: LevelScreen.sendAndReceiveServerUpdate(): Ninja.getPlayerData() == null");
+			return;
+		}
+		// TODO: calls to the server should really be asynchronous instead of blocking
+		//		we'll see if it becomes a problem with causing game to lag in which
+		//		we can put this in another thread.
+		
+		// NOTE: we're completely replacing gameData. not sure if this matters.
+		//		playerData is kept separately in Ninja so it can update independently
+		gameData = serverSession.updatePlayerData(gameData.getID(), Ninja.getPlayerData());
 		
 
 	    // Update Opponents' data, positions & actions

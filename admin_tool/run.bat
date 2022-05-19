@@ -1,0 +1,2 @@
+
+java.exe --module-path "libs/javafx-sdk-17.0.0.1/lib/" --add-modules=javafx.controls,javafx.fxml -Dfile.encoding=UTF-8 -classpath "bin;libs/javafx-sdk-17.0.0.1/lib/javafx.base.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.controls.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.fxml.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.graphics.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.media.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.swing.jar;libs/javafx-sdk-17.0.0.1/lib/javafx.web.jar;libs/javafx-sdk-17.0.0.1/lib/javafx-swt.jar;libs/json-20220320.jar;libs/shared.jar" admin_tool.Main

@@ -3,6 +3,7 @@ package com.game.entities;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import com.game.*;
+import com.wickedgames.cs195.model.*;
 import com.wickedgames.cs195.transport.*;
 
 import static com.badlogic.gdx.Gdx.input;
@@ -15,13 +16,16 @@ public class Ninja extends BaseActor {
 	///////////////////////////////////////
 	// static attributes/accessors
 	
-	public static String playerName = "";
-//	public static Integer playerID;
+	private static String playerName = "";
+	
 // STUB:
-	public static Integer playerID = STUB_GameSession.STUB_DEFAULT_PLAYER_ID;
+//	private static int playerID = STUB_GameSession.STUB_DEFAULT_PLAYER_ID;
+	private static Integer playerID = GameDesignVars.DEFAULT_PLAYER_ID;
 	
+	private static PlayerData playerData = null;
 	
-    /**
+
+	/**
 	 * @return the playerName
 	 */
 	public static String getPlayerName() {
@@ -38,15 +42,30 @@ public class Ninja extends BaseActor {
 	/**
 	 * @return the playerID
 	 */
-	public static Integer getPlayerID() {
+	public static int getPlayerID() {
 		return playerID;
 	}
 
 	/**
 	 * @param playerID the playerID to set
 	 */
-	public static void setPlayerID(Integer playerID) {
+	public static void setPlayerID(int playerID) {
 		Ninja.playerID = playerID;
+	}
+	
+
+    /**
+	 * @return the playerData
+	 */
+	public static PlayerData getPlayerData() {
+		return playerData;
+	}
+
+	/**
+	 * @param playerData the playerData to set
+	 */
+	public static void setPlayerData(PlayerData playerData) {
+		Ninja.playerData = playerData;
 	}
 
 	// end static attributes/accessors

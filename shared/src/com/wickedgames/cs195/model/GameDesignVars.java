@@ -18,6 +18,15 @@ public final class GameDesignVars {
 	
 	
 	// Game constants:
+
+// STUB:
+	public static final boolean USE_STUB_IN_PLACE_OF_SERVER = false;
+// STUB:
+	public static final boolean ONLY_ONE_GAME = true;
+	
+	public static final Integer GAME_LOBBY_ID = 1;	
+	public static final Integer BAD_GAME_ID = 0;	
+	
 	public static final boolean START_WITH_SOUND_ENABLED = false;	
 	
 	public static final Integer MAX_GAME_FPS = 30;	
@@ -32,6 +41,9 @@ public final class GameDesignVars {
 	
 	
 	// Player constants:
+	public static final int 	DEFAULT_PLAYER_ID = 0;	
+	public static final String DEFAULT_PLAYER_NAME = "";
+	
 	public static final int 	STARTING_LIVES = 3;	
 	public static final int 	MAX_LIVES = 3;	
 	public static final float 	MAX_PLAYER_SPEED = 2.0f;		// in virtual meters/second
@@ -42,6 +54,7 @@ public final class GameDesignVars {
 	public static final int 	MAX_AMMO = 1;
 	public static final float 	DAMAGE_FROM_HIT = 1.0f;
 	public static final float 	MAX_DISTANCE = 30.0f;
+
 	
 	
 }

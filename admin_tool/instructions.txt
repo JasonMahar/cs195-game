@@ -1,0 +1,39 @@
+
+Admin Tool 
+Performs server operations to view and change the game.
+
+There should be a run.bat file to run from the admin_tool folder. If it won't run on your OS, try viewing the command inside the run.bat and running that directly on the command line.
+
+
+Note: selecting an operation from the Commands drop down list doesn't run until you click on the Submit button.  Change the Game ID, player ID, and parameters values to 
+
+---
+
+*** Info for normal order of operations to start a game ***
+(don't forget to click Submit button to run each step)
+
+1. Enter a player name in the parameters field and Submit the Select Create Player command 
+    -> you should see the player's name added to the Players' drop down
+    
+2. Submit the Join Game command (joins the selected player from the Players' drop down)
+    -> you should see the current data from the game in the Data results
+    
+(repeat steps 1 & 2 for all players you want to join the game - unknown results if you try to add more than 4 players)
+
+3. Submit Start Game
+    -> All joined players should get a triangle avatar
+    
+4. Change avatars by selecting players from the Players' drop down 
+    -> you should then be able to move them with the W, A, S, and D keys
+    
+5. Submit Update Player to send the updated movements to the server and receive updated game data from the server.
+
+6. Submit Get Game Data to pull changes made by other clients to the admin tool.
+
+7. Submit Get All Players to show players that have or have not joined the game.
+
+
+(Note: data does not automatically get sent from the server or receive updates from the server.  Yet.)
+
+
+
